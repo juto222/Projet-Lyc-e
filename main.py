@@ -1,12 +1,12 @@
 if choix == 11:
     try:
-        CheckMDP.generateur()
+        CheckMDP.verifier()
     except Exception as e:
         print(f"Une erreur est survenue : {e}")
 
 elif choix == 12:
     try:
-        VerifMDP.verifier()
+        GenererMDP.generer()
     except Exception as e:
         print(f"Une erreur est survenue : {e}")
 
