@@ -1,5 +1,6 @@
 import string
 
+def verifier():
     print("""
 
 
