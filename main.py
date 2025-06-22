@@ -1,9 +1,24 @@
+import os
+import time
+from colorama import init, Fore, Style
 from Option import PingIP
 from Option import CheckMDP
-from Option import VerifMDP
+from Option import GenererMDP
 
+
+# Initialisation de Colorama
+init(autoreset=True)
+
+# Efface le terminal
+def clear():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+# Affiche le menu principal
 def afficher_menu():
-    print("""                                                                                                                                                                                                                                                                                                                                                 
+    clear()
+    print(f"""{Fore.CYAN}{Style.BRIGHT}
+═══════════════════════════════════════════════════════════════════════
+{Fore.GREEN}
              @                                                                                                                  
           @@@@@@                                                                                                                
         @@@@@@@                                                                                                                 
@@ -17,121 +32,132 @@ def afficher_menu():
            @@@@@@                                                                                                               
             @@               @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@        
 
-═══════════════════════════════════════════════════════════════════════
-[1] 🔐 Mot de passe
-    ├── [11] Générateur de mot de passe
-    ├── [12] Vérificateur de mot de passe
-      
-[2] 🛡 Pentest
-    ├── [21] Virus
-    ├── [22] Outil DDoS
-    ├── [23] Générateur de fausse page HTML
 
-[3] 📊 Réseau
-    ├── [31] Ping IP
-    ├── [32] Journal / Logs
+{Fore.CYAN}═══════════════════════════════════════════════════════════════════════
 
-[4] ⚙️ Paramètres
-    ├── [41] Mode sombre / clair
+{Fore.MAGENTA}[1] {Fore.MAGENTA}🔐 Mot de passe
+    {Fore.YELLOW}├── [11] Générateur de mot de passe
+    └── [12] Vérificateur de mot de passe
+
+{Fore.MAGENTA}[2] 🛡 Pentest
+    {Fore.YELLOW}├── [21] Virus (désactivé)
+    ├── [22] Outil DDoS (désactivé)
+    └── [23] Générateur de fausse page HTML
+
+{Fore.MAGENTA}[3] 📊 Réseau
+    {Fore.YELLOW}├── [31] Ping IP
+    └── [32] Journal / Logs
+
+{Fore.MAGENTA}[4] ⚙️ Paramètres
+    {Fore.YELLOW}├── [41] Mode sombre / clair
     ├── [42] Choix de langue (FR/EN)
-    └── [43] Exit
-      
-[5] ⚖️ Aide & Légalité
-    ├── [51] Documentation utilisateur
+    └── [43] Quitter
+
+{Fore.MAGENTA}[5] ⚖️ Aide & Légalité
+    {Fore.YELLOW}├── [51] Documentation utilisateur
     ├── [52] FAQ
-    ├── [53] Mentions légales & avertissement d’usage
+    ├── [53] Mentions légales
     └── [54] Informations RGPD
 ═══════════════════════════════════════════════════════════════════════
-    """)
+{Style.RESET_ALL}""")
+
+# Fonction simplifiée pour exécuter proprement
+def lancer(fonction, nom="Fonction"):
+    clear()
+    print(Fore.YELLOW + f"[ {nom} ]")
+    try:
+        fonction()
+    except Exception as e:
+        print(Fore.RED + f"❌ Erreur : {e}")
+    input(Fore.GREEN + "\n✅ Appuyez sur Entrée pour revenir au menu...")
 
 # Boucle principale du menu
 while True:
     afficher_menu()
-    
+
     try:
-        choix = int(input("Entrez l'option de votre choix : "))
+        choix = int(input(Fore.CYAN + "Entrez l'option de votre choix : "))
     except ValueError:
-        print("❌ Veuillez entrer un numéro valide.")
+        print(Fore.RED + "❌ Veuillez entrer un numéro valide.")
+        time.sleep(1.5)
         continue
 
     # Mot de passe
     if choix == 11:
-        try:
-            CheckMDP.verifier()
-        except Exception as e:
-            print(f"❌ Erreur générateur : {e}")
+        lancer(GenererMDP.generer, "Générateur de mot de passe")
 
     elif choix == 12:
-        try:
-            GenererMDP.generer()
-        except Exception as e:
-            print(f"❌ Erreur vérification : {e}")
+        lancer(CheckMDP.verifier, "Vérificateur de mot de passe")
 
     # Pentest
     elif choix == 21:
-        print("🛡 Fonction Virus : Cette fonction est désactivée à des fins de sécurité.")
-
+        clear()
+        print(Fore.RED + "🛡 Fonction Virus : désactivée pour raisons de sécurité.")
+        input(Fore.GREEN + "\nRetour...")
     elif choix == 22:
-        print("❌ Outil DDoS non disponible. Ce type d’outil est illégal en dehors d’un cadre autorisé.")
-
-    elif choix == 23:
-        print("🛠 Générateur de fausse page HTML : en développement...")
+        clear()
+        print(Fore.RED + "❌ Outil DDoS non disponible. Illégal sans autorisation.")
+        input(Fore.GREEN + "\nRetour...")
 
     # Réseau
     elif choix == 31:
-        try:
-            PingIP.ping()
-        except Exception as e:
-            print(f"❌ Erreur de ping : {e}")
+        lancer(PingIP.ping, "Ping IP")
 
-    elif choix == 32:
-        print("📄 Journaux réseau : fonctionnalité en développement...")
 
     # Paramètres
-    elif choix == 41:
-        print("🌓 Changement de thème : clair/sombre... (simulé)")
-
     elif choix == 42:
+        clear()
         langue = input("Choisissez votre langue (FR/EN) : ").upper()
         if langue in ["FR", "EN"]:
-            print(f"🌐 Langue définie sur : {langue}")
+            print(Fore.GREEN + f"🌐 Langue définie sur : {langue}")
         else:
-            print("❌ Langue non reconnue.")
+            print(Fore.RED + "❌ Langue non reconnue.")
+        input(Fore.GREEN + "\nRetour au menu...")
 
     elif choix == 43:
-        print("👋 Fermeture du programme. À bientôt !")
+        clear()
+        print(Fore.CYAN + "👋 Fermeture du programme. À bientôt !")
         break
 
     # Aide & Légalité
     elif choix == 51:
-        print("""
+        clear()
+        print(Fore.YELLOW + """
 📘 Documentation utilisateur :
 - Utilisez les numéros du menu pour accéder aux outils.
-- Les modules sensibles sont désactivés par défaut pour respecter la légalité.
+- Les modules sensibles sont désactivés pour rester légaux.
 """)
+        input(Fore.GREEN + "\nRetour...")
 
     elif choix == 52:
-        print("""
+        clear()
+        print(Fore.YELLOW + """
 ❓ FAQ :
-Q : Cette app est-elle légale ?
-R : Oui, si utilisée à des fins pédagogiques uniquement.
+Q : Est-ce légal ?
+R : Oui, pour l’apprentissage uniquement.
 
 Q : Puis-je modifier ce script ?
-R : Bien sûr, sous réserve de respecter la loi.
+R : Oui, tant que vous respectez la loi.
 """)
+        input(Fore.GREEN + "\nRetour...")
 
     elif choix == 53:
-        print("""
-⚠️ Mentions légales & Avertissement :
-Ce programme est fourni uniquement à des fins éducatives.
-L’auteur décline toute responsabilité en cas d’usage illégal.
+        clear()
+        print(Fore.YELLOW + """
+⚠️ Mentions légales :
+Ce programme est fourni à titre éducatif.
+L’auteur décline toute responsabilité en cas d’abus.
 """)
+        input(Fore.GREEN + "\nRetour...")
 
     elif choix == 54:
-        print("""
-🔒 Informations RGPD :
-Ce programme ne collecte ni ne conserve aucune donnée personnelle.
+        clear()
+        print(Fore.YELLOW + """
+🔒 Données personnelles :
+Ce programme ne collecte aucune information.
 """)
+        input(Fore.GREEN + "\nRetour...")
 
     else:
-        print("❌ Option invalide. Veuillez choisir un numéro parmi ceux listés.")
+        print(Fore.RED + "❌ Option invalide.")
+        time.sleep(1.5)
