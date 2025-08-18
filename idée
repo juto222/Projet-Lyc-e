@@ -3,3 +3,34 @@ Autres
 Réseau
 Malware
 Pentest
+
+
+trouver des parametres
+
+Type	Description
+
+Trojan (cheval de Troie)	Se fait passer pour un programme légitime. Utilisé pour voler, espionner, etc.
+
+Worm (ver)	Se propage automatiquement sur le réseau sans interaction humaine.
+
+
+
+Adware	Affiche de la publicité forcée ou redirige la navigation.
+
+Keylogger	Enregistre les frappes clavier pour voler des identifiants.
+
+Ransomware	Chiffre les fichiers de l’utilisateur et demande une rançon.
+
+
+
+
+
+
+
+Dropper	Malware dont le seul but est d’installer d’autres malwares.
+
+Downloader	Similaire au dropper, mais va chercher les malwares sur Internet.
+
+
+
+keylog, créer un faux fichier et pour parametres le keylog on fait une page avec les parametres et ensuite on créer le keylog
