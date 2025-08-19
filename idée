@@ -34,3 +34,18 @@ Downloader	Similaire au dropper, mais va chercher les malwares sur Internet.
 
 
 keylog, créer un faux fichier et pour parametres le keylog on fait une page avec les parametres et ensuite on créer le keylog
+
+# Affiche les logs
+    with open("logs.txt", "a") as fichier:
+        fichier.write(
+            f"------------------------------------\n"
+            f"\n"
+            f" [{time.strftime('%d-%m-%Y %H:%M:%S')}]     (les erreurs on les affiches ici)   \n"
+            f"\n"
+            f"------------------------------------\n"
+            f"\n"
+        )
+
+\n sert à aller a la ligne
+
+[{time.strftime('%d-%m-%Y %H:%M:%S')}] date et heure précise
