@@ -4,6 +4,7 @@ from colorama import init, Fore, Style
 from Option import PingIP
 from Option import CheckMDP
 from Option import GenererMDP
+from Option import phishing
 
 # Initialisation de Colorama
 init(autoreset=True)
@@ -118,7 +119,7 @@ def lancer(fonction, nom="Fonction"):
         print(Fore.RED + f"❌ Erreur : {e}")
     input(Fore.GREEN + "\n✅ Appuyez sur Entrée pour revenir au menu...")
 
-# === Ajout ici : Choix initial de la langue ===
+# Langue
 clear()
 langue_actuelle = input(Fore.CYAN + "🌐 Choisissez votre langue / Choose your language (FR/EN) : ").upper()
 if langue_actuelle != "EN":
@@ -148,6 +149,12 @@ while True:
         clear()
         print(Fore.RED + "❌ Fonction désactivée. / Feature disabled.")
         input(Fore.GREEN + "\nRetour... / Back...")
+
+    elif choix == 23:
+        clear()
+        lancer(lambda: phishing.afficher_menu_phishing(langue_actuelle),
+       "Générateur de fausse page HTML" if langue_actuelle == "FR" else "Fake HTML Page Generator")
+
 
     elif choix == 31:
         lancer(PingIP.ping, "Ping IP")
