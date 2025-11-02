@@ -23,3 +23,13 @@ def generer():
 
 
   print(f"Le mot de passe pour {motif} est : {mdp}")
+  with open("logs.txt", "a") as fichier:
+        fichier.write(
+            f"------------------------------------\n"
+            f"\n"
+            f" [{time.strftime('%d-%m-%Y %H:%M:%S')}]     Création d'un mot de passe pour {motif} ({mdp}) \n"
+            f"\n"
+            f"------------------------------------\n"
+            f"\n"
+        )
+
