@@ -33,4 +33,14 @@ def verifier():
         print("Mot de passe moyen")
     else:
         print("Mot de passe faible")
+    with open("logs.txt", "a") as fichier:
+        fichier.write(
+            f"------------------------------------\n"
+            f"\n"
+            f" [{time.strftime('%d-%m-%Y %H:%M:%S')}]     Vérification d'un mot de passe {mdp}    \n"
+            f"\n"
+            f"------------------------------------\n"
+            f"\n"
+        )
+
 
