@@ -5,6 +5,8 @@ from Option import PingIP
 from Option import CheckMDP
 from Option import GenererMDP
 from Option import phishing
+from Option import Scan
+from Option import pswd
 
 # Initialisation de Colorama
 init(autoreset=True)
@@ -37,16 +39,21 @@ def afficher_menuFR():
 {Fore.MAGENTA}[1] 🔐 Mot de passe
     {Fore.YELLOW}├── [11] Générateur de mot de passe
     └── [12] Vérificateur de mot de passe
+    └── [13] Quizz mot de passe (à venir)
+    └── [14] Mot de passe compromis
 
 {Fore.MAGENTA}[2] 🛡 Pentest
     {Fore.YELLOW}├── [21] Virus (désactivé)
     ├── [22] Outil DDoS (désactivé)
     └── [23] Générateur de fausse page HTML
+    └── [24] Keylogger
+    └── [25] Quizz sécurité (à venir)
 
 {Fore.MAGENTA}[3] 📊 Réseau
     {Fore.YELLOW}├── [31] Ping IP
     ├── [32] Scan Réseau
     └── [33] Journal / Logs
+    └── [34] Quizz réseau (à venir)
 
 {Fore.MAGENTA}[4] ⚙️ Paramètres
     {Fore.YELLOW}├── [41] Mode sombre / clair
@@ -85,16 +92,21 @@ def afficher_menuEN():
 {Fore.MAGENTA}[1] 🔐 Password
     {Fore.YELLOW}├── [11] Password Generator
     └── [12] Password Checker
+    └── [13] Password Quiz (upcoming)
+    └── [14] Compromised Passwords
 
 {Fore.MAGENTA}[2] 🛡 Pentest
     {Fore.YELLOW}├── [21] Virus (disabled)
     ├── [22] DDoS Tool (disabled)
     └── [23] Fake HTML Page Generator
+    └── [24] Keylogger 
+    └── [25] Security Quiz (upcoming)
 
 {Fore.MAGENTA}[3] 📊 Network
     {Fore.YELLOW}├── [31] Ping IP
     ├── [32] Scan Network
     └── [33] Logs
+    └── [34] Network Quiz (upcoming)
 
 {Fore.MAGENTA}[4] ⚙️ Settings
     {Fore.YELLOW}├── [41] Dark / Light Mode
@@ -145,6 +157,10 @@ while True:
     elif choix == 12:
         lancer(CheckMDP.verifier, "Vérificateur de mot de passe" if langue_actuelle == "FR" else "Password Checker")
 
+    elif choix == 14:
+        clear()
+        lancer(pswd.pswd_compromis, "Mot de passe compromis" if langue_actuelle == "FR" else "Compromised Passwords")
+
     elif choix == 21 or choix == 22:
         clear()
         print(Fore.RED + "❌ Fonction désactivée. / Feature disabled.")
@@ -157,7 +173,14 @@ while True:
 
 
     elif choix == 31:
-        lancer(PingIP.ping, "Ping IP")
+        lancer(PingIP.ping, "Ping IP" if langue_actuelle == "FR" else "Ping IP")
+
+    elif choix == 32:
+        clear()
+        lancer(Scan.scan, "Scan Réseau" if langue_actuelle == "FR" else "Network Scan")
+        input(Fore.GREEN + "\nRetour... / Back...")
+    
+    elif choix == 33: 
 
     elif choix == 42:
         clear()
