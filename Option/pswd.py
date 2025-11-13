@@ -48,8 +48,6 @@ def pswd_compromis():
         h, count = line.split(':', 1)
         if h.upper() == suffix:
             print(f"{Fore.RED}Le mot de passe '{pswd}' a été compromis {count.strip()} fois !{Style.RESET_ALL}")
-            # effacer la variable si tu veux réduire l'exposition mémoire
-            # pswd = None
             return
 
     print(f"{Fore.GREEN}Le mot de passe '{pswd}' n'a pas été trouvé dans la base de données des mots de passe compromis.{Style.RESET_ALL}")
