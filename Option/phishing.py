@@ -1,11 +1,11 @@
 from colorama import init, Fore, Style
-import webbrowser  # <- MODULE POUR OUVRIR DES PAGES WEB
-import os  # <- Pour vérifier si le fichier existe
+import webbrowser  
+import os 
 
 init(autoreset=True)
 
 def afficher_menu_phishing(langue_actuelle):
-    # Affichage du menu de phishing
+   
 
     print(f"""{Fore.CYAN}{Style.BRIGHT}
 ══════════════════════════════════════════════════════════════════════
