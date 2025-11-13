@@ -5,7 +5,8 @@ from Option import PingIP
 from Option import CheckMDP
 from Option import GenererMDP
 from Option import phishing
-from Option import Scan
+#from Option import Scan
+#from Option import keylog
 from Option import pswd
 
 # Initialisation de Colorama
@@ -39,19 +40,19 @@ def afficher_menuFR():
 {Fore.MAGENTA}[1] 🔐 Mot de passe
     {Fore.YELLOW}├── [11] Générateur de mot de passe
     └── [12] Vérificateur de mot de passe
-    └── [13] Quizz mot de passe (à venir)
+    └── [13] Quizz mot de passe
     └── [14] Mot de passe compromis
 
 {Fore.MAGENTA}[2] 🛡 Pentest
     {Fore.YELLOW}├── [21] Virus (désactivé)
     ├── [22] Outil DDoS (désactivé)
     └── [23] Générateur de fausse page HTML
-    └── [24] Keylogger
+    └── [24] Keylogger (en dévoloppement)
     └── [25] Quizz sécurité (à venir)
 
 {Fore.MAGENTA}[3] 📊 Réseau
     {Fore.YELLOW}├── [31] Ping IP
-    ├── [32] Scan Réseau
+    ├── [32] Scan Réseau (à venir)
     └── [33] Journal / Logs
     └── [34] Quizz réseau (à venir)
 
@@ -92,19 +93,19 @@ def afficher_menuEN():
 {Fore.MAGENTA}[1] 🔐 Password
     {Fore.YELLOW}├── [11] Password Generator
     └── [12] Password Checker
-    └── [13] Password Quiz (upcoming)
+    └── [13] Password Quiz
     └── [14] Compromised Passwords
 
 {Fore.MAGENTA}[2] 🛡 Pentest
     {Fore.YELLOW}├── [21] Virus (disabled)
     ├── [22] DDoS Tool (disabled)
     └── [23] Fake HTML Page Generator
-    └── [24] Keylogger 
+    └── [24] Keylogger (in development)
     └── [25] Security Quiz (upcoming)
 
 {Fore.MAGENTA}[3] 📊 Network
     {Fore.YELLOW}├── [31] Ping IP
-    ├── [32] Scan Network
+    ├── [32] Scan Network (upcoming)
     └── [33] Logs
     └── [34] Network Quiz (upcoming)
 
@@ -170,17 +171,26 @@ while True:
         clear()
         lancer(lambda: phishing.afficher_menu_phishing(langue_actuelle),
        "Générateur de fausse page HTML" if langue_actuelle == "FR" else "Fake HTML Page Generator")
+        
+    #elif choix == 24:
+    #    clear()
+    #    lancer(keylog.keylog, "Keylogger" if langue_actuelle == "FR" else "Keylogger")
 
 
     elif choix == 31:
         lancer(PingIP.ping, "Ping IP" if langue_actuelle == "FR" else "Ping IP")
 
-    elif choix == 32:
-        clear()
-        lancer(Scan.scan, "Scan Réseau" if langue_actuelle == "FR" else "Network Scan")
-        input(Fore.GREEN + "\nRetour... / Back...")
+    #elif choix == 32:
+    #    clear()
+    #    lancer(Scan.scan, "Scan Réseau" if langue_actuelle == "FR" else "Network Scan")
+    #    input(Fore.GREEN + "\nRetour... / Back...")
     
     elif choix == 33: 
+        clear()
+        with open("logs.txt", "r") as f:
+            logs = f.read()
+            print(Fore.YELLOW + logs)
+            input(Fore.GREEN + "\nRetour... / Back...")
 
     elif choix == 42:
         clear()
