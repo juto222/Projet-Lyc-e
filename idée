@@ -33,7 +33,17 @@ Downloader	Similaire au dropper, mais va chercher les malwares sur Internet.
 
 
 
-keylog, créer un faux fichier et pour parametres le keylog on fait une page avec les parametres et ensuite on créer le keylog
+keylog, créer un faux fichier et pour parametres le keylog on fait une page avec les parametres et ensuite on créer le keylog, appeler le kelogger par un nom de d'un service windows
+
+option :
+choix du nom
+capture d'écran
+capture du presse papier
+démarrage automatique
+heure d'activité
+capture avant @ et apres
+low and slow
+alerte si contamination
 
 # Affiche les logs
     with open("logs.txt", "a") as fichier:
