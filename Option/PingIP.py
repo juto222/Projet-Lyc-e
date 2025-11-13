@@ -42,4 +42,4 @@ def ping():
             f"\n"
         )
 
-ping()
+
