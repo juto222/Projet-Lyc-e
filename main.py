@@ -8,6 +8,8 @@ from Option import phishing
 #from Option import Scan
 #from Option import keylog
 from Option import pswd
+from Option import quizzmdp
+from Option import quizzsecurity
 
 # Initialisation de Colorama
 init(autoreset=True)
@@ -162,6 +164,14 @@ while True:
         clear()
         lancer(pswd.pswd_compromis, "Mot de passe compromis" if langue_actuelle == "FR" else "Compromised Passwords")
 
+    elif choix == 13:
+        clear()
+        if langue_actuelle == "FR":
+            level = input("Choisissez le niveau de difficulté (1-Facile, 2-Moyen, 3-Difficile) : ")
+        else:
+            level = input("Choose difficulty level (1-Easy, 2-Medium, 3-Hard): ")
+        lancer(lambda: quizzmdp.quizz_mdp(level), "Quizz mot de passe" if langue_actuelle == "FR" else "Password Quiz")
+
     elif choix == 21 or choix == 22:
         clear()
         print(Fore.RED + "❌ Fonction désactivée. / Feature disabled.")
@@ -175,6 +185,15 @@ while True:
     #elif choix == 24:
     #    clear()
     #    lancer(keylog.keylog, "Keylogger" if langue_actuelle == "FR" else "Keylogger")
+
+    elif choix == 25:
+        clear()
+        if langue_actuelle == "FR":
+            level = input("Choisissez le niveau de difficulté (1-Facile, 2-Moyen, 3-Difficile) : ")
+        else:
+            level = input("Choose difficulty level (1-Easy, 2-Medium, 3-Hard): ")
+        lancer(lambda: quizzsecurity.quizzsecurity(level), "Quizz sécurité" if langue_actuelle == "FR" else "Security Quiz")
+
 
 
     elif choix == 31:
@@ -191,6 +210,31 @@ while True:
             logs = f.read()
             print(Fore.YELLOW + logs)
             input(Fore.GREEN + "\nRetour... / Back...")
+
+    elif choix == 41:
+        clear()
+        if langue_actuelle == "FR":
+            mode = input("Choisissez le mode (sombre/clair) : ").lower()
+            if mode == "sombre":
+                os.system('')  # Placeholder for dark mode
+                print(Fore.GREEN + "🌙 Mode sombre activé.")
+            elif mode == "clair":
+                os.system('')  # Placeholder for light mode
+                print(Fore.GREEN + "☀️ Mode clair activé.")
+            else:
+                print(Fore.RED + "❌ Mode non reconnu.")
+            input(Fore.GREEN + "\nRetour au menu...")
+        else:
+            mode = input("Choose mode (dark/light): ").lower()
+            if mode == "dark":
+                os.system('')  # Placeholder for dark mode
+                print(Fore.GREEN + "🌙 Dark mode activated.")
+            elif mode == "light":
+                os.system('')  # Placeholder for light mode
+                print(Fore.GREEN + "☀️ Light mode activated.")
+            else:
+                print(Fore.RED + "❌ Mode not recognized.")
+            input(Fore.GREEN + "\nReturn to menu...")
 
     elif choix == 42:
         clear()
