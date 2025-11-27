@@ -5,7 +5,7 @@ from Option import PingIP
 from Option import CheckMDP
 from Option import GenererMDP
 from Option import phishing
-from Option import Scan
+#from Option import Scan
 from Option import keylog
 from Option import pswd
 from Option import quizzmdp
@@ -14,6 +14,9 @@ from Option import username
 from Option import si
 from Option import test_speed
 from Option import script
+from Option import subdomain
+from Option import iplookup
+from Option import dirbuster
 
 # Initialisation de Colorama
 init(autoreset=True)
@@ -53,16 +56,18 @@ def afficher_menuFR():
     {Fore.YELLOW}├── [21] Virus (désactivé pour des raisons éthiques)
     ├── [22] Outil DDoS (désactivé pour des raisons éthiques)
     ├── [23] Générateur de fausse page HTML
-    ├── [24] Keylogger (en dévoloppement)
-    └── [25] Quizz sécurité
-    └── [26] Scanner de sites web (à venir)
+    ├── [24] Keylogger (pas toutes les options développés)
+    ├── [25] Quizz sécurité
+    ├── [26] Scanner de sites web
+    └── [27] DirBuster
 
 {Fore.MAGENTA}[3] 📊 Réseau
     {Fore.YELLOW}├── [31] Ping IP
     ├── [32] Scan Réseau 
     ├── [33] Journal / Logs
-    ├── [34] Quizz réseau 
-    └── [35] Speedtest Internet
+    ├── [34] Quizz réseau (en développement)
+    ├── [35] Info sur l'IP
+    └── [36] Speedtest Internet
 
 {Fore.MAGENTA} [4] PC
     {Fore.YELLOW}├── [41] Informations système
@@ -119,24 +124,24 @@ def afficher_menuEN():
     {Fore.YELLOW}├── [21] Virus (disabled for ethical reasons)
     ├── [22] DDoS Tool (disabled for ethical reasons)
     ├── [23] Fake HTML Page Generator
-    ├── [24] Keylogger (in development)
-    └── [25] Security Quiz
-    ├──
+    ├── [24] Keylogger (not all option are developped)
+    ├── [25] Security Quiz
+    ├── [26] Scanner de sites web
+    └── [27] DirBuster
 
 {Fore.MAGENTA}[3] 📊 Network
     {Fore.YELLOW}├── [31] Ping IP
     ├── [32] Scan Network 
     ├── [33] Logs
-    ├── [34] Network Quiz
-    └── [35] Internet Speedtest
-
+    ├── [34] Network Quiz (in development)
+    ├── [35] IP Lookup
+    └── [36] Internet Speedtest
 
 {Fore.MAGENTA} [4]    PC
     {Fore.YELLOW}├── [41] System Information
     ├── [42] Task Manager (upcoming)
     ├── [43] Temporary File Cleaner (upcoming)
     └── [45] Fake File Creator
-
 
 {Fore.MAGENTA} [5] Others
     {Fore.YELLOW}├── [51] Username Lookup
@@ -224,15 +229,23 @@ while True:
             level = input("Choose difficulty level (1-Easy, 2-Medium, 3-Hard): ")
         lancer(lambda: quizzsecurity.quizzsecurity(level), "Quizz sécurité" if langue_actuelle == "FR" else "Security Quiz")
 
+    elif choix == 26:
+        clear()
+        lancer(subdomain.sousdomaine, "Sous domaine" if langue_actuelle == "FR" else "Subdomain")
+
+    elif choix == 27:
+        clear()
+        lancer(dirbuster.dirbuster, "Dirbuster")
+
 
 
     elif choix == 31:
         lancer(PingIP.ping, "Ping IP" if langue_actuelle == "FR" else "Ping IP")
 
-    elif choix == 32:
-        clear()
-        lancer(Scan.scan, "Scan Réseau" if langue_actuelle == "FR" else "Network Scan")
-        input(Fore.GREEN + "\nRetour... / Back...")
+    #elif choix == 32:
+    #   clear()
+     #   lancer(Scan.scan, "Scan Réseau" if langue_actuelle == "FR" else "Network Scan")
+      #  input(Fore.GREEN + "\nRetour... / Back...")
     
     elif choix == 33: 
         clear()
@@ -241,7 +254,11 @@ while True:
             print(Fore.YELLOW + logs)
             input(Fore.GREEN + "\nRetour... / Back...")
 
-    elif choix == 34:
+    elif choix == 35:
+        clear()
+        lancer(iplookup.obtenir_infos_ip, "Info sur l'IP" if langue_actuelle == "FR" else "IP Lookup")
+
+    elif choix == 36:
         clear()
         lancer(test_speed.test_speed, "Speedtest Internet" if langue_actuelle == "FR" else "Internet Speedtest")
 
