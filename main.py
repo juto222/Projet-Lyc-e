@@ -125,7 +125,7 @@ def afficher_menuEN():
     ├── [23] Fake HTML Page Generator
     ├── [24] Keylogger (not all option are developped)
     ├── [25] Security Quiz
-    ├── [26] Scanner de sites web
+    ├── [26] Website Scanner
     └── [27] DirBuster
 
 {Fore.MAGENTA}[3] 📊 Network
@@ -348,4 +348,5 @@ while True:
     else:
         print(Fore.RED + "❌ Option invalide.")
         time.sleep(1.5)
+
 
