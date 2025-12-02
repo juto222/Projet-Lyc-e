@@ -115,7 +115,6 @@ def afficher_menuEN():
 
 {Fore.MAGENTA}[1] 🔐 Password
     {Fore.YELLOW}├── [11] Password Generator
-    ├── [12] Vérificateur de mot de passe
     ├── [12] Password Checker
     ├── [13] Password Quiz
     └── [14] Compromised Passwords
@@ -349,3 +348,4 @@ while True:
     else:
         print(Fore.RED + "❌ Option invalide.")
         time.sleep(1.5)
+
