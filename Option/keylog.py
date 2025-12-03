@@ -643,7 +643,6 @@ switch.pack()
 lancer_btn = ctk.CTkButton(app, text="Lancer le programme", font=ctk.CTkFont(size=16, weight="bold"), command=lancer_programme)
 lancer_btn.pack(pady=20)
 
-"""
 with open("logs.txt", "a") as fichier:
         fichier.write(
             f"------------------------------------\n"
@@ -653,7 +652,7 @@ with open("logs.txt", "a") as fichier:
             f"------------------------------------\n"
             f"\n"
         )
-        """
+
 
 def key():
     app.mainloop()
