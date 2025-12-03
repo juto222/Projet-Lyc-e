@@ -1,11 +1,5 @@
 @echo off
-REM Vérifie si Python est installé
-python --version >nul 2>&1
-IF %ERRORLEVEL% NEQ 0 (
-    echo Python n'est pas installé. Veuillez installer python.3.11.  avec le PATH.exe !!
-    pause
-    exit /b
-)
+
 
 REM Mettre à jour pip
 echo Mise à jour de pip...
@@ -23,13 +17,17 @@ py -3.11 -m pip install psutil
 py -3.11 -m pip install speedtest-cli
 py -3.11 -m pip install cx-Freeze
 py -3.11 -m pip install clipboard
-py -3.11 -m pip install PIL
+py -3.11 -m pip install Pillow
 py -3.11 -m pip install shutil
 py -3.11 -m pip install tkinter
 py -3.11 -m pip install psutil
 py -3.11 -m pip install getpass
+py -3.11 -m pip install dnspython
+py -3.11 -m pip install bs4
+py -3.11 -m pip install aiohttp
 
 
 
 echo Toutes les librairies ont été installées.
 pause
+
