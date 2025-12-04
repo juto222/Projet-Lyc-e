@@ -9,25 +9,26 @@ python -m pip install --upgrade pip
 
 REM Installer les librairies nécessaires
 echo Installation des librairies...
-py -3.11 -m pip install requests
-py -3.11 -m pip install pynput
-py -3.11 -m pip install customtkinter
-py -3.11 -m pip install colorama
-py -3.11 -m pip install psutil
-py -3.11 -m pip install speedtest-cli
-py -3.11 -m pip install cx-Freeze
-py -3.11 -m pip install clipboard
-py -3.11 -m pip install Pillow
-py -3.11 -m pip install shutil
-py -3.11 -m pip install tkinter
-py -3.11 -m pip install psutil
-py -3.11 -m pip install getpass
-py -3.11 -m pip install dnspython
-py -3.11 -m pip install bs4
-py -3.11 -m pip install aiohttp
+python3 -m pip install requests
+python3 -m pip install pynput
+python3 -m pip install customtkinter
+python3 -m pip install colorama
+python3 -m pip install psutil
+python3 -m pip install speedtest-cli
+python3 -m pip install cx-Freeze
+python3 -m pip install clipboard
+python3 -m pip install Pillow
+python3 -m pip install shutil
+python3 -m pip install tkinter
+python3 -m pip install psutil
+python3 -m pip install getpass
+python3 -m pip install dnspython
+python3 -m pip install bs4
+python3 -m pip install aiohttp
 
 
 
 echo Toutes les librairies ont été installées.
 pause
+
 
