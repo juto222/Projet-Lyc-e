@@ -10,14 +10,14 @@ python -m pip install --upgrade pip
 REM Installer les librairies nécessaires
 echo Installation des librairies...
 
-py -3.11 -m pip install flet
-py -3.11 -m pip install hashlib
-py -3.11 -m pip install cryptography pyperclip
-py -3.11 -m pip install requests
-py -3.11 -m pip install time
-py -3.11 -m pip install bs4
-py -3.11 -m pip install aiohttp
-py -3.11 -m pip install asyncio
+pip install flet
+pip install hashlib
+pip install cryptography pyperclip
+pip install requests
+pip install time
+pip install bs4
+pip install aiohttp
+pip install asyncio
 
 echo Toutes les librairies ont été installées.
 pause
