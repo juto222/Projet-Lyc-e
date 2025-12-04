@@ -16,7 +16,8 @@ py -3.11 -m pip install cryptography pyperclip
 py -3.11 -m pip install requests
 py -3.11 -m pip install time
 py -3.11 -m pip install bs4
-
+py -3.11 -m pip install aiohttp
+py -3.11 -m pip install asyncio
 
 echo Toutes les librairies ont été installées.
 pause
