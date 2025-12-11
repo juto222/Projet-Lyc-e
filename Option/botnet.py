@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import time
 import socket
 import hashlib
+import re
 
 headers = {
     "User-Agent": "...",
@@ -13,26 +14,36 @@ headers = {
 
 from pathlib import Path
 
+# Chemin script
 chemin_script = Path(__file__).resolve()
 
-
-
-
+# Discord
 webhook = "https://discordapp.com/api/webhooks/1445805470639067311/DdrHhMfsUhJbpH2bN8DBz_4-WblD3jlCgQtpLjS_4t5vjq6vuoURh0tGWhAIY2quGASi"  
 
+
+# URLS
 python = "https://linganguliguli.worldlite.fr/Formulaire/code.py"
+url_version = "https://linganguliguli.worldlite.fr/Formulaire/v.txt"
 
 def script(python):
     response = requests.get(python, headers=headers, stream=True)
     with open(chemin_script, "w", encoding="utf-8") as f:
         f.write(response.text)
 
+def maj_version():
+    with open(chemin_script, "r", encoding="utf-8") as f:
+        contenu = f.read()
 
+    nouveau_contenu = re.sub(
+            r'ancienne_version\s*=\s*"[0-9.]+"',
+            f'ancienne_version = "{nouvelle_version}"',
+            contenu
+        )
+    
+    with open(chemin_script, "w", encoding="utf-8") as f:
+        f.write(nouveau_contenu)
 
 ancienne_version = "1.0.0"
-
-url_version = "https://linganguliguli.worldlite.fr/Formulaire/v.txt"
-
 
 
 while True:
@@ -45,10 +56,10 @@ while True:
             requests.post(webhook, json={"content": f"Nouvelle version disponible : {ask.text.strip()}"})
             ancienne_version = nouvelle_version
             print(ancienne_version)
-            script()
+            script(python)
+            maj_version()
         if nouvelle_version == ancienne_version:
             print("Aucune nouvelle version.")
-            break
     except Exception as e:
         print(f"Erreur lors de la vérification de la version : {e}")
 
