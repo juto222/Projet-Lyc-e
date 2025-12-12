@@ -1,11 +1,14 @@
 import os
 import time
+import webbrowser
 from colorama import init, Fore, Style
 from Option import PingIP
 from Option import CheckMDP
 from Option import GenererMDP
 from Option import phishing
+from Option import crypt
 #from Option import Scan
+from Option import quizznetwork
 from Option import keylog
 from Option import pswd
 from Option import quizzmdp
@@ -23,7 +26,7 @@ init(autoreset=True)
 
 # Efface le terminal
 def clear():
-    os.system('cls' if os.name == 'nt' else 'clear')
+    os.system('cls')
 
 # Affiche le menu principal en FR
 def afficher_menuFR():
@@ -46,6 +49,11 @@ def afficher_menuFR():
 
 {Fore.CYAN}═══════════════════════════════════════════════════════════════════════
 
+{Fore.GREEN}
+            Allez voir notre Gestionnaire de mot de passe !!!!
+            http://linganguliguli.worldlite.fr/
+
+
 {Fore.MAGENTA}[1] 🔐 Mot de passe
     {Fore.YELLOW}├── [11] Générateur de mot de passe
     ├── [12] Vérificateur de mot de passe
@@ -53,19 +61,19 @@ def afficher_menuFR():
     └── [14] Mot de passe compromis
 
 {Fore.MAGENTA}[2] 🛡 Pentest
-    {Fore.YELLOW}├── [21] Virus (désactivé pour des raisons éthiques)
-    ├── [22] Outil DDoS (désactivé pour des raisons éthiques)
+    {Fore.YELLOW}├── [21]  
+    ├── [22] DirBuster
     ├── [23] Générateur de fausse page HTML
-    ├── [24] Keylogger (pas toutes les options développés)
+    ├── [24] Keylogger
     ├── [25] Quizz sécurité
-    ├── [26] Scanner de sites web
-    └── [27] DirBuster
+    └── [26] Scanner de sites web
+
 
 {Fore.MAGENTA}[3] 📊 Réseau
     {Fore.YELLOW}├── [31] Ping IP
     ├── [32] Scan Réseau 
     ├── [33] Journal / Logs
-    ├── [34] Quizz réseau (en développement)
+    ├── [34] Quizz réseau
     ├── [35] Info sur l'IP
     └── [36] Speedtest Internet
 
@@ -78,6 +86,9 @@ def afficher_menuFR():
 
 {Fore.MAGENTA} [5] Autres
     {Fore.YELLOW}├── [51] Recherche d'utilisateur
+    ├── [52] Gestionnaire de mot de passe
+    └── [53] Chiffrage de fichier python
+    
 
 {Fore.MAGENTA}[5] ⚙️ Paramètres
     {Fore.YELLOW}├── [61] Mode sombre / clair
@@ -113,6 +124,12 @@ def afficher_menuEN():
 
 {Fore.CYAN}═══════════════════════════════════════════════════════════════════════
 
+
+{Fore.GREEN}
+            Check out our Password Manager !!!!
+            http://linganguliguli.worldlite.fr/
+
+
 {Fore.MAGENTA}[1] 🔐 Password
     {Fore.YELLOW}├── [11] Password Generator
     ├── [12] Password Checker
@@ -123,7 +140,7 @@ def afficher_menuEN():
     {Fore.YELLOW}├── [21] Virus (disabled for ethical reasons)
     ├── [22] DDoS Tool (disabled for ethical reasons)
     ├── [23] Fake HTML Page Generator
-    ├── [24] Keylogger (not all option are developped)
+    ├── [24] Keylogger
     ├── [25] Security Quiz
     ├── [26] Website Scanner
     └── [27] DirBuster
@@ -132,7 +149,7 @@ def afficher_menuEN():
     {Fore.YELLOW}├── [31] Ping IP
     ├── [32] Scan Network 
     ├── [33] Logs
-    ├── [34] Network Quiz (in development)
+    ├── [34] Network Quiz
     ├── [35] IP Lookup
     └── [36] Internet Speedtest
 
@@ -144,6 +161,8 @@ def afficher_menuEN():
 
 {Fore.MAGENTA} [5] Others
     {Fore.YELLOW}├── [51] Username Lookup
+    ├── [52] Password Manager
+    └── [53] Python File Encryption
 
 {Fore.MAGENTA}[6] ⚙️ Settings
     {Fore.YELLOW}├── [61] Dark / Light Mode
@@ -218,7 +237,7 @@ while True:
         
     elif choix == 24:
         clear()
-        lancer(keylog.keylog, "Keylogger" if langue_actuelle == "FR" else "Keylogger")
+        lancer(keylog.key, "Keylogger" if langue_actuelle == "FR" else "Keylogger")
 
     elif choix == 25:
         clear()
@@ -252,6 +271,10 @@ while True:
             logs = f.read()
             print(Fore.YELLOW + logs)
             input(Fore.GREEN + "\nRetour... / Back...")
+        
+    elif choix == 34:
+        clear()
+        lancer(quizznetwork.quizznetwork, "Quizz réseau" if langue_actuelle == "FR" else "Network Quiz")
 
     elif choix == 35:
         clear()
@@ -272,6 +295,14 @@ while True:
     elif choix == 51:
         clear()
         lancer(username.username, "Recherche d'utilisateur" if langue_actuelle == "FR" else "Username Lookup")
+
+    elif choix == 52:
+        clear()
+        webbrowser.open("http://linganguliguli.worldlite.fr/")
+
+    elif choix == 53:
+        clear()
+        lancer(crypt.crypt, "Chiffrage de fichier python" if langue_actuelle == "FR" else "Python File Encryption")
 
     elif choix == 61:
         clear()
@@ -348,5 +379,4 @@ while True:
     else:
         print(Fore.RED + "❌ Option invalide.")
         time.sleep(1.5)
-
 
