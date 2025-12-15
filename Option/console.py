@@ -135,6 +135,7 @@ Appuyez sur Entrée pour continuer...
             payload_choix = input(Fore.GREEN + ">> " + Style.RESET_ALL)
             if payload_choix.lower() == "back":
                 clear()
+                print(Fore.YELLOW + "Entrez 'payload' ou 'capture' ou 'scan' pour accéder aux modules correspondants. 'help' pour l'aide." + Style.RESET_ALL)
                 continue
             try:
                 payload_index = int(payload_choix) - 1
@@ -163,6 +164,7 @@ Appuyez sur Entrée pour continuer...
             capture_choix = input(Fore.GREEN + ">> " + Style.RESET_ALL)
             if capture_choix.lower() == "back":
                 clear()
+                print(Fore.YELLOW + "Entrez 'payload' ou 'capture' ou 'scan' pour accéder aux modules correspondants. 'help' pour l'aide." + Style.RESET_ALL)
                 continue
             try:
                 capture_index = int(capture_choix) - 1
@@ -187,6 +189,7 @@ Appuyez sur Entrée pour continuer...
             scan_choix = input(Fore.GREEN + ">> " + Style.RESET_ALL)
             if scan_choix.lower() == "back":
                 clear()
+                print(Fore.YELLOW + "Entrez 'payload' ou 'capture' ou 'scan' pour accéder aux modules correspondants. 'help' pour l'aide." + Style.RESET_ALL)
                 continue
             try:
                 scan_index = int(scan_choix) - 1
