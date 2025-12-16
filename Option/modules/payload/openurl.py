@@ -29,8 +29,8 @@ def open_url_module():
         "Lancer au démarrage": None,
         "Ouvrir en fenêtre": None,
         "Ouvrir en onglet": None,
-        "Nombre de fois à ouvrir": None,
-        "Délai entre les ouvertures": None,
+        "Nombre de fois à ouvrir": 1,
+        "Délai entre les ouvertures": 0,
         "Envoi sur Discord": None,
         "Envoi par HTTP": None,
     }
@@ -57,13 +57,13 @@ def open_url_module():
 
     def nombre_option():
         clear()
-        nombre = input("Nombre de fois à ouvrir l'URL (laisser vide pour 1) : ")
-        choix["Nombre de fois à ouvrir"] = int(nombre) if nombre.isdigit() else 1
+        nombre = input("Nombre de fois à ouvrir l'URL  : ")
+        choix["Nombre de fois à ouvrir"] = int(nombre)
 
     def delai_option():
         clear()
         delai = input("Délai entre les ouvertures en secondes (laisser vide pour 0) : ")
-        choix["Délai entre les ouvertures"] = int(delai) if delai.isdigit() else 0
+        choix["Délai entre les ouvertures"] = int(delai)
 
     options = [
         ("URL à ouvrir", url_option),
@@ -80,10 +80,19 @@ def open_url_module():
         filename = "open_url_payload.py"
         with open(filename, "w") as f:
             f.write("import webbrowser\n")
-            f.write("import time\n\n")
+            f.write("import time\n")
+            f.write("import os\n")
+            f.write("import sys\n\n")
 
             # Début fonction open_url
             f.write("def open_url():\n")
+            f.write(f"    url = '{choix['URL à ouvrir']}'\n")
+            if choix["Ouvrir en fenêtre"]:
+                f.write("    webbrowser.open_new(url)\n")
+            elif choix["Ouvrir en onglet"]:
+                f.write("    webbrowser.open_new_tab(url)\n")
+            f.write(f"    for _ in range({choix['Nombre de fois à ouvrir']}):\n")
+            f.write("        webbrowser.open(url)\n")
 
     
     while True:
