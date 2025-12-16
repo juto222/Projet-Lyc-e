@@ -10,6 +10,7 @@ from Option import crypt
 #from Option import Scan
 from Option import quizznetwork
 from Option import keylog
+from Option import console
 from Option import pswd
 from Option import quizzmdp
 from Option import quizzsecurity
@@ -81,13 +82,15 @@ def afficher_menuFR():
     {Fore.YELLOW}├── [41] Informations système
     ├── [42] Gestionnaire de tâches (à venir)
     ├── [43] Nettoyeur de fichiers temporaires (à venir)
-    ├── [44] Moniteur de ressources (à venir)
+    ├── [44] Mot de passe stocké (à venir)
     └── [45] Création de faux fichier
 
 {Fore.MAGENTA} [5] Autres
     {Fore.YELLOW}├── [51] Recherche d'utilisateur
     ├── [52] Gestionnaire de mot de passe
-    └── [53] Chiffrage de fichier python
+    ├── [53] Chiffrage de fichier python
+    ├── [54] Déchiffrage de fichier python
+    └── [55] Console
     
 
 {Fore.MAGENTA}[5] ⚙️ Paramètres
@@ -162,7 +165,9 @@ def afficher_menuEN():
 {Fore.MAGENTA} [5] Others
     {Fore.YELLOW}├── [51] Username Lookup
     ├── [52] Password Manager
-    └── [53] Python File Encryption
+    ├── [53] Python File Encryption
+    ├── [54] Python File Decryption
+    └── [55] Console
 
 {Fore.MAGENTA}[6] ⚙️ Settings
     {Fore.YELLOW}├── [61] Dark / Light Mode
@@ -225,10 +230,14 @@ while True:
             level = input("Choose difficulty level (1-Easy, 2-Medium, 3-Hard): ")
         lancer(lambda: quizzmdp.quizz_mdp(level), "Quizz mot de passe" if langue_actuelle == "FR" else "Password Quiz")
 
-    elif choix == 21 or choix == 22:
+    elif choix == 21:
         clear()
         print(Fore.RED + "❌ Fonction désactivée. / Feature disabled.")
         input(Fore.GREEN + "\nRetour... / Back...")
+
+    elif choix == 22:
+            clear()
+            lancer(dirbuster.dirbuster, "Dirbuster" if langue_actuelle == "FR" else "Dirbuster")
 
     elif choix == 23:
         clear()
@@ -251,9 +260,7 @@ while True:
         clear()
         lancer(subdomain.sousdomaine, "Sous domaine" if langue_actuelle == "FR" else "Subdomain")
 
-    elif choix == 27:
-        clear()
-        lancer(dirbuster.dirbuster, "Dirbuster")
+    
 
 
 
@@ -303,6 +310,14 @@ while True:
     elif choix == 53:
         clear()
         lancer(crypt.crypt, "Chiffrage de fichier python" if langue_actuelle == "FR" else "Python File Encryption")
+
+    elif choix == 54:
+        print(Fore.RED + "❌ Fonction non encore implémentée. / Feature not yet implemented.")
+        input(Fore.GREEN + "\nRetour... / Back...")
+    
+    elif choix == 55:
+        clear()
+        lancer(console.console, "Console" if langue_actuelle == "FR" else "Console")
 
     elif choix == 61:
         clear()
@@ -379,4 +394,3 @@ while True:
     else:
         print(Fore.RED + "❌ Option invalide.")
         time.sleep(1.5)
-
