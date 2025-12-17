@@ -1,5 +1,7 @@
 import os
 from colorama import Fore, Style
+import time
+
 def clear():
     os.system("cls")
 
@@ -14,12 +16,9 @@ def affichage():
     2. Navigateur à utiliser (par défaut : système)
     3. Ouvrir en fenêtre 
     4. Ouvrir en onglet
-    6. Nombre de fois à ouvrir
-    7. Délai entre les ouvertures (si option 6 configurée)
-            
-            Sortie et envoi:
-    8. Envoi sur discord
-    9. Envoi par HTTP
+    5. Nombre de fois à ouvrir
+    6. Délai entre les ouvertures (si option 5 configurée)
+
           """)
     
 def open_url_module():
@@ -31,8 +30,6 @@ def open_url_module():
         "Ouvrir en onglet": None,
         "Nombre de fois à ouvrir": 1,
         "Délai entre les ouvertures": 0,
-        "Envoi sur Discord": None,
-        "Envoi par HTTP": None,
     }
 
     def url_option():
@@ -43,17 +40,26 @@ def open_url_module():
     def demarrage_option():
         clear()
         demarrage = input("Lancer au démarrage ? (oui/non) : ")
-        choix["Lancer au démarrage"] = demarrage.lower() == "oui"
+        if demarrage.lower() == "oui":
+            choix["Lancer au démarrage"] = True
+        else:
+            choix["Lancer au démarrage"] = None
 
     def fenetre_option():
         clear()
         fenetre = input("Ouvrir en fenêtre ? (oui/non) : ")
-        choix["Ouvrir en fenêtre"] = fenetre.lower() == "oui"
+        if fenetre.lower() == "oui":
+            choix["Ouvrir en fenêtre"] = True
+        else:
+            choix["Ouvrir en fenêtre"] = None
 
     def onglet_option():
         clear()
         onglet = input("Ouvrir en onglet ? (oui/non) : ")
-        choix["Ouvrir en onglet"] = onglet.lower() == "oui"
+        if onglet.lower() == "oui":
+            choix["Ouvrir en onglet"] = True
+        else:
+            choix["Ouvrir en onglet"] = None
 
     def nombre_option():
         clear()
@@ -62,7 +68,7 @@ def open_url_module():
 
     def delai_option():
         clear()
-        delai = input("Délai entre les ouvertures en secondes (laisser vide pour 0) : ")
+        delai = input("Délai entre les ouvertures en secondes : ")
         choix["Délai entre les ouvertures"] = int(delai)
 
     options = [
@@ -111,6 +117,7 @@ def open_url_module():
                     print(Fore.RED + "Numéro d'option invalide." + Style.RESET_ALL)
             except ValueError:
                 print(Fore.RED + "Veuillez saisir 'set'" + Style.RESET_ALL)
+                time.sleep(2)
 
         if cmd.lower() == "show":
             print("\nConfiguration actuelle du module Clipboard :")
