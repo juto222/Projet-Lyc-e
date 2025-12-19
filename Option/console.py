@@ -116,22 +116,22 @@ Appuyez sur Entrée pour continuer...
         1. Clipboard
         2. Screenshot
         3. Directory listing
-        4. File Grabber
-        5. keyboard controller
-        6. Network info
+        4. File Grabber (en développement)
+        5. keyboard controller (en développement)
+        6. Network info (en développement)
         7. Open url
-        8. Port Hammer
-        9. Process View
-        10. Restart PC
-        11. Reverse HTTP
-        12. Reverse Shell
+        8. Port Hammer (en développement)
+        9. Process View (en développement)  
+        10. Restart PC (en développement)
+        11. Reverse HTTP (en développement)
+        12. Reverse Shell (en développement)
         13. Remove Directory
-        14. Remove file
+        14. Remove file (en développement)
         15. Run Command on terminal
-        16. Stealer
-        17. Voice record
-        18. Change wallpaper
-        19. Wifi SSiD
+        16. Stealer (en développement)
+        17. Voice record (en développement)
+        18. Change wallpaper    (en développement)
+        19. Wifi SSiD (en développement)
 
     """)
             payload_choix = input(Fore.GREEN + ">> " + Style.RESET_ALL)
@@ -159,8 +159,8 @@ Appuyez sur Entrée pour continuer...
             print(Fore.YELLOW + "Liste des captures disponibles :" + Style.RESET_ALL)
             print("""
                   
-        1. phishing
-        2. keylogger
+        1. phishing (en développement)
+        2. keylogger (en développement)
                   
                   """)
             capture_choix = input(Fore.GREEN + ">> " + Style.RESET_ALL)
@@ -182,11 +182,11 @@ Appuyez sur Entrée pour continuer...
             print(Fore.CYAN + "=== Modules Scan ===" + Style.RESET_ALL)
             print(Fore.YELLOW + "Liste des scanners disponibles :" + Style.RESET_ALL)
             print("""
-        1. Port Scanner
-        2. Vulnerability Scanner
-        3. Network Scanner
-        4. Directrory Scanner
-        5. Localhost Scanner
+        1. Port Scanner (en développement)
+        2. Vulnerability Scanner (en développement)
+        3. Network Scanner (en développement)
+        4. Directrory Scanner (en développement)
+        5. Localhost Scanner (en développement)
                   """)
             scan_choix = input(Fore.GREEN + ">> " + Style.RESET_ALL)
             if scan_choix.lower() == "back":
@@ -207,5 +207,3 @@ Appuyez sur Entrée pour continuer...
             break
         else:
             print(Fore.RED + "Commande inconnue. Veuillez entrer 'payload', 'capture', 'scan' ou 'exit'." + Style.RESET_ALL)
-
-console()
