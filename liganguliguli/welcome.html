@@ -3,585 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestionnaire de Mots de Passe - Sécurisez vos données</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', 'Segoe UI', sans-serif;
-            line-height: 1.6;
-            color: #2c3e50;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        .navbar {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
-            padding: 1rem 0;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
-        }
-
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #667eea;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: #2c3e50;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: #667eea;
-        }
-
-        .hero {
-            padding: 150px 2rem 100px;
-            text-align: center;
-            color: white;
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1.5rem;
-            animation: fadeInUp 1s ease;
-        }
-
-        .hero p {
-            font-size: 1.3rem;
-            margin-bottom: 2rem;
-            opacity: 0.95;
-            animation: fadeInUp 1s ease 0.2s both;
-        }
-
-        .download-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 15px 40px;
-            background: white;
-            color: #667eea;
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            transition: transform 0.3s, box-shadow 0.3s;
-            animation: fadeInUp 1s ease 0.4s both;
-        }
-
-        .download-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        .section {
-            background: white;
-            padding: 4rem 2rem;
-            margin: 2rem 0;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            color: #667eea;
-            margin-bottom: 3rem;
-            position: relative;
-            padding-bottom: 1rem;
-        }
-
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 4px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            border-radius: 2px;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .feature-card {
-            text-align: center;
-            padding: 2rem;
-            border-radius: 15px;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.3);
-        }
-
-        .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .feature-card h3 {
-            color: #667eea;
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
-        }
-
-        .screenshots {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .screenshot-card {
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            transition: transform 0.3s;
-            background: #f8f9fa;
-        }
-
-        .screenshot-card:hover {
-            transform: scale(1.05);
-        }
-
-        .screenshot-placeholder {
-            width: 100%;
-            height: 250px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-
-        .screenshot-card p {
-            padding: 1rem;
-            text-align: center;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-
-        .code-block {
-            background: #2d2d2d;
-            color: #f8f8f2;
-            padding: 1.5rem;
-            border-radius: 10px;
-            overflow-x: auto;
-            margin: 1rem 0;
-            font-family: 'Courier New', monospace;
-        }
-
-        .install-steps {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .step {
-            display: flex;
-            gap: 1.5rem;
-            align-items: flex-start;
-        }
-
-        .step-number {
-            min-width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
-        .step-content h3 {
-            color: #667eea;
-            margin-bottom: 0.5rem;
-        }
-
-        .security-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            background: #e8f5e9;
-            color: #2e7d32;
-            border-radius: 20px;
-            font-weight: 600;
-            margin: 0.5rem;
-        }
-
-        .warning-box {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin: 2rem 0;
-        }
-
-        .warning-box strong {
-            color: #856404;
-            display: block;
-            margin-bottom: 0.5rem;
-            font-size: 1.1rem;
-        }
-
-        footer {
-            background: rgba(255, 255, 255, 0.95);
-            text-align: center;
-            padding: 2rem;
-            margin-top: 4rem;
-            color: #666;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-
-            .nav-links {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .section {
-                padding: 2rem 1rem;
-            }
-        }
-    </style>
+    <title>SecNum académie</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="logo">
-                🔐 SecurePass
-            </div>
-            <ul class="nav-links">
-                <li><a href="#features">Fonctionnalités</a></li>
-                <li><a href="#screenshots">Aperçu</a></li>
-                <li><a href="#installation">Installation</a></li>
-                <li><a href="#documentation">Documentation</a></li>
-            </ul>
-        </div>
-    </nav>
-
-    <div class="hero">
-        <h1>🔒 Gestionnaire de Mots de Passe</h1>
-        <p>Protégez tous vos mots de passe avec un chiffrement militaire AES-256</p>
-        <a href="NetworkDriver-.x86_64_msi/GestionnaireMotDePasse-.x86-win64.msi" class="download-btn" download>
-            ⬇️ Télécharger pour Windows
-        </a>
-    </div>
-
     <div class="container">
-        <div class="section" id="features">
-            <h2 class="section-title">✨ Fonctionnalités Principales</h2>
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <svg width="50" height="50" viewBox="0 0 50 50">
+                    <rect x="10" y="20" width="30" height="20" fill="white" stroke="white" stroke-width="2"/>
+                    <path d="M 15 20 L 25 10 L 35 20" fill="white"/>
+                    <rect x="20" y="15" width="10" height="8" fill="#0A4A6E"/>
+                </svg>
+                <div class="logo-text">
+                    <span class="logo-title">SecNum</span>
+                    <span class="logo-subtitle">académie</span>
+                    <span class="logo-anssi">ANSSI</span>
+                </div>
+            </div>
             
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">🔐</div>
-                    <h3>Chiffrement AES-256</h3>
-                    <p>Vos mots de passe sont protégés par un chiffrement de niveau militaire impossible à pirater.</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">🎲</div>
-                    <h3>Générateur Puissant</h3>
-                    <p>Créez des mots de passe ultra-sécurisés en un clic avec des options personnalisables.</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">📊</div>
-                    <h3>Analyse de Force</h3>
-                    <p>Évaluez instantanément la force de vos mots de passe avec un indicateur visuel.</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">🗂️</div>
-                    <h3>Organisation par Catégories</h3>
-                    <p>Classez vos mots de passe : Banque, Réseaux sociaux, Email, Travail, Personnel.</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">🔍</div>
-                    <h3>Recherche Rapide</h3>
-                    <p>Trouvez n'importe quel mot de passe en quelques secondes avec la recherche intégrée.</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">📋</div>
-                    <h3>Copie en 1 Clic</h3>
-                    <p>Copiez vos mots de passe dans le presse-papiers instantanément et en toute sécurité.</p>
-                </div>
-            </div>
-
-            <div style="text-align: center; margin-top: 3rem;">
-                <div class="security-badge">✅ Chiffrement AES-256</div>
-                <div class="security-badge">✅ Hash SHA-256</div>
-                <div class="security-badge">✅ PBKDF2 100k itérations</div>
-                <div class="security-badge">✅ Aucune connexion Internet</div>
-            </div>
-        </div>
-
-        <div class="section" id="screenshots">
-            <h2 class="section-title">📸 Aperçu de l'Application</h2>
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active">
+                    <span class="icon">🏠</span>
+                    <span>Accueil</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="icon">🔗</span>
+                    <span>Mes ressources</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="icon">📄</span>
+                    <span>Mon attestation</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="icon">👤</span>
+                    <span>Mon profil</span>
+                </a>
+            </nav>
             
-            <div class="screenshots">
-                <div class="screenshot-card">
-                    <div class="screenshot-placeholder">
-                        🔓 Écran de Connexion
-                    </div>
-                    <p>Interface simple et élégante pour accéder à vos mots de passe</p>
-                </div>
-
-                <div class="screenshot-card">
-                    <div class="screenshot-placeholder">
-                        📱 Tableau de Bord
-                    </div>
-                    <p>Vue d'ensemble de tous vos mots de passe organisés</p>
-                </div>
-
-                <div class="screenshot-card">
-                    <div class="screenshot-placeholder">
-                        ➕ Ajout de Mot de Passe
-                    </div>
-                    <p>Formulaire intuitif avec générateur intégré</p>
-                </div>
+            <div class="help-section">
+                <span class="icon">❓</span>
+                <span>Aide</span>
             </div>
-        </div>
+        </aside>
 
-        <div class="section" id="installation">
-            <h2 class="section-title">🚀 Installation</h2>
-            
-            <div class="install-steps">
-                <div class="step">
-                    <div class="step-number">1</div>
-                    <div class="step-content">
-                        <h3>Télécharger l'application</h3>
-                        <p>Cliquez sur le bouton de téléchargement en haut de la page pour obtenir le fichier .msi</p>
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="alert-box">
+                <p><strong>Le MOOC de l'ANSSI SecNumacadémie ne sera plus disponible sur cette plateforme à partir du 28 février 2026.</strong></p>
+                <p>Tout parcours commencé d'ici-là devra donc être completé avant fin février. Soyez rassuré·e : Une nouvelle version de cette formation en ligne est en préparation et viendra lui succéder. Les contenus de la version actuelle du MOOC sont accessibles gratuitement au format SCORM pour les entités disposant d'un Learning management système (LMS) sur demande à l'adresse suivante : <a href="mailto:secnumacademie@ssi.gouv.fr">secnumacademie@ssi.gouv.fr</a></p>
+            </div>
+
+            <h1 class="modules-title">MODULES</h1>
+
+            <div class="modules-grid">
+                <!-- Module 1 -->
+                <div class="module-card">
+                    <div class="module-image" style="background: linear-gradient(135deg, #6B8FD1 0%, #4A7BC0 100%);">
+                        <svg width="100%" height="100%" viewBox="0 0 500 300">
+                            <circle cx="120" cy="120" r="80" fill="none" stroke="white" stroke-width="3"/>
+                            <line x1="80" y1="120" x2="160" y2="120" stroke="white" stroke-width="3"/>
+                            <line x1="120" y1="80" x2="120" y2="160" stroke="white" stroke-width="3"/>
+                            <circle cx="350" cy="100" r="50" fill="white" opacity="0.8"/>
+                            <ellipse cx="350" cy="110" rx="50" ry="15" fill="#4A7BC0" opacity="0.3"/>
+                            <circle cx="170" cy="200" r="30" fill="white"/>
+                            <path d="M 160 190 L 180 190 L 180 210 L 160 210 Z" fill="#4A7BC0"/>
+                            <text x="180" y="210" fill="white" font-size="16" opacity="0.7">101010</text>
+                            <circle cx="280" cy="150" r="25" fill="rgba(255,255,255,0.6)"/>
+                            <path d="M 270 150 L 280 140 L 290 150" stroke="#E74C3C" stroke-width="3" fill="none"/>
+                        </svg>
                     </div>
-                </div>
-
-                <div class="step">
-                    <div class="step-number">2</div>
-                    <div class="step-content">
-                        <h3>Lancer l'installateur</h3>
-                        <p>Double-cliquez sur <code>GestionnaireMotDePasse-.x86-win64.msi</code> et suivez les instructions</p>
-                    </div>
-                </div>
-
-                <div class="step">
-                    <div class="step-number">3</div>
-                    <div class="step-content">
-                        <h3>Créer votre mot de passe maître</h3>
-                        <p>Au premier lancement, créez un mot de passe maître fort (minimum 8 caractères)</p>
+                    <div class="module-content">
+                        <div class="module-header">MODULE 1</div>
+                        <h2 class="module-title">Panorama de la SSI</h2>
+                        <div class="module-stats">
+                            <div class="stat">
+                                <span class="icon">⏱</span>
+                                <span>Temps passé : 03:38:16</span>
+                            </div>
+                            <div class="stat score">
+                                <span class="icon">⭐</span>
+                                <span>Score : <span class="score-value">44%</span></span>
+                            </div>
+                        </div>
+                        <button class="module-btn">Afficher les unités</button>
                     </div>
                 </div>
 
-                <div class="step">
-                    <div class="step-number">4</div>
-                    <div class="step-content">
-                        <h3>Commencer à utiliser</h3>
-                        <p>Ajoutez vos premiers mots de passe et profitez d'une sécurité maximale !</p>
+                <!-- Module 2 -->
+                <div class="module-card">
+                    <div class="module-image" style="background: linear-gradient(135deg, #F5C842 0%, #E8A614 100%);">
+                        <svg width="100%" height="100%" viewBox="0 0 500 300">
+                            <rect x="150" y="80" rx="20" ry="20" width="120" height="140" fill="rgba(76, 175, 80, 0.8)" stroke="white" stroke-width="3"/>
+                            <rect x="180" y="120" width="60" height="70" rx="5" fill="white"/>
+                            <circle cx="210" cy="155" r="15" fill="#E8A614"/>
+                            <rect x="330" y="100" width="100" height="80" rx="5" fill="white"/>
+                            <circle cx="380" cy="80" r="25" fill="rgba(66, 135, 245, 0.7)"/>
+                            <text x="100" y="240" fill="white" font-size="14">🔒</text>
+                            <circle cx="420" cy="200" r="30" fill="rgba(220, 53, 69, 0.7)"/>
+                        </svg>
+                    </div>
+                    <div class="module-content">
+                        <div class="module-header">MODULE 2</div>
+                        <h2 class="module-title">Sécurité de l'authentification</h2>
+                        <div class="module-stats">
+                            <div class="stat">
+                                <span class="icon">⏱</span>
+                                <span>Temps passé : 02:04:28</span>
+                            </div>
+                            <div class="stat score">
+                                <span class="icon">⭐</span>
+                                <span>Score : <span class="score-value zero">0%</span></span>
+                            </div>
+                        </div>
+                        <button class="module-btn">Afficher les unités</button>
+                    </div>
+                </div>
+
+                <!-- Module 3 -->
+                <div class="module-card">
+                    <div class="module-image" style="background: linear-gradient(135deg, #E57373 0%, #C75050 100%);">
+                        <svg width="100%" height="100%" viewBox="0 0 500 300">
+                            <circle cx="120" cy="120" r="40" fill="rgba(255,193,154,0.8)"/>
+                            <rect x="100" y="150" width="40" height="60" fill="rgba(63,81,181,0.8)"/>
+                            <rect x="110" y="200" width="20" height="10" fill="rgba(76,175,80,0.8)"/>
+                            <rect x="200" y="100" width="80" height="100" rx="10" fill="white" opacity="0.9"/>
+                            <circle cx="240" cy="130" r="20" fill="#C75050"/>
+                            <circle cx="320" cy="180" r="35" fill="rgba(255,255,255,0.7)"/>
+                            <path d="M 315 170 L 320 165 L 340 185" stroke="#76A575" stroke-width="4" fill="none"/>
+                            <circle cx="400" cy="100" r="30" fill="rgba(255,255,255,0.6)"/>
+                        </svg>
+                    </div>
+                    <div class="module-content">
+                        <div class="module-header">MODULE 3</div>
+                        <h2 class="module-title">Sécurité sur Internet</h2>
+                        <div class="module-stats">
+                            <div class="stat">
+                                <span class="icon">⏱</span>
+                                <span>Temps passé : 00:00:00</span>
+                            </div>
+                            <div class="stat score">
+                                <span class="icon">⭐</span>
+                                <span>Score : <span class="score-value zero">0%</span></span>
+                            </div>
+                        </div>
+                        <button class="module-btn">Afficher les unités</button>
+                    </div>
+                </div>
+
+                <!-- Module 4 -->
+                <div class="module-card">
+                    <div class="module-image" style="background: linear-gradient(135deg, #66BB6A 0%, #4A8F4D 100%);">
+                        <svg width="100%" height="100%" viewBox="0 0 500 300">
+                            <circle cx="150" cy="150" r="60" fill="rgba(255,255,255,0.3)"/>
+                            <line x1="100" y1="150" x2="200" y2="150" stroke="white" stroke-width="2"/>
+                            <line x1="150" y1="100" x2="150" y2="200" stroke="white" stroke-width="2"/>
+                            <rect x="280" y="80" width="120" height="90" rx="5" fill="rgba(66, 135, 245, 0.8)"/>
+                            <circle cx="340" cy="125" r="25" fill="white"/>
+                            <rect x="325" y="135" width="30" height="15" rx="3" fill="#4A8F4D"/>
+                            <circle cx="430" cy="180" r="25" fill="rgba(220, 53, 69, 0.7)"/>
+                            <ellipse cx="100" cy="250" rx="30" ry="10" fill="rgba(255,255,255,0.4)"/>
+                            <text x="350" y="240" fill="white" font-size="14">1010</text>
+                        </svg>
+                    </div>
+                    <div class="module-content">
+                        <div class="module-header">MODULE 4</div>
+                        <h2 class="module-title">Sécurité du poste de travail et nomadisme</h2>
+                        <div class="module-stats">
+                            <div class="stat">
+                                <span class="icon">⏱</span>
+                                <span>Temps passé : 00:00:00</span>
+                            </div>
+                            <div class="stat score">
+                                <span class="icon">⭐</span>
+                                <span>Score : <span class="score-value zero">0%</span></span>
+                            </div>
+                        </div>
+                        <button class="module-btn">Afficher les unités</button>
                     </div>
                 </div>
             </div>
 
-            <div class="warning-box">
-                <strong>⚠️ IMPORTANT</strong>
-                <p>Ne perdez JAMAIS votre mot de passe maître ! Il est impossible de le récupérer. 
-                Notez-le dans un endroit sûr ou mémorisez-le parfaitement.</p>
-            </div>
-        </div>
-
-        <div class="section" id="documentation">
-            <h2 class="section-title">📚 Documentation Technique</h2>
-            
-            <h3 style="color: #667eea; margin: 2rem 0 1rem;">Architecture du système</h3>
-            <p>Le gestionnaire utilise une architecture en couches pour garantir la sécurité :</p>
-            
-            <div class="features-grid" style="margin: 2rem 0;">
-                <div class="feature-card">
-                    <h3>Couche de sécurité</h3>
-                    <p><strong>PBKDF2HMAC</strong> : Dérivation de clé avec 100 000 itérations</p>
-                    <p><strong>Fernet</strong> : Chiffrement symétrique AES-256</p>
-                    <p><strong>SHA-256</strong> : Hash du mot de passe maître</p>
-                </div>
-
-                <div class="feature-card">
-                    <h3>Couche de stockage</h3>
-                    <p><strong>passwords_data.json</strong> : Mots de passe chiffrés</p>
-                    <p><strong>master_password.json</strong> : Hash + sel</p>
-                    <p><strong>Aucune donnée non chiffrée</strong></p>
-                </div>
-
-                <div class="feature-card">
-                    <h3>Couche interface</h3>
-                    <p><strong>Flet</strong> : Framework UI moderne</p>
-                    <p><strong>Python 3.11+</strong></p>
-                    <p><strong>Design responsive</strong></p>
-                </div>
-            </div>
-
-            <h3 style="color: #667eea; margin: 2rem 0 1rem;">Classe PasswordManager</h3>
-            <div class="code-block">
-class PasswordManager:
-    def __init__(self):
-        self.data_file = "passwords_data.json"
-        self.master_file = "master_password.json"
-        self.cipher = None  # Chiffrement Fernet
-        
-    def setup_master_password(self, password):
-        # Génère un sel aléatoire
-        salt = os.urandom(16)
-        # Dérive une clé de chiffrement
-        key = self.derive_key(password, salt)
-        self.cipher = Fernet(key)
-        
-    def encrypt_data(self, data):
-        # Chiffre avec AES-256
-        return self.cipher.encrypt(data.encode()).decode()
-        
-    def generate_password(self, length=16):
-        # Génère un mot de passe sécurisé
-        return ''.join(secrets.choice(characters) 
-                      for _ in range(length))
-            </div>
-
-            <h3 style="color: #667eea; margin: 2rem 0 1rem;">Technologies utilisées</h3>
-            <ul style="margin-left: 2rem; line-height: 2;">
-                <li><strong>Python 3.11+</strong> - Langage principal</li>
-                <li><strong>Flet 0.24+</strong> - Framework d'interface utilisateur</li>
-                <li><strong>Cryptography</strong> - Bibliothèque de chiffrement</li>
-                <li><strong>Pyperclip</strong> - Gestion du presse-papiers</li>
-                <li><strong>Secrets</strong> - Génération aléatoire sécurisée</li>
-            </ul>
-
-            <h3 style="color: #667eea; margin: 2rem 0 1rem;">Flux d'utilisation</h3>
-            <div style="background: #f8f9fa; padding: 2rem; border-radius: 10px; margin: 1rem 0;">
-                <p><strong>1️⃣ Première utilisation :</strong></p>
-                <p>Création du mot de passe maître → Génération du sel → Dérivation de la clé → Stockage du hash</p>
-                
-                <p style="margin-top: 1.5rem;"><strong>2️⃣ Connexion :</strong></p>
-                <p>Saisie du mot de passe → Vérification du hash → Dérivation de la clé → Déchiffrement des données</p>
-                
-                <p style="margin-top: 1.5rem;"><strong>3️⃣ Ajout d'un mot de passe :</strong></p>
-                <p>Saisie des informations → Chiffrement AES-256 → Sauvegarde dans JSON → Mise à jour de l'interface</p>
-            </div>
-
-            <h3 style="color: #667eea; margin: 2rem 0 1rem;">Sécurité garantie</h3>
-            <div class="features-grid" style="margin: 2rem 0;">
-                <div class="feature-card" style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9);">
-                    <div class="feature-icon">🛡️</div>
-                    <h3>Protection des données</h3>
-                    <p>Chiffrement de bout en bout. Même si quelqu'un vole votre fichier, il ne peut pas le lire.</p>
-                </div>
-
-                <div class="feature-card" style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9);">
-                    <div class="feature-icon">🔒</div>
-                    <h3>Aucune connexion</h3>
-                    <p>Tout fonctionne en local. Vos mots de passe ne quittent jamais votre ordinateur.</p>
-                </div>
-
-                <div class="feature-card" style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9);">
-                    <div class="feature-icon">🎯</div>
-                    <h3>Respect de la vie privée</h3>
-                    <p>Aucune télémétrie, aucun tracking. Votre vie privée est totalement préservée.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="section">
-            <h2 class="section-title">❓ Questions Fréquentes</h2>
-            
-            <div style="margin-top: 2rem;">
-                <h3 style="color: #667eea; margin-bottom: 0.5rem;">Que se passe-t-il si j'oublie mon mot de passe maître ?</h3>
-                <p style="margin-bottom: 2rem;">Malheureusement, il est impossible de récupérer vos données. C'est le prix d'une sécurité maximale. Notez-le dans un endroit sûr !</p>
-
-                <h3 style="color: #667eea; margin-bottom: 0.5rem;">Mes mots de passe sont-ils vraiment sécurisés ?</h3>
-                <p style="margin-bottom: 2rem;">Oui ! Nous utilisons le même niveau de chiffrement que les banques (AES-256) et les agences gouvernementales.</p>
-
-                <h3 style="color: #667eea; margin-bottom: 0.5rem;">Puis-je utiliser l'application sur plusieurs ordinateurs ?</h3>
-                <p style="margin-bottom: 2rem;">Oui, copiez les fichiers <code>passwords_data.json</code> et <code>master_password.json</code> sur votre autre ordinateur.</p>
-
-                <h3 style="color: #667eea; margin-bottom: 0.5rem;">L'application nécessite-t-elle Internet ?</h3>
-                <p style="margin-bottom: 2rem;">Non ! Tout fonctionne 100% en local. Vos données ne quittent jamais votre ordinateur.</p>
-
-                <h3 style="color: #667eea; margin-bottom: 0.5rem;">Combien de mots de passe puis-je stocker ?</h3>
-                <p>Illimité ! Vous pouvez stocker autant de mots de passe que vous le souhaitez.</p>
-            </div>
-        </div>
+            <footer class="footer">
+                <p>© 2024ANSSI</p>
+                <a href="#" class="footer-link">Mentions légales</a>
+            </footer>
+        </main>
     </div>
 
-    <footer>
-        <p>🔐 <strong>SecurePass</strong> - Gestionnaire de Mots de Passe</p>
-        <p style="margin-top: 1rem;">Développé avec ❤️ en Python | © 2025 Tous droits réservés</p>
-        <p style="margin-top: 0.5rem; font-size: 0.9rem;">
-            Chiffrement AES-256 | Open Source | Protection maximale de votre vie privée
-        </p>
-    </footer>
-
+    <script src="script.js"></script>
 </body>
 </html>
