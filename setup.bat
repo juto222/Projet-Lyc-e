@@ -1,34 +1,15 @@
 @echo off
-
-
-REM Mettre à jour pip
+REM Mise à jour de pip
 echo Mise à jour de pip...
-echo 
-
 python -m pip install --upgrade pip
 
 REM Installer les librairies nécessaires
 echo Installation des librairies...
-python3 -m pip install requests
-python3 -m pip install pynput
-python3 -m pip install customtkinter
-python3 -m pip install colorama
-python3 -m pip install psutil
-python3 -m pip install speedtest-cli
-python3 -m pip install cx-Freeze
-python3 -m pip install clipboard
-python3 -m pip install Pillow
-python3 -m pip install shutil
-python3 -m pip install tkinter
-python3 -m pip install psutil
-python3 -m pip install getpass
-python3 -m pip install dnspython
-python3 -m pip install bs4
-python3 -m pip install aiohttp
-
-
+pip install --upgrade requests pynput customtkinter colorama psutil speedtest-cli clipboard Pillow dnspython bs4 aiohttp
+py -3.11 -m pip install cx_Freeze
+pip install pyarmor==8.5.7
+pip install nuitka
 
 echo Toutes les librairies ont été installées.
 pause
-
 

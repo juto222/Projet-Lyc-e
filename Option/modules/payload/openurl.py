@@ -95,12 +95,26 @@ def open_url_module():
             # Début fonction open_url
             f.write("def open_url():\n")
             f.write(f"    url = '{choix['URL à ouvrir']}'\n")
+
+            if choix["Lancer au démarrage"]:
+                f.write("    # Exemple pour Windows :\n")
+                f.write("    if sys.platform == 'win32':\n")
+                f.write("        startup_folder = os.path.join(os.getenv('APPDATA'), 'Microsoft', 'Windows', 'Start Menu', 'Programs', 'Startup')\n")
+                f.write("        script_path = os.path.abspath(sys.argv[0])\n")
+                f.write("        shortcut_path = os.path.join(startup_folder, 'open_url_payload.lnk')\n")
+                f.write("        if not os.path.exists(shortcut_path):\n")
+                f.write("            import winshell\n")
+                f.write("            with winshell.shortcut(script_path) as shortcut:\n")
+                f.write("                shortcut.write(shortcut_path)\n\n")
+
             if choix["Ouvrir en fenêtre"]:
                 f.write("    webbrowser.open_new(url)\n")
             elif choix["Ouvrir en onglet"]:
-                f.write("    webbrowser.open_new_tab(url)\n")
-            f.write(f"    for _ in range({choix['Nombre de fois à ouvrir']}):\n")
-            f.write("        webbrowser.open(url)\n")
+                f.write("    webbrowser.open_new_tab(url)\n\n")
+
+            f.write(f"for _ in range({choix['Nombre de fois à ouvrir']}):\n")
+            f.write("    time.sleep(choix['Délai entre les ouvertures'])\n")
+            f.write("    open_url()\n\n")
 
     
     while True:

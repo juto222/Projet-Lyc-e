@@ -8,13 +8,11 @@ def banner():
     print("=== Configuration Network Info Payload ===\n\n")
     print(f"""
 
-            Options :
-          
-    1. Collecter les informations réseau
-        
-    Sortie et envoi:
-    2. Envoi par Discord
-    3. Envoi par serveur HTTP
+
+    {Fore.YELLOW}Sortie et envoi:
+    1. Envoi par Discord
+    2. Envoi par serveur HTTP
+
             {Fore.GREEN}
 Tapez : set <num> pour configurer
 Tapez : show pour afficher la config
@@ -27,7 +25,6 @@ Tapez : exit pour quitter
 def networkinfo():
     banner()
     choix = {
-        "Collecter les informations réseau": True,
         "Envoi par Discord": None,
         "Envoi par serveur HTTP": None,
     }
@@ -49,7 +46,7 @@ def networkinfo():
             choix["Envoi par serveur HTTP"] = None
 
     option = [
-        ("Collecter les informations réseau", lambda: None),  # Always enabled
+
         ("Envoi par Discord", discord_option),
         ("Envoi par serveur HTTP", http_option),
     ]
@@ -123,7 +120,6 @@ if __name__ == "__main__":
                 option_num = int(cmd.split()[1])
                 if option_num in range(1, 4):
                     option_funcs = {
-                        1: lambda: None,  # Always enabled
                         2: discord_option,
                         3: http_option,
                     }
