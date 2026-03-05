@@ -1,6 +1,6 @@
 import random
 import string
-
+import time
 
 def generer():
   
@@ -32,4 +32,3 @@ def generer():
             f"------------------------------------\n"
             f"\n"
         )
-

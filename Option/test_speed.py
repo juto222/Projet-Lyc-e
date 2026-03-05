@@ -51,4 +51,3 @@ def test_speed():
 
     except Exception as e:
         print(f"{Fore.RED}Erreur lors du test : {e}{Style.RESET_ALL}")
-

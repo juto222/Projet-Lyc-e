@@ -5,10 +5,6 @@ import requests
 def pswd_compromis():
     print(f"""
 
-    {Fore.CYAN} 
-══════════════════════════════════════════════════════════════════════
-    ascii art mot de passe compromis ici
-══════════════════════════════════════════════════════════════════════
 
     {Fore.MAGENTA} Mot de passe compromis
     
@@ -26,7 +22,7 @@ def pswd_compromis():
     suffix = sha1_pswd[5:]
 
     url = f"https://api.pwnedpasswords.com/range/{prefix}"
-    headers = {"User-Agent": "Lycée - PwnedPasswordCheck (contact: thomasjulien3101@gmail.com)"}
+    headers = {"User-Agent": "Lycée - PwnedPasswordCheck (contact: freepalestine@gmail.com)"}
 
     try:
         mdp = requests.get(url, headers=headers, timeout=10)

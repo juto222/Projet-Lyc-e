@@ -268,7 +268,9 @@ def take_screenshot():
 take_screenshot()
 """
         
-        with open(f"Option/modules/payload/payload_created/{filename}", "w") as f:
+        payload_path = os.path.join("Option", "modules", "payload", "payload_created", filename)
+        os.makedirs(os.path.dirname(os.path.abspath(payload_path)), exist_ok=True)
+        with open(payload_path, "w", encoding="utf-8") as f:
             f.write(code)
         
         print(Fore.GREEN + f"Payload créé : {filename}" + Style.RESET_ALL)

@@ -1,4 +1,5 @@
 import string
+import time
 
 def verifier():
     print("""
@@ -42,5 +43,4 @@ def verifier():
             f"------------------------------------\n"
             f"\n"
         )
-
 

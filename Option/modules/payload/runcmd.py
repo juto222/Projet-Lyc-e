@@ -103,8 +103,10 @@ def runcmd():
 {loop_code}
 
     """
-        with open("Option/modules/payload/payload_created/runcmd_payload.py", "w") as f:
-            f.write(code) 
+        payload_path = os.path.join("Option", "modules", "payload", "payload_created", "runcmd_payload.py")
+        os.makedirs(os.path.dirname(os.path.abspath(payload_path)), exist_ok=True)
+        with open(payload_path, "w", encoding="utf-8") as f:
+            f.write(code)
     
 
     while True:

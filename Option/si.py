@@ -4,7 +4,6 @@ import platform
 import socket
 import psutil
 import getpass
-import time
 
 def info_system():
     print(f"""
@@ -52,11 +51,13 @@ def info_system():
         for addr in addrs:
             print(f" {Fore.GREEN} {addr.family} - {addr.address} \n")
 
+    import time 
+
     with open("logs.txt", "a") as fichier:
         fichier.write(
             f"------------------------------------\n"
             f"\n"
-            f" [{time.strftime('%d-%m-%Y %H:%M:%S')}]     Obtention d'information du système \n"
+            f" [{time.strftime('%d-%m-%Y %H:%M:%S')}]     Recherche des Informations Systeme     \n"
             f"\n"
             f"------------------------------------\n"
             f"\n"

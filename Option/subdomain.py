@@ -29,15 +29,15 @@ def sousdomaine():
         # Vérification DNS
         try:
             dns.resolver.resolve(full_domain)
-            print(f"[DNS] Le sous-domaine {full_domain} existe.")
+            print(f"[DNS] Le sous-domaine {full_domain} existe.\n")
         except dns.resolver.NXDOMAIN:
-            print(f"[DNS] Le sous-domaine {full_domain} n'existe pas.")
+            print(f"[DNS] Le sous-domaine {full_domain} n'existe pas.\n")
             continue
         except dns.resolver.NoAnswer:
-            print(f"[DNS] Le sous-domaine {full_domain} n'a pas de réponse.")
+            print(f"[DNS] Le sous-domaine {full_domain} n'a pas de réponse.\n")
             continue
         except Exception as e:
-            print(f"[DNS] Erreur avec {full_domain}: {e}")
+            print(f"[DNS] Erreur avec {full_domain}: {e}\n")
             continue
 
         # Vérification HTTP

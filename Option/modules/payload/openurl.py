@@ -84,7 +84,9 @@ def open_url_module():
         clear()
         print("Création du payload Open URL avec la configuration actuelle...\n")
         filename = "open_url_payload.py"
-        with open(filename, "w") as f:
+        payload_path = os.path.join("Option", "modules", "payload", "payload_created", filename)
+        os.makedirs(os.path.dirname(os.path.abspath(payload_path)), exist_ok=True)
+        with open(payload_path, "w", encoding="utf-8") as f:
             f.write("import webbrowser\n")
             f.write("import time\n")
             f.write("import os\n")
