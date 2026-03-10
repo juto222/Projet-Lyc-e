@@ -162,7 +162,7 @@ def clipboard_module():
                 print(Fore.RED + "Veuillez saisir 'set'" + Style.RESET_ALL)
 
         if cmd.lower() == "show":
-            print("\nConfiguration actuelle du module Clipboard :")
+            print("\nConfiguration actuelle du module Clipboard :\n")
             for option, value in choix.items():
                 print(f"{option} : {value}")
             input("\nAppuyez sur Entrée pour continuer...")

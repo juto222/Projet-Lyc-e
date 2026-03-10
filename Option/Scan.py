@@ -34,3 +34,5 @@ def scan():
             lport = nm[host][proto].keys()
             for port in lport:
                 print(f'Port : {port}\tState : {nm[host][proto][port]["state"]}')
+
+scan()

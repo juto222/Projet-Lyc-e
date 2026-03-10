@@ -1,53 +1,41 @@
-import speedtest
-from colorama import Fore, Style
 import time
-import os
+from colorama import Fore
+from internetspeedtest import SpeedTest
 
-
-def test_speed():
-    os.system("cls" if os.name == "nt" else "clear")
-
-    print(f"""
-{Fore.CYAN}
-{Fore.MAGENTA} Test de vitesse Internet
-{Style.RESET_ALL}
-""")
-
+def speedtest_librespeed(langue_actuelle="FR"):
     try:
-        st = speedtest.Speedtest()
+        if langue_actuelle == "FR":
+            print(Fore.CYAN + "Lancement du test de vitesse...")
+            time.sleep(1)
+            print(Fore.YELLOW + "Recherche du meilleur serveur...")
+        else:
+            print(Fore.CYAN + "Starting speed test...")
+            time.sleep(1)
+            print(Fore.YELLOW + "Searching for the best server...")
 
-        print(f"{Fore.YELLOW}Recherche du meilleur serveur...{Style.RESET_ALL}")
-        st.get_best_server()
-        time.sleep(1)
+        st = SpeedTest()
 
-        print(f"{Fore.YELLOW}Test de téléchargement en cours...{Style.RESET_ALL}")
-        download = st.download()
-        download_mbps = download / 1_000_000
-        print(f"{Fore.GREEN}Vitesse de téléchargement : {download_mbps:.2f} Mbps{Style.RESET_ALL}")
-        time.sleep(1)
+        servers = st.get_servers()
+        best_server = st.find_best_server(servers)
 
-        print(f"{Fore.YELLOW}Test de téléversement en cours...{Style.RESET_ALL}")
-        upload = st.upload()
-        upload_mbps = upload / 1_000_000
-        print(f"{Fore.GREEN}Vitesse de téléversement : {upload_mbps:.2f} Mbps{Style.RESET_ALL}")
-        time.sleep(1)
+        ping, jitter = st.ping(best_server)
+        download_speed, _ = st.download(best_server)
+        upload_speed, _ = st.upload(best_server)
 
-        ping = st.results.ping
-        print(f"{Fore.GREEN}Ping : {ping:.2f} ms{Style.RESET_ALL}\n")
-
-        # Résultats bruts (optionnel)
-        # print(st.results.dict())
-
-        # Logging
-        with open("logs.txt", "a", encoding="utf-8") as f:
-            f.write(
-                f"------------------------------------\n"
-                f"[{time.strftime('%d-%m-%Y %H:%M:%S')}] "
-                f"Download: {download_mbps:.2f} Mbps | "
-                f"Upload: {upload_mbps:.2f} Mbps | "
-                f"Ping: {ping:.2f} ms\n"
-                f"------------------------------------\n\n"
-            )
+        print(Fore.GREEN + "\n=== SPEEDTEST ===")
+        print(Fore.WHITE + f"Ping      : {ping:.2f} ms")
+        print(Fore.WHITE + f"Jitter    : {jitter:.2f} ms")
+        print(Fore.WHITE + f"Download  : {download_speed:.2f} Mbps")
+        print(Fore.WHITE + f"Upload    : {upload_speed:.2f} Mbps")
+        print(Fore.WHITE + f"Serveur   : {best_server.name}")
 
     except Exception as e:
-        print(f"{Fore.RED}Erreur lors du test : {e}{Style.RESET_ALL}")
+        if langue_actuelle == "FR":
+            print(Fore.RED + f"❌ Erreur pendant le speed test : {e}")
+        else:
+            print(Fore.RED + f"❌ Error during speed test: {e}")
+
+    time.sleep(2)
+
+if __name__ == "__main__":
+    speedtest_librespeed()
