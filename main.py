@@ -22,7 +22,7 @@ from Option import CheckMDP
 from Option import GenererMDP
 from Option import phishing
 from Option import crypt
-#from Option import Scan
+from Option import Scan
 from Option import quizznetwork
 from Option import keylog
 from Option import console
@@ -49,7 +49,7 @@ def clear():
 def afficher_menuFR():
     clear()
     print(f"""{Fore.CYAN}{Style.BRIGHT}
-                                            ════════════════════════════════════════════════════════════════════════
+                                {Fore.CYAN}═════════════════════════════════════════════════════════════════════════════════════
                                  {Fore.GREEN}
                                               @                                                                                                                  
                                            @@@@@@                                                                                                               
@@ -63,7 +63,7 @@ def afficher_menuFR():
                                           @@@@@@@@@@                @@@@          @@@@@       @@@    @@@@  @@@                                                 
                                             @@@@@@                                                                                                               
                                              @@               @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@        
-                                 {Fore.CYAN}═══════════════════════════════════════════════════════════════════════
+                                 {Fore.CYAN}════════════════════════════════════════════════════════════════════════════════════
 
 {Fore.GREEN}
                                                     Allez voir notre Gestionnaire de mot de passe !!!!
@@ -78,7 +78,7 @@ def afficher_menuFR():
                                                                          └── [55] Console interactive   
 
 
-{Fore.MAGENTA}[2] 🛡 Pentest                                                           {Fore.MAGENTA}[6] ⚙️ Paramètres
+{Fore.MAGENTA}[2] 🛡  Pentest                                                          {Fore.MAGENTA}[6] ⚙️ Paramètres
  {Fore.YELLOW}├── [21] DirBuster                                                      ├── [61] Mode sombre / clair
  ├── [22] Générateur de fausse page HTML                                 ├── [62] Choix de langue (FR/EN)
  ├── [23] Keylogger                                                      └── [63] Quitter
@@ -87,8 +87,8 @@ def afficher_menuFR():
 
 
 {Fore.MAGENTA}[3] 📊 Réseau                                                           {Fore.MAGENTA}[7] ⚖️ Aide & Légalité
- {Fore.YELLOW}├── [31] Ping IP                                                         ├── [71] Documentation utilisateur
- ├── [32] Scan Réseau (en développement)                                 ├── [72] FAQ
+ {Fore.YELLOW}├── [31] Ping IP                                                        ├── [71] Documentation utilisateur
+ ├── [32] Scan Réseau                                                    ├── [72] FAQ
  ├── [33] Journal / Logs                                                 ├── [73] Mentions légales
  ├── [34] Quizz réseau                                                   └── [74] Informations RGPD
  ├── [35] Info sur l'IP
@@ -109,7 +109,7 @@ def afficher_menuFR():
 def afficher_menuEN():
     clear()
     print(f"""{Fore.CYAN}{Style.BRIGHT}
-                                            ═══════════════════════════════════════════════════════════════════════
+                                {Fore.CYAN}═════════════════════════════════════════════════════════════════════════════════════
                                  {Fore.GREEN}
                                               @                                                                                                                  
                                            @@@@@@                                                                                                               
@@ -123,7 +123,7 @@ def afficher_menuEN():
                                           @@@@@@@@@@                @@@@          @@@@@       @@@    @@@@  @@@                                                 
                                             @@@@@@                                                                                                               
                                              @@               @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@        
-                                 {Fore.CYAN}═══════════════════════════════════════════════════════════════════════
+                                 {Fore.CYAN}════════════════════════════════════════════════════════════════════════════════════
 
 {Fore.GREEN}
                                                     Check out our Password Manager !!!!
@@ -147,7 +147,7 @@ def afficher_menuEN():
 
 {Fore.MAGENTA}[3] 📊 Network                                                           {Fore.MAGENTA}[7] ⚖️ Help & Legal
  {Fore.YELLOW}├── [31] Ping IP                                                     ├── [71] User Documentation
- ├── [32] Scan Network (in development)                               ├── [72] FAQ
+ ├── [32] Scan Network                                                ├── [72] FAQ
  ├── [33] Logs                                                        ├── [73] Legal Notice
  ├── [34] Network Quiz                                                └── [74] GDPR Information
  ├── [35] IP Lookup
@@ -187,13 +187,39 @@ while True:
     else:
         afficher_menuFR()
 
-    try:
+    import os
+    import getpass
+    import socket
+    import ctypes
+    from colorama import Fore
+    
+    def est_admin():
+        try:
+            # Windows
+            return ctypes.windll.shell32.IsUserAnAdmin() != 0
+        except:
+            # Linux / macOS
+            return os.geteuid() == 0
+    
+    def generer_prompt(langue_actuelle):
+        utilisateur = getpass.getuser()   # nom de l'utilisateur actuel
+        machine = socket.gethostname()    # nom du PC
+        symbole = "#" if est_admin() else "$"
+    
         if langue_actuelle == "FR":
-            choix = int(input(Fore.CYAN + "Entrez votre choix : "))
+            return Fore.CYAN + f"{utilisateur}@{machine} {symbole} "
         else:
-            choix = int(input(Fore.CYAN + "Enter your choice: "))
+            return Fore.CYAN + f"{utilisateur}@{machine} {symbole} "
+    
+
+    try:
+        prompt = generer_prompt(langue_actuelle)
+        choix = int(input(prompt))
     except ValueError:
-        print(Fore.RED + "❌ Veuillez entrer un numéro valide.")
+        if langue_actuelle == "FR":
+            print(Fore.RED + "❌ Veuillez entrer un numéro valide.")
+        else:
+            print(Fore.RED + "❌ Please enter a valid number.")
         time.sleep(1.5)
         continue
 
@@ -370,4 +396,3 @@ while True:
     else:
         print(Fore.RED + "❌ Option invalide.")
         time.sleep(1.5)
-
