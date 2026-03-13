@@ -17,7 +17,8 @@ if sys.version_info[:2] != required_version:
         print("Continuer sans cx_Freeze. Certaines fonctionnalités liées à la création d'exécutables seront désactivées.")
 
 from colorama import init, Fore, Style
-from Option import PingIP
+from Option import PingIP, Temporary_file_cleaner
+from Option import TaskManager
 from Option import CheckMDP
 from Option import GenererMDP
 from Option import phishing
@@ -48,56 +49,6 @@ def clear():
 # Affiche le menu principal en FR
 def afficher_menuFR():
     clear()
-    print(f"""
-                                 {Fore.GREEN}
-                                              @                                                                                                                  
-                                           @@@@@@                                                                                                               
-                                         @@@@@@@                                                                                                                
-                                      @@@@@@@@   @@                @@@@           @@@@@       @@@@@@@@@@     @@@@@@@@                                                         
-                                   @@@@@@@@   @@@@@@@           @@@@@@@@@@@    @@@@   @@@@    @@@    @@@   @@@    @@@                                            
-                                   @@@@@@@@@@@@@@@@            @@@            @@@       @@@   @@@    @@@   @@@    @@@                                           
-                                     @@@@@@@@@@@@   @@@@@      @@@           @@@         @@@  @@@@@@@@@    @@@@@@@@@                                            
-                                       @@@@@@@@   @@@@@@@@     @@@            @@@       @@@   @@@   @@@    @@@                                                  
-                                        @@@@@@@@@@@@@@@         @@@@@@@@@@@    @@@@   @@@@    @@@    @@@   @@@                                                  
-                                          @@@@@@@@@@                @@@@          @@@@@       @@@    @@@@  @@@                                                 
-                                            @@@@@@                                                                                                               
-                                             @@               @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@        
-
-{Fore.GREEN}
-{Fore.MAGENTA}[1] 🔐 Mot de passe                                                     {Fore.MAGENTA}[5] 🧩 Autres
- {Fore.YELLOW}├── [11] Générateur de mot de passe                                     ├── [51] Recherche d'utilisateur
- ├── [12] Vérificateur de mot de passe                                   ├── [52] Gestionnaire de mot de passe
- ├── [13] Quizz mot de passe                                             ├── [53] Chiffrage de fichier python
- └── [14] Mot de passe compromis                                         ├── [54] Déchiffrage de fichier python
-                                                                         └── [55] Console interactive   
-
-
-{Fore.MAGENTA}[2] 🛡 Pentest                                                           {Fore.MAGENTA}[6] ⚙️ Paramètres
- {Fore.YELLOW}├── [21] DirBuster                                                      ├── [61] Mode sombre / clair
- ├── [22] Générateur de fausse page HTML                                 ├── [62] Choix de langue (FR/EN)
- ├── [23] Keylogger                                                      └── [63] Quitter
- ├── [24] Quizz sécurité
- └── [25] Scanner de sites web
-
-
-{Fore.MAGENTA}[3] 📊 Réseau                                                           {Fore.MAGENTA}[7] ⚖️ Aide & Légalité
- {Fore.YELLOW}├── [31] Ping IP                                                        ├── [71] Documentation utilisateur
- ├── [32] Scan Réseau (en développement)                                 ├── [72] FAQ
- ├── [33] Journal / Logs                                                 ├── [73] Mentions légales
- ├── [34] Quizz réseau                                                   └── [74] Informations RGPD
- ├── [35] Info sur l'IP
- └── [36] Speedtest Internet
-
-
-{Fore.MAGENTA} [4] PC
- {Fore.YELLOW} ├── [41] Informations système
-  ├── [42] Gestionnaire de tâches
-  ├── [43] Nettoyeur de fichiers temporaires
-  └── [45] Création de faux fichier
-
-
-{Style.RESET_ALL}""")
-    clear()
     print(f"""{Fore.CYAN}{Style.BRIGHT}
                                 {Fore.CYAN}═════════════════════════════════════════════════════════════════════════════════════
                                  {Fore.GREEN}
@@ -114,6 +65,65 @@ def afficher_menuFR():
                                             @@@@@@                                                                                                               
                                              @@               @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@        
                                  {Fore.CYAN}════════════════════════════════════════════════════════════════════════════════════
+
+{Fore.GREEN}
+                                                    Allez voir notre Gestionnaire de mot de passe !!!!
+                                                    http://linganguliguli.worldlite.fr/
+
+
+{Fore.MAGENTA}[1] 🔐 Mot de passe                                                     {Fore.MAGENTA}[5] 🧩 Autres
+ {Fore.YELLOW}├── [11] Générateur de mot de passe                                     ├── [51] Recherche d'utilisateur
+ ├── [12] Vérificateur de mot de passe                                   ├── [52] Gestionnaire de mot de passe
+ ├── [13] Quizz mot de passe                                             ├── [53] Chiffrage de fichier python
+ └── [14] Mot de passe compromis                                         ├── [54] Déchiffrage de fichier python
+                                                                         └── [55] Console interactive   
+
+
+{Fore.MAGENTA}[2] 🛡  Pentest                                                          {Fore.MAGENTA}[6] ⚙️ Paramètres
+ {Fore.YELLOW}├── [21] DirBuster                                                      ├── [61] Mode sombre / clair
+ ├── [22] Générateur de fausse page HTML                                 ├── [62] Choix de langue (FR/EN)
+ ├── [23] Keylogger                                                      └── [63] Quitter
+ ├── [24] Quizz sécurité
+ └── [25] Scanner de sites web
+
+
+{Fore.MAGENTA}[3] 📊 Réseau                                                           {Fore.MAGENTA}[7] ⚖️ Aide & Légalité
+ {Fore.YELLOW}├── [31] Ping IP                                                        ├── [71] Documentation utilisateur
+ ├── [32] Scan Réseau                                                    ├── [72] FAQ
+ ├── [33] Journal / Logs                                                 ├── [73] Mentions légales
+ ├── [34] Quizz réseau                                                   └── [74] Informations RGPD
+ ├── [35] Info sur l'IP
+ └── [36] Speedtest Internet
+
+
+{Fore.MAGENTA} [4] PC
+ {Fore.YELLOW} ├── [41] Informations système
+  ├── [42] Gestionnaire de tâches
+  ├── [43] Nettoyeur de fichiers temporaires
+  └── [44] Création de faux fichier
+
+
+{Style.RESET_ALL}""")
+
+# Menu en anglais
+def afficher_menuEN():
+    clear()
+    print(f"""{Fore.CYAN}{Style.BRIGHT}
+                                {Fore.CYAN}
+                                 {Fore.GREEN}
+                                              @                                                                                                                  
+                                           @@@@@@                                                                                                               
+                                         @@@@@@@                                                                                                                
+                                      @@@@@@@@   @@                @@@@           @@@@@       @@@@@@@@@@     @@@@@@@@                                                         
+                                   @@@@@@@@   @@@@@@@           @@@@@@@@@@@    @@@@   @@@@    @@@    @@@   @@@    @@@                                            
+                                   @@@@@@@@@@@@@@@@            @@@            @@@       @@@   @@@    @@@   @@@    @@@                                           
+                                     @@@@@@@@@@@@   @@@@@      @@@           @@@         @@@  @@@@@@@@@    @@@@@@@@@                                            
+                                       @@@@@@@@   @@@@@@@@     @@@            @@@       @@@   @@@   @@@    @@@                                                  
+                                        @@@@@@@@@@@@@@@         @@@@@@@@@@@    @@@@   @@@@    @@@    @@@   @@@                                                  
+                                          @@@@@@@@@@                @@@@          @@@@@       @@@    @@@@  @@@                                                 
+                                            @@@@@@                                                                                                               
+                                             @@               @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@        
+                                 {Fore.CYAN}
 
 {Fore.GREEN}
                                                     Check out our Password Manager !!!!
@@ -148,9 +158,7 @@ def afficher_menuFR():
  {Fore.YELLOW} ├── [41] System Information
   ├── [42] Task Manager (upcoming)
   ├── [43] Temporary File Cleaner (upcoming)
-  ├── [44] Stored Passwords (upcoming)
-  └── [45] Fake File Creator
-
+  └── [44] Fake File Creator
 
 {Style.RESET_ALL}""")
 
@@ -299,7 +307,6 @@ while True:
     elif choix == 43:
         clear()
         lancer(Temporary_file_cleaner.clean_temp_directory, "Nettoyeur de fichiers temporaires" if langue_actuelle == "FR" else "Temporary File Cleaner")
-        
 
     elif choix == 45:
         clear()
