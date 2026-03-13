@@ -223,19 +223,22 @@ while True:
         time.sleep(1.5)
         continue
 
+    # PARTIE MOT DE PASSE
+
     if choix == 11:
         lancer(GenererMDP.generer, "Générateur de mot de passe" if langue_actuelle == "FR" else "Password Generator")
 
     elif choix == 12:
         lancer(CheckMDP.verifier, "Vérificateur de mot de passe" if langue_actuelle == "FR" else "Password Checker")
 
-    elif choix == 14:
-        clear()
-        lancer(pswd.pswd_compromis, "Mot de passe compromis" if langue_actuelle == "FR" else "Compromised Passwords")
-
     elif choix == 13:
         clear()
         lancer(lambda: quizzmdp.quizz_mdp(langue_actuelle), "Quizz mot de passe" if langue_actuelle == "FR" else "Password Quiz")
+
+    elif choix == 14:
+        clear()
+        lancer(pswd.pswd_compromis, "Mot de passe compromis" if langue_actuelle == "FR" else "Compromised Passwords")
+    # PARTIE PENTEST
 
     elif choix == 21:
         clear()
@@ -263,16 +266,16 @@ while True:
         lancer(subdomain.sousdomaine, "Scanner de sites web" if langue_actuelle == "FR" else "Website Scanner")
 
     
-
+#   PARTIE RESEAU
 
 
     elif choix == 31:
         lancer(PingIP.ping, "Ping IP" if langue_actuelle == "FR" else "Ping IP")
 
-    #elif choix == 32:
-    #   clear()
-     #   lancer(Scan.scan, "Scan Réseau" if langue_actuelle == "FR" else "Network Scan")
-      #  input(Fore.GREEN + "\nRetour... / Back...")
+    elif choix == 32:
+       clear()
+       lancer(Scan.scan, "Scan Réseau" if langue_actuelle == "FR" else "Network Scan")
+       input(Fore.GREEN + "\nRetour... / Back...")
     
     elif choix == 33: 
         clear()
@@ -293,6 +296,8 @@ while True:
         clear()
         lancer(test_speed.test_speed, "Speedtest Internet" if langue_actuelle == "FR" else "Internet Speedtest")
 
+    # PARTIE PC
+
     elif choix == 41:
         clear()
         lancer(si.info_system, "Informations système" if langue_actuelle == "FR" else "System Information")
@@ -300,6 +305,8 @@ while True:
     elif choix == 45:
         clear()
         lancer(script.fichier, "Création de faux fichier" if langue_actuelle == "FR" else "Fake File Creator")
+
+    # PARTIE AUTRES
 
     elif choix == 51:
         clear()
@@ -320,6 +327,8 @@ while True:
     elif choix == 55:
         clear()
         lancer(console.console, "Console" if langue_actuelle == "FR" else "Console")
+
+    # PARTIE PARAMETRES
 
     elif choix == 61:
         clear()
@@ -361,6 +370,8 @@ while True:
         print(Fore.CYAN + "👋 Fermeture du programme. À bientôt ! / Program closing. See you!")
         break
 
+    # PARTIES AIDE & LEGAL
+
     elif choix == 71:
         clear()
         print(Fore.YELLOW + (
@@ -396,3 +407,4 @@ while True:
     else:
         print(Fore.RED + "❌ Option invalide.")
         time.sleep(1.5)
+
