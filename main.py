@@ -48,8 +48,7 @@ def clear():
 # Affiche le menu principal en FR
 def afficher_menuFR():
     clear()
-    print(f"""{Fore.CYAN}{Style.BRIGHT}
-                                {Fore.CYAN}═════════════════════════════════════════════════════════════════════════════════════
+    print(f"""
                                  {Fore.GREEN}
                                               @                                                                                                                  
                                            @@@@@@                                                                                                               
@@ -63,13 +62,8 @@ def afficher_menuFR():
                                           @@@@@@@@@@                @@@@          @@@@@       @@@    @@@@  @@@                                                 
                                             @@@@@@                                                                                                               
                                              @@               @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@        
-                                 {Fore.CYAN}════════════════════════════════════════════════════════════════════════════════════
 
 {Fore.GREEN}
-                                                    Allez voir notre Gestionnaire de mot de passe !!!!
-                                                    http://linganguliguli.worldlite.fr/
-
-
 {Fore.MAGENTA}[1] 🔐 Mot de passe                                                     {Fore.MAGENTA}[5] 🧩 Autres
  {Fore.YELLOW}├── [11] Générateur de mot de passe                                     ├── [51] Recherche d'utilisateur
  ├── [12] Vérificateur de mot de passe                                   ├── [52] Gestionnaire de mot de passe
@@ -78,7 +72,7 @@ def afficher_menuFR():
                                                                          └── [55] Console interactive   
 
 
-{Fore.MAGENTA}[2] 🛡  Pentest                                                          {Fore.MAGENTA}[6] ⚙️ Paramètres
+{Fore.MAGENTA}[2] 🛡 Pentest                                                           {Fore.MAGENTA}[6] ⚙️ Paramètres
  {Fore.YELLOW}├── [21] DirBuster                                                      ├── [61] Mode sombre / clair
  ├── [22] Générateur de fausse page HTML                                 ├── [62] Choix de langue (FR/EN)
  ├── [23] Keylogger                                                      └── [63] Quitter
@@ -88,7 +82,7 @@ def afficher_menuFR():
 
 {Fore.MAGENTA}[3] 📊 Réseau                                                           {Fore.MAGENTA}[7] ⚖️ Aide & Légalité
  {Fore.YELLOW}├── [31] Ping IP                                                        ├── [71] Documentation utilisateur
- ├── [32] Scan Réseau                                                    ├── [72] FAQ
+ ├── [32] Scan Réseau (en développement)                                 ├── [72] FAQ
  ├── [33] Journal / Logs                                                 ├── [73] Mentions légales
  ├── [34] Quizz réseau                                                   └── [74] Informations RGPD
  ├── [35] Info sur l'IP
@@ -97,16 +91,12 @@ def afficher_menuFR():
 
 {Fore.MAGENTA} [4] PC
  {Fore.YELLOW} ├── [41] Informations système
-  ├── [42] Gestionnaire de tâches (à venir)
-  ├── [43] Nettoyeur de fichiers temporaires (à venir)
-  ├── [44] Mot de passe stocké (à venir)
+  ├── [42] Gestionnaire de tâches
+  ├── [43] Nettoyeur de fichiers temporaires
   └── [45] Création de faux fichier
 
 
 {Style.RESET_ALL}""")
-
-# Menu en anglais
-def afficher_menuEN():
     clear()
     print(f"""{Fore.CYAN}{Style.BRIGHT}
                                 {Fore.CYAN}═════════════════════════════════════════════════════════════════════════════════════
@@ -301,6 +291,15 @@ while True:
     elif choix == 41:
         clear()
         lancer(si.info_system, "Informations système" if langue_actuelle == "FR" else "System Information")
+
+    elif choix == 42:
+        clear()
+        lancer(TaskManager.open_task_manager, "Gestionnaire de tâches" if langue_actuelle == "FR" else "Task Manager")
+
+    elif choix == 43:
+        clear()
+        lancer(Temporary_file_cleaner.clean_temp_directory, "Nettoyeur de fichiers temporaires" if langue_actuelle == "FR" else "Temporary File Cleaner")
+        
 
     elif choix == 45:
         clear()
