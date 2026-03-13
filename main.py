@@ -156,8 +156,8 @@ def afficher_menuEN():
 
 {Fore.MAGENTA} [4] PC
  {Fore.YELLOW} ├── [41] System Information
-  ├── [42] Task Manager (upcoming)
-  ├── [43] Temporary File Cleaner (upcoming)
+  ├── [42] Task Manager
+  ├── [43] Temporary File Cleaner
   └── [44] Fake File Creator
 
 {Style.RESET_ALL}""")
