@@ -35,4 +35,3 @@ def scan():
             for port in lport:
                 print(f'Port : {port}\tState : {nm[host][proto][port]["state"]}')
 
-scan()
