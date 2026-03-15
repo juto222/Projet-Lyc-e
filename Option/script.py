@@ -5,6 +5,12 @@ import os
 def fichier():
     print(f"""
 
+          ___  _  ___  _ _  ___   ___   ___   ___  _ 
+         / _ \/ |/ _ \/ / |/ _ \ / _ \ / _ \ / _ \/ |
+        | | | | | | | | | | | | | | | | | | | | | | |
+        | |_| | | |_| | | | |_| | |_| | |_| | |_| | |
+         \___/|_|\___/|_|_|\___/ \___/ \___/ \___/|_|
+
     {Fore.MAGENTA} Création d'un vrai fichier binaire (octets aléatoires)
     {Style.RESET_ALL}
 

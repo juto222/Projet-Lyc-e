@@ -4,6 +4,15 @@ import os
 def crypt():
 
     print(f"""{Fore.MAGENTA}
+          
+
+                 .---.
+                /    |\________________
+                |  ()| ________   _   _)
+                \    |/        | | | |
+                 `---'         "-" |_|
+
+
     Choisissez un obfuscateur pour chiffrer votre fichier python :
      {Fore.YELLOW}1.{Fore.CYAN} PyArmor (Recommandé)
      {Fore.YELLOW}2.{Fore.CYAN} Nuitka

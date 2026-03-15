@@ -2,9 +2,17 @@ import string
 import time
 
 def verifier():
-    print("""
+    print(r"""
 
-
+              __                        __        __
+             / /                        \ \      / /
+            / /                          \ \    / / 
+           / /                            \ \  / /  
+__        /_/         ___  ____            \_\/_/   
+\ \      / /         / _ \|  _ \          / / \ \   
+ \ \    / /         | | | | |_) |        / /   \ \  
+  \ \  / /          | |_| |  _ <        / /     \ \ 
+   \_\/_/            \___/|_| \_\      /_/       \_\
 
 
 
@@ -29,11 +37,11 @@ def verifier():
         score += 1 
 
     if score == 4:
-        print("Mot de passe très fort")
+        print(f"Mot de passe très fort. Score :{score}/4")
     elif 2 <= score < 4:
-        print("Mot de passe moyen")
+        print(f"Mot de passe moyen. Score :{score}/4")
     else:
-        print("Mot de passe faible")
+        print(f"Mot de passe faible. Score :{score}/4")
     with open("logs.txt", "a") as fichier:
         fichier.write(
             f"------------------------------------\n"

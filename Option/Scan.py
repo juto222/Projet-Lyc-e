@@ -18,7 +18,7 @@ def scan():
 
 
                                    
-""")
+    """)
     print("********************************Bienvenue dans le scanner de réseau******************************")
     ip = input("Entrez l'adresse IP ou domaine à scanner : ")
     port_range = input("Entrez la plage de ports à scanner (ex: 0-1024) : ")
@@ -34,4 +34,3 @@ def scan():
             lport = nm[host][proto].keys()
             for port in lport:
                 print(f'Port : {port}\tState : {nm[host][proto][port]["state"]}')
-
