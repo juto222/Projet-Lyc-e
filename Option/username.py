@@ -3,8 +3,11 @@ import requests
 def username():
     pseudo = input("Quel est le pseudo que tu cherches ? : ").strip()
 
+
+
     urls = [
         f"https://tiktok.com/@{pseudo}",
+        f"https://pornhub.com/users/{pseudo}",
         f"https://instagram.com/{pseudo}",  
         f"https://github.com/{pseudo}",
         f"https://youtube.com/@{pseudo}",

@@ -15,16 +15,13 @@ def afficher_menu_phishing(langue_actuelle):
 
 
 {Fore.YELLOW}              [1] TikTok
-              [2] Instagram (En cours de maintenance)
-              [3] Facebook   
-              [4] Google (En cours de maintenance)
-              [5] Netflix
-              [6] PayPal
-              [7] Amazon
-              [8] Twitter (X) (En cours de maintenance)
-              [9] LinkedIn
-              [10] Snapchat
-              [12] Retour au menu principal
+              [2] Facebook   
+              [3] Netflix
+              [4] PayPal
+              [4] Amazon
+              [5] LinkedIn
+              [6] Snapchat
+              [7] Retour au menu principal
 
         
 """)
@@ -35,16 +32,13 @@ def afficher_menu_phishing(langue_actuelle):
 
 
 {Fore.YELLOW}              [1] TikTok
-              [2] Instagram (Under maintenance)
-              [3] Facebook   
-              [4] Google (Under maintenance)
-              [5] Netflix
-              [6] PayPal
-              [7] Amazon
-              [8] Twitter (X) (Under maintenance)
-              [9] LinkedIn
-              [10] Snapchat
-              [12] Back to main menu
+              [2] Facebook   
+              [3] Netflix
+              [4] PayPal
+              [5] Amazon
+              [6] LinkedIn
+              [7] Snapchat
+              [8] Back to main menu
               """)
     
     if langue_actuelle == "FR":
@@ -75,20 +69,6 @@ def afficher_menu_phishing(langue_actuelle):
             else:
                 print(Fore.RED + f"❌ Erreur : Fichier introuvable à {chemin_fichier}")
 
-    def instagram():
-        chemin_fichier = "Option/page/Instagram.html"
-        if os.path.exists(chemin_fichier):
-            chemin_complet = os.path.abspath(chemin_fichier)
-            webbrowser.open('file://' + chemin_complet)
-            if langue_actuelle == "EN":
-                print(Fore.GREEN + "✅ Instagram page opened in browser!")
-            else:
-                print(Fore.GREEN + "✅ Page Instagram ouverte dans le navigateur !")
-        else:
-            if langue_actuelle == "EN":
-                print(Fore.RED + f"❌ Error: File not found at {chemin_fichier}")
-            else:
-                print(Fore.RED + f"❌ Erreur : Fichier introuvable à {chemin_fichier}")
     
     def facebook():
         chemin_fichier = "Option/page/Facebook.html"
@@ -105,21 +85,6 @@ def afficher_menu_phishing(langue_actuelle):
             else:
                 print(Fore.RED + f"❌ Erreur : Fichier introuvable à {chemin_fichier}")
 
-    def google():
-        chemin_fichier = "Option/page/Google.html"
-        if os.path.exists(chemin_fichier):
-            chemin_complet = os.path.abspath(chemin_fichier)
-            webbrowser.open('file://' + chemin_complet)
-            if langue_actuelle == "EN":
-                print(Fore.GREEN + "✅ Google page opened in browser!")
-            else:
-                print(Fore.GREEN + "✅ Page Google ouverte dans le navigateur !")
-        else:
-            if langue_actuelle == "EN":
-                print(Fore.RED + f"❌ Error: File not found at {chemin_fichier}")
-            else:
-                print(Fore.RED + f"❌ Erreur : Fichier introuvable à {chemin_fichier}")
-    
     def netflix():
         chemin_fichier = "Option/page/Netflix.html"
         if os.path.exists(chemin_fichier):
@@ -165,20 +130,6 @@ def afficher_menu_phishing(langue_actuelle):
             else:
                 print(Fore.RED + f"❌ Erreur : Fichier introuvable à {chemin_fichier}")
 
-    def twitter():
-        chemin_fichier = "Option/page/Twitter.html"
-        if os.path.exists(chemin_fichier):
-            chemin_complet = os.path.abspath(chemin_fichier)
-            webbrowser.open('file://' + chemin_complet)
-            if langue_actuelle == "EN":
-                print(Fore.GREEN + "✅ Twitter page opened in browser!")
-            else:
-                print(Fore.GREEN + "✅ Page Twitter ouverte dans le navigateur !")
-        else:
-            if langue_actuelle == "EN":
-                print(Fore.RED + f"❌ Error: File not found at {chemin_fichier}")
-            else:
-                print(Fore.RED + f"❌ Erreur : Fichier introuvable à {chemin_fichier}")
 
     def linkedin():
         chemin_fichier = "Option/page/LinkedIn.html"
@@ -221,68 +172,48 @@ def afficher_menu_phishing(langue_actuelle):
             input(Fore.GREEN + ("Press Enter to continue..." if langue_actuelle == "EN" else "Appuyez sur Entrée pour continuer..."))
     elif choix_local == 2:
         try:
-            instagram()
+            facebook()
         except Exception as e:
             print(Fore.RED + f"❌ Error: {e}" if langue_actuelle == "EN" else f"❌ Erreur : {e}")
         finally:
             input(Fore.GREEN + ("Press Enter to continue..." if langue_actuelle == "EN" else "Appuyez sur Entrée pour continuer..."))
     elif choix_local == 3:
         try:
-            facebook()
+            netflix()
         except Exception as e:
             print(Fore.RED + f"❌ Error: {e}" if langue_actuelle == "EN" else f"❌ Erreur : {e}")
         finally:
             input(Fore.GREEN + ("Press Enter to continue..." if langue_actuelle == "EN" else "Appuyez sur Entrée pour continuer..."))
     elif choix_local == 4:
         try:
-            google()
+            paypal()
         except Exception as e:
             print(Fore.RED + f"❌ Error: {e}" if langue_actuelle == "EN" else f"❌ Erreur : {e}")
         finally:
             input(Fore.GREEN + ("Press Enter to continue..." if langue_actuelle == "EN" else "Appuyez sur Entrée pour continuer..."))
     elif choix_local == 5:
         try:
-            netflix()
-        except Exception as e:
-            print(Fore.RED + f"❌ Error: {e}" if langue_actuelle == "EN" else f"❌ Erreur : {e}")
-        finally:
-            input(Fore.GREEN + ("Press Enter to continue..." if langue_actuelle == "EN" else "Appuyez sur Entrée pour continuer..."))
-    elif choix_local == 6:
-        try:
-            paypal()
-        except Exception as e:
-            print(Fore.RED + f"❌ Error: {e}" if langue_actuelle == "EN" else f"❌ Erreur : {e}")
-        finally:
-            input(Fore.GREEN + ("Press Enter to continue..." if langue_actuelle == "EN" else "Appuyez sur Entrée pour continuer..."))
-    elif choix_local == 7:
-        try:
             amazon()
         except Exception as e:
             print(Fore.RED + f"❌ Error: {e}" if langue_actuelle == "EN" else f"❌ Erreur : {e}")
         finally:
             input(Fore.GREEN + ("Press Enter to continue..." if langue_actuelle == "EN" else "Appuyez sur Entrée pour continuer..."))
-    elif choix_local == 8:
-        try:
-            twitter()
-        except Exception as e:
-            print(Fore.RED + f"❌ Error: {e}" if langue_actuelle == "EN" else f"❌ Erreur : {e}")
-        finally:
             input(Fore.GREEN + ("Press Enter to continue..." if langue_actuelle == "EN" else "Appuyez sur Entrée pour continuer..."))
-    elif choix_local == 9:
+    elif choix_local == 6:
         try:
             linkedin()
         except Exception as e:
             print(Fore.RED + f"❌ Error: {e}" if langue_actuelle == "EN" else f"❌ Erreur : {e}")
         finally:
             input(Fore.GREEN + ("Press Enter to continue..." if langue_actuelle == "EN" else "Appuyez sur Entrée pour continuer..."))
-    elif choix_local == 10:
+    elif choix_local == 7:
         try:
             snapchat()
         except Exception as e:
             print(Fore.RED + f"❌ Error: {e}" if langue_actuelle == "EN" else f"❌ Erreur : {e}")
         finally:
             input(Fore.GREEN + ("Press Enter to continue..." if langue_actuelle == "EN" else "Appuyez sur Entrée pour continuer..."))
-    elif choix_local == 12:
+    elif choix_local == 8:
         return  # Retour au menu principal
     else:
         print(Fore.RED + ("❌ Invalid choice!" if langue_actuelle == "EN" else "❌ Choix invalide !"))

