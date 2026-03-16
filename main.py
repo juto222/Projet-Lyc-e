@@ -17,8 +17,7 @@ if sys.version_info[:2] != required_version:
         print("Continuer sans cx_Freeze. Certaines fonctionnalités liées à la création d'exécutables seront désactivées.")
 
 from colorama import init, Fore, Style
-from Option import PingIP, Temporary_file_cleaner
-from Option import TaskManager
+from Option import PingIP
 from Option import CheckMDP
 from Option import GenererMDP
 from Option import phishing
@@ -299,15 +298,7 @@ while True:
     elif choix == 41:
         clear()
         lancer(si.info_system, "Informations système" if langue_actuelle == "FR" else "System Information")
-
-    elif choix == 42:
-        clear()
-        lancer(TaskManager.open_task_manager, "Gestionnaire de tâches" if langue_actuelle == "FR" else "Task Manager")
-
-    elif choix == 43:
-        clear()
-        lancer(Temporary_file_cleaner.clean_temp_directory, "Nettoyeur de fichiers temporaires" if langue_actuelle == "FR" else "Temporary File Cleaner")
-
+        
     elif choix == 45:
         clear()
         lancer(script.fichier, "Création de faux fichier" if langue_actuelle == "FR" else "Fake File Creator")
