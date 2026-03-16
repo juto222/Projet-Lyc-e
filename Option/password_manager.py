@@ -1,4 +1,4 @@
-import requests
+"""import requests
 from bs4 import BeautifulSoup
 import time
 import socket
@@ -603,7 +603,7 @@ def main(page: ft.Page):
         setup_master_password_screen()
     else:
         login_screen()
- 
+ """
 
 """
 
