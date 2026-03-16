@@ -18,11 +18,12 @@ def affichage():
     4. Envoi sur discord
     5. Envoi sur serveur HTTP
 
-     {Fore.GREEN}                    
+{Fore.GREEN}
 Tapez : set <num> pour configurer
 Tapez : show pour afficher la config
 Tapez : create pour générer
 Tapez : exit pour quitter
+            {Style.RESET_ALL}
             """)
     
 def directory_listing_module():

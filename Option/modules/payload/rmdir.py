@@ -6,14 +6,19 @@ def clear():
 def affichage():
     clear()
     print("=== Configuration Remove Directory ===\n\n")
-    print("""
+    print(f"""
           
-          Options : 
-
+          {Fore.YELLOW}Options : 
+{Fore.WHITE}
     1. Chemin du répertoire à supprimer
     2. Suppression récursive
     3. Délai avant suppression (en secondes)
 
+                {Fore.GREEN}
+Tapez : set <num> pour configurer
+Tapez : show pour afficher la config
+Tapez : create pour générer
+Tapez : exit pour quitter{Style.RESET_ALL}  
           """)
     
 def rmdir_module():

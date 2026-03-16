@@ -10,8 +10,8 @@ def affichage():
     print("=== Configuration Wallpaper Payload ===\n\n")
     print(f"""
           
-          Options : 
-
+          {Fore.YELLOW}Options : 
+{Fore.WHITE}
     1. Mettre un Wallpaper
 
               {Fore.GREEN}
@@ -40,6 +40,7 @@ def wallpaper():
             choix["Mettre un Wallpaper"] = path
         else:
             print("Le chemin spécifié n'est pas valide.")
+        affichage()
 
 
     def create_payload():

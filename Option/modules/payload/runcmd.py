@@ -11,8 +11,8 @@ def affichage():
     print("=== Configuration Run Command on terminal ===\n\n")
     print(f"""
           
-          Options : 
-
+          {Fore.YELLOW}Options : 
+{Fore.WHITE}
     1. Commande à exécuter
     2. Lancer au démarrage
     3. Exécuter en boucle

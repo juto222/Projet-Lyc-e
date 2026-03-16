@@ -8,16 +8,23 @@ def clear():
 def affichage():
     clear()
     print("=== Configuration Open URL ===\n\n")
-    print("""
+    print(f"""
           
-          Options : 
-
+          {Fore.YELLOW}Options : 
+{Fore.WHITE}
     1. URL à ouvrir
     2. Navigateur à utiliser (par défaut : système)
     3. Ouvrir en fenêtre 
     4. Ouvrir en onglet
     5. Nombre de fois à ouvrir
     6. Délai entre les ouvertures (si option 5 configurée)
+          
+{Fore.GREEN}
+Tapez : set <num> pour configurer
+Tapez : show pour afficher la config
+Tapez : create pour générer
+Tapez : exit pour quitter
+            {Style.RESET_ALL}
 
           """)
     

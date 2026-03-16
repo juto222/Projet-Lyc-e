@@ -1,8 +1,10 @@
 import time
-from colorama import Fore
-from internetspeedtest import SpeedTest
+from colorama import Fore, init
+import speedtest
 
-def speedtest_librespeed(langue_actuelle="FR"):
+init(autoreset=True)
+
+def test_speed(langue_actuelle="FR"):
     try:
         if langue_actuelle == "FR":
             print(Fore.CYAN + "Lancement du test de vitesse...")
@@ -13,21 +15,21 @@ def speedtest_librespeed(langue_actuelle="FR"):
             time.sleep(1)
             print(Fore.YELLOW + "Searching for the best server...")
 
-        st = SpeedTest()
+        st = speedtest.Speedtest()
+        st.get_best_server()
 
-        servers = st.get_servers()
-        best_server = st.find_best_server(servers)
+        ping = st.results.ping
+        download_speed = st.download() / 1_000_000  # bits/s -> Mbps
+        upload_speed = st.upload() / 1_000_000      # bits/s -> Mbps
 
-        ping, jitter = st.ping(best_server)
-        download_speed, _ = st.download(best_server)
-        upload_speed, _ = st.upload(best_server)
+        server_name = st.results.server.get("name", "Inconnu")
+        sponsor = st.results.server.get("sponsor", "Inconnu")
 
         print(Fore.GREEN + "\n=== SPEEDTEST ===")
         print(Fore.WHITE + f"Ping      : {ping:.2f} ms")
-        print(Fore.WHITE + f"Jitter    : {jitter:.2f} ms")
         print(Fore.WHITE + f"Download  : {download_speed:.2f} Mbps")
         print(Fore.WHITE + f"Upload    : {upload_speed:.2f} Mbps")
-        print(Fore.WHITE + f"Serveur   : {best_server.name}")
+        print(Fore.WHITE + f"Serveur   : {server_name} ({sponsor})")
 
     except Exception as e:
         if langue_actuelle == "FR":
@@ -38,4 +40,4 @@ def speedtest_librespeed(langue_actuelle="FR"):
     time.sleep(2)
 
 if __name__ == "__main__":
-    speedtest_librespeed()
+    test_speed()

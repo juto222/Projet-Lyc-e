@@ -8,8 +8,8 @@ def affichage():
     print("=== Configuration Shutdown Payload ===\n\n")
     print(f"""
           
-          Options : 
-
+          {Fore.YELLOW}Options : 
+{Fore.WHITE}
     1. Délai avant extinction (en secondes)
     2. Message d'avertissement à afficher
     3. Forcer la fermeture des applications
@@ -33,6 +33,7 @@ def shutdown_module():
         clear()
         delai = input("Entrez le délai avant extinction en secondes : ")
         choix["Délai avant extinction"] = int(delai)
+        affichage()
 
     def message_option():
         clear()
@@ -43,6 +44,7 @@ def shutdown_module():
         else:
             message = None
             choix["Message d'avertissement"] = message
+        affichage()
 
 
     def force_option():
@@ -52,6 +54,7 @@ def shutdown_module():
             choix["Forcer la fermeture des applications"] = True
         else:
             choix["Forcer la fermeture des applications"] = None
+        affichage()
 
     options = [
         ("Délai avant extinction", delai_option),

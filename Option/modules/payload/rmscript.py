@@ -9,8 +9,10 @@ def affichage():
     print("=== Configuration Remove Script ===\n\n")
     print(f"""
           
-          Options : 
 
+
+          {Fore.YELLOW}Options : 
+{Fore.WHITE}
     1. Nom du script à supprimer (avec extension ex: .exe)
           
 {Fore.GREEN}
@@ -71,7 +73,7 @@ remove_script()
                 print("Commande invalide. Utilisez : set <num>")
         elif cmd.lower() == "show":
             clear()
-            print("\nConfiguration actuelle du module Shutdown :")
+            print("\nConfiguration actuelle du module Remove Script :")
             for key, value in choix.items():
                 print(f"{key}: {value}")
             input("\nAppuyez sur Entrée pour continuer...")
