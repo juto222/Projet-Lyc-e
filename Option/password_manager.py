@@ -1,3 +1,4 @@
+"""
 import requests
 from bs4 import BeautifulSoup
 import time
@@ -604,7 +605,7 @@ def main(page: ft.Page):
     else:
         login_screen()
  
-
+"""
 """
 
 ancienne_version = "1.0.0"
