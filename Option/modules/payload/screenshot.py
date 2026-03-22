@@ -131,7 +131,7 @@ def screenshot_module():
             choix["Envoi sur serveur HTTP"] = None
         else:
             return True
-        if not choix["Envoi sur Discord"] and not choix["Envoi sur serveur HTTP"]:
+        if not choix["Envoi sur Discord"] or not choix["Envoi sur serveur HTTP"]:
             print(Fore.RED + "Erreur : Vous devez choisir au moins un mode d'envoi (Discord ou HTTP)." + Style.RESET_ALL)
             time.sleep(2)
             return False

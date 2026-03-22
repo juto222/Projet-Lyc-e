@@ -140,5 +140,3 @@ def runcmd():
             create_payload()
             break
 
-if __name__ == "__main__":  
-    runcmd_module()

