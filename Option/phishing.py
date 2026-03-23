@@ -1,220 +1,105 @@
-from colorama import init, Fore, Style
-import webbrowser  
-import os 
+import os
+import re
+import requests
+import concurrent.futures
+from bs4 import BeautifulSoup
+from urllib.parse import urljoin
+import random
+
+# ─── User-Agents disponibles ───────────────────────────────────────────────────
+USER_AGENTS = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 Safari/605.1.15",
+    "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/115.0",
+]
+
+# ─── Dossier de sortie ─────────────────────────────────────────────────────────
+OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "output", "PhishingAttack")
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 
-init(autoreset=True)
+# ─── Récupère le contenu d'une URL (CSS ou JS) ────────────────────────────────
+def fetch_url(url):
+    try:
+        r = requests.get(url, timeout=5)
+        return r.text if r.status_code == 200 else None
+    except Exception:
+        return None
 
 
-def afficher_menu_phishing(langue_actuelle):
-   
-    def menu_fr():
-        print(f"""{Fore.CYAN}{Style.BRIGHT}
-{Fore.MAGENTA}  🌐 Générateur de fausse page HTML
+# ─── Inline tout le CSS et JS dans le HTML ────────────────────────────────────
+def inline_css_and_js(html_content, base_url):
+    soup = BeautifulSoup(html_content, "html.parser")
+
+    # ── CSS ──────────────────────────────────────────────────────────────────
+    print("[*] Récupération du CSS...")
+    css_links = soup.find_all("link", rel="stylesheet")
+    css_urls  = [urljoin(base_url, tag["href"]) for tag in css_links if tag.get("href")]
+
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        css_results = list(executor.map(fetch_url, css_urls))
+
+    all_css = [css for css in css_results if css]
+    if all_css:
+        style_tag        = soup.new_tag("style")
+        style_tag.string = "\n".join(all_css)
+        if soup.head:
+            soup.head.append(style_tag)
+        for tag in css_links:       # supprime les <link> externes
+            tag.decompose()
+
+    # ── JavaScript ───────────────────────────────────────────────────────────
+    print("[*] Récupération du JavaScript...")
+    script_links = soup.find_all("script", src=True)
+    js_urls      = [urljoin(base_url, tag["src"]) for tag in script_links if tag.get("src")]
+
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        js_results = list(executor.map(fetch_url, js_urls))
+
+    all_js = [js for js in js_results if js]
+    if all_js:
+        script_tag        = soup.new_tag("script")
+        script_tag.string = "\n".join(all_js)
+        if soup.body:
+            soup.body.append(script_tag)
+        for tag in script_links:    # supprime les <script src="..."> externes
+            tag.decompose()
+
+    return soup.prettify()
 
 
+# ─── Programme principal ───────────────────────────────────────────────────────
+def phishing():
+    user_agent = random.choice(USER_AGENTS)
+    headers    = {"User-Agent": user_agent}
+    print(f"[+] User-Agent sélectionné : {user_agent}\n")
 
-{Fore.YELLOW}              [1] TikTok
-              [2] Facebook   
-              [3] Netflix
-              [4] PayPal
-              [4] Amazon
-              [5] LinkedIn
-              [6] Snapchat
-              [7] Retour au menu principal
+    url = input("[?] URL du site cible -> ").strip()
+    if not url.startswith(("http://", "https://")):
+        url = "https://" + url
 
-        
-""")
-    
-    def menu_en():
-        print(f"""{Fore.CYAN}{Style.BRIGHT}
-              {Fore.MAGENTA}  🌐 Fake HTML Page Generator
+    # ── Récupération du HTML ──────────────────────────────────────────────────
+    print("[*] Récupération du HTML...")
+    try:
+        session  = requests.Session()
+        response = session.get(url, headers=headers, timeout=5)
+    except requests.exceptions.RequestException as e:
+        print(f"[!] Erreur de connexion : {e}")
+        return
 
+    if response.status_code != 200:
+        print(f"[!] La requête a échoué (status {response.status_code}).")
+        return
 
-{Fore.YELLOW}              [1] TikTok
-              [2] Facebook   
-              [3] Netflix
-              [4] PayPal
-              [5] Amazon
-              [6] LinkedIn
-              [7] Snapchat
-              [8] Back to main menu
-              """)
-    
-    if langue_actuelle == "FR":
-        menu_fr()
-    else:
-        menu_en()
+    # ── Nom du fichier à partir du <title> ────────────────────────────────────
+    soup      = BeautifulSoup(response.text, "html.parser")
+    raw_title = soup.title.string if soup.title else "Phishing"
+    file_name = re.sub(r'[\\/:*?"<>|]', "-", raw_title).strip() + ".html"
+    file_path = os.path.join(OUTPUT_DIR, file_name)
 
-    choix_local = int(input(Fore.CYAN + ("Enter choice: " if langue_actuelle == "EN" else "Entrez votre choix : ")))
-    
-    
-    def tiktok():
-        # Chemin vers le fichier HTML
-        chemin_fichier = "Option/page/Tiktok.html"
-        
-        # Vérifier si le fichier existe
-        if os.path.exists(chemin_fichier):
-            # Ouvrir le fichier dans le navigateur par défaut
-            chemin_complet = os.path.abspath(chemin_fichier)  # Chemin absolu
-            webbrowser.open('file://' + chemin_complet)
-            
-            if langue_actuelle == "EN":
-                print(Fore.GREEN + "✅ TikTok page opened in browser!")
-            else:
-                print(Fore.GREEN + "✅ Page TikTok ouverte dans le navigateur !")
-        else:
-            if langue_actuelle == "EN":
-                print(Fore.RED + f"❌ Error: File not found at {chemin_fichier}")
-            else:
-                print(Fore.RED + f"❌ Erreur : Fichier introuvable à {chemin_fichier}")
+    # ── Inline CSS + JS puis sauvegarde ──────────────────────────────────────
+    final_html = inline_css_and_js(response.text, url)
+    with open(file_path, "w", encoding="utf-8") as f:
+        f.write(final_html)
 
-    
-    def facebook():
-        chemin_fichier = "Option/page/Facebook.html"
-        if os.path.exists(chemin_fichier):
-            chemin_complet = os.path.abspath(chemin_fichier)
-            webbrowser.open('file://' + chemin_complet)
-            if langue_actuelle == "EN":
-                print(Fore.GREEN + "✅ Facebook page opened in browser!")
-            else:
-                print(Fore.GREEN + "✅ Page Facebook ouverte dans le navigateur !")
-        else:
-            if langue_actuelle == "EN":
-                print(Fore.RED + f"❌ Error: File not found at {chemin_fichier}")
-            else:
-                print(Fore.RED + f"❌ Erreur : Fichier introuvable à {chemin_fichier}")
-
-    def netflix():
-        chemin_fichier = "Option/page/Netflix.html"
-        if os.path.exists(chemin_fichier):
-            chemin_complet = os.path.abspath(chemin_fichier)
-            webbrowser.open('file://' + chemin_complet)
-            if langue_actuelle == "EN":
-                print(Fore.GREEN + "✅ Netflix page opened in browser!")
-            else:
-                print(Fore.GREEN + "✅ Page Netflix ouverte dans le navigateur !")
-        else:
-            if langue_actuelle == "EN":
-                print(Fore.RED + f"❌ Error: File not found at {chemin_fichier}")
-            else:
-                print(Fore.RED + f"❌ Erreur : Fichier introuvable à {chemin_fichier}")
-
-    def paypal():
-        chemin_fichier = "Option/page/PayPal.html"
-        if os.path.exists(chemin_fichier):
-            chemin_complet = os.path.abspath(chemin_fichier)
-            webbrowser.open('file://' + chemin_complet)
-            if langue_actuelle == "EN":
-                print(Fore.GREEN + "✅ PayPal page opened in browser!")
-            else:
-                print(Fore.GREEN + "✅ Page PayPal ouverte dans le navigateur !")
-        else:
-            if langue_actuelle == "EN":
-                print(Fore.RED + f"❌ Error: File not found at {chemin_fichier}")
-            else:
-                print(Fore.RED + f"❌ Erreur : Fichier introuvable à {chemin_fichier}")
-
-    def amazon():
-        chemin_fichier = "Option/page/Amazon.html"
-        if os.path.exists(chemin_fichier):
-            chemin_complet = os.path.abspath(chemin_fichier)
-            webbrowser.open('file://' + chemin_complet)
-            if langue_actuelle == "EN":
-                print(Fore.GREEN + "✅ Amazon page opened in browser!")
-            else:
-                print(Fore.GREEN + "✅ Page Amazon ouverte dans le navigateur !")
-        else:
-            if langue_actuelle == "EN":
-                print(Fore.RED + f"❌ Error: File not found at {chemin_fichier}")
-            else:
-                print(Fore.RED + f"❌ Erreur : Fichier introuvable à {chemin_fichier}")
-
-
-    def linkedin():
-        chemin_fichier = "Option/page/LinkedIn.html"
-        if os.path.exists(chemin_fichier):
-            chemin_complet = os.path.abspath(chemin_fichier)
-            webbrowser.open('file://' + chemin_complet)
-            if langue_actuelle == "EN":
-                print(Fore.GREEN + "✅ LinkedIn page opened in browser!")
-            else:
-                print(Fore.GREEN + "✅ Page LinkedIn ouverte dans le navigateur !")
-        else:
-            if langue_actuelle == "EN":
-                print(Fore.RED + f"❌ Error: File not found at {chemin_fichier}")
-            else:
-                print(Fore.RED + f"❌ Erreur : Fichier introuvable à {chemin_fichier}")
-
-    def snapchat(): 
-        chemin_fichier = "Option/page/Snapchat.html"
-        if os.path.exists(chemin_fichier):
-            chemin_complet = os.path.abspath(chemin_fichier)
-            webbrowser.open('file://' + chemin_complet)
-            if langue_actuelle == "EN":
-                print(Fore.GREEN + "✅ Snapchat page opened in browser!")
-            else:
-                print(Fore.GREEN + "✅ Page Snapchat ouverte dans le navigateur !")
-        else:
-            if langue_actuelle == "EN":
-                print(Fore.RED + f"❌ Error: File not found at {chemin_fichier}")
-            else:
-                print(Fore.RED + f"❌ Erreur : Fichier introuvable à {chemin_fichier}")
-
-        
-
-    if choix_local == 1:
-        try:
-            tiktok()
-        except Exception as e:
-            print(Fore.RED + f"❌ Error: {e}" if langue_actuelle == "EN" else f"❌ Erreur : {e}")
-        finally:
-            input(Fore.GREEN + ("Press Enter to continue..." if langue_actuelle == "EN" else "Appuyez sur Entrée pour continuer..."))
-    elif choix_local == 2:
-        try:
-            facebook()
-        except Exception as e:
-            print(Fore.RED + f"❌ Error: {e}" if langue_actuelle == "EN" else f"❌ Erreur : {e}")
-        finally:
-            input(Fore.GREEN + ("Press Enter to continue..." if langue_actuelle == "EN" else "Appuyez sur Entrée pour continuer..."))
-    elif choix_local == 3:
-        try:
-            netflix()
-        except Exception as e:
-            print(Fore.RED + f"❌ Error: {e}" if langue_actuelle == "EN" else f"❌ Erreur : {e}")
-        finally:
-            input(Fore.GREEN + ("Press Enter to continue..." if langue_actuelle == "EN" else "Appuyez sur Entrée pour continuer..."))
-    elif choix_local == 4:
-        try:
-            paypal()
-        except Exception as e:
-            print(Fore.RED + f"❌ Error: {e}" if langue_actuelle == "EN" else f"❌ Erreur : {e}")
-        finally:
-            input(Fore.GREEN + ("Press Enter to continue..." if langue_actuelle == "EN" else "Appuyez sur Entrée pour continuer..."))
-    elif choix_local == 5:
-        try:
-            amazon()
-        except Exception as e:
-            print(Fore.RED + f"❌ Error: {e}" if langue_actuelle == "EN" else f"❌ Erreur : {e}")
-        finally:
-            input(Fore.GREEN + ("Press Enter to continue..." if langue_actuelle == "EN" else "Appuyez sur Entrée pour continuer..."))
-            input(Fore.GREEN + ("Press Enter to continue..." if langue_actuelle == "EN" else "Appuyez sur Entrée pour continuer..."))
-    elif choix_local == 6:
-        try:
-            linkedin()
-        except Exception as e:
-            print(Fore.RED + f"❌ Error: {e}" if langue_actuelle == "EN" else f"❌ Erreur : {e}")
-        finally:
-            input(Fore.GREEN + ("Press Enter to continue..." if langue_actuelle == "EN" else "Appuyez sur Entrée pour continuer..."))
-    elif choix_local == 7:
-        try:
-            snapchat()
-        except Exception as e:
-            print(Fore.RED + f"❌ Error: {e}" if langue_actuelle == "EN" else f"❌ Erreur : {e}")
-        finally:
-            input(Fore.GREEN + ("Press Enter to continue..." if langue_actuelle == "EN" else "Appuyez sur Entrée pour continuer..."))
-    elif choix_local == 8:
-        return  # Retour au menu principal
-    else:
-        print(Fore.RED + ("❌ Invalid choice!" if langue_actuelle == "EN" else "❌ Choix invalide !"))
-        input(Fore.GREEN + ("Press Enter to continue..." if langue_actuelle == "EN" else "Appuyez sur Entrée pour continuer..."))
+    print(f"\n[✓] Page clonée avec succès → {file_path}")
