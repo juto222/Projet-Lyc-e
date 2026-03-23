@@ -241,7 +241,7 @@ while True:
 
     elif choix == 22:
         clear()
-        lancer(lambda: phishing.afficher_menu_phishing(langue_actuelle),
+        lancer(lambda: phishing.phishing,
        "Générateur de fausse page HTML" if langue_actuelle == "FR" else "Fake HTML Page Generator")
         
     elif choix == 23:
