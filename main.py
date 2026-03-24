@@ -64,8 +64,7 @@ def afficher_menuFR():
                                              @@               @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@        
 
 {Fore.GREEN}
-                                                    Allez voir notre Gestionnaire de mot de passe !!!!
-                                                    http://linganguliguli.worldlite.fr/
+                                                    
 
 
 {Fore.MAGENTA}[1] 🔐 Mot de passe                                                     {Fore.MAGENTA}[5] 🧩 Autres
@@ -123,8 +122,7 @@ def afficher_menuEN():
                                  {Fore.CYAN}
 
 {Fore.GREEN}
-                                                    Check out our Password Manager !!!!
-                                                    http://linganguliguli.worldlite.fr/
+                                                    
 
 
 {Fore.MAGENTA}[1] 🔐 Password                                                         {Fore.MAGENTA}[5] 🧩 Others
@@ -233,7 +231,12 @@ while True:
     elif choix == 14:
         clear()
         lancer(pswd.pswd_compromis, "Mot de passe compromis" if langue_actuelle == "FR" else "Compromised Passwords")
+
+
+
     # PARTIE PENTEST
+
+
 
     elif choix == 21:
         clear()
@@ -241,8 +244,7 @@ while True:
 
     elif choix == 22:
         clear()
-        lancer(lambda: phishing.phishing,
-       "Générateur de fausse page HTML" if langue_actuelle == "FR" else "Fake HTML Page Generator")
+        lancer(phishing.phishing_main, "Générateur de page HTML")
         
     elif choix == 23:
         clear()
