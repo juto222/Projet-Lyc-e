@@ -26,6 +26,8 @@ from Option import Scan
 from Option import quizznetwork
 from Option import keylog
 from Option import console
+from Option import tmp
+from Option import taskmanager
 from Option import pswd
 from Option import keylog
 from Option import quizzmdp
@@ -298,8 +300,16 @@ while True:
     elif choix == 41:
         clear()
         lancer(si.info_system, "Informations système" if langue_actuelle == "FR" else "System Information")
+
+    elif choix == 42:
+        clear()
+        lancer(taskmanager.task_manager, "Gestionnaire de tâches" if langue_actuelle == "FR" else "Task Manager")
+    
+    elif choix == 43:
+        clear()
+        lancer(tmp.clean_temp, "Nettoyeur de fichiers temporaires" if langue_actuelle == "FR" else "Temporary File Cleaner")
         
-    elif choix == 45:
+    elif choix == 44:
         clear()
         lancer(script.fichier, "Création de faux fichier" if langue_actuelle == "FR" else "Fake File Creator")
 
