@@ -12,4 +12,3 @@ pip install nuitka
 
 echo Toutes les librairies ont été installées.
 pause
-
