@@ -51,7 +51,7 @@ questions = [
 
 # -------------------- APP --------------------
 
-def main(page: ft.Page):
+def quizz_mdp(page: ft.Page):
     page.title = "Quiz Sécurité - Mots de Passe"
     page.theme_mode = ft.ThemeMode.DARK
     page.bgcolor = "#0f172a"
@@ -166,5 +166,3 @@ def main(page: ft.Page):
         update_question()
 
     build_ui()
-
-ft.run(main)

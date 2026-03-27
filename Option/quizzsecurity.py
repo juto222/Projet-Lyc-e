@@ -191,5 +191,3 @@ def main(page: ft.Page):
         update_question()
 
     build_ui()
-
-ft.run(main)
