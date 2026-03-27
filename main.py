@@ -1,6 +1,7 @@
 import sys
 import os
 import webbrowser
+import flet as ft
 import time
 
 # Vérification de la version Python requise (3.11)
@@ -228,7 +229,7 @@ while True:
 
     elif choix == 13:
         clear()
-        lancer(lambda: quizzmdp.quizz_mdp(langue_actuelle), "Quizz mot de passe" if langue_actuelle == "FR" else "Password Quiz")
+        lancer(lambda: ft.run(quizzmdp.quizz_mdp), "Quizz mot de passe" if langue_actuelle == "FR" else "Password Quiz")
 
     elif choix == 14:
         clear()
@@ -285,7 +286,7 @@ while True:
         
     elif choix == 34:
         clear()
-        lancer(quizznetwork.quizznetwork, "Quizz réseau" if langue_actuelle == "FR" else "Network Quiz")
+        lancer(lambda: ft.run(quizznetwork.main), "Quizz réseau" if langue_actuelle == "FR" else "Network Quiz")
 
     elif choix == 35:
         clear()
