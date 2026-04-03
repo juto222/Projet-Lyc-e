@@ -382,34 +382,30 @@ while True:
 
     elif choix == 71:
         clear()
-        print(Fore.YELLOW + (
-            "\n📘 Documentation utilisateur :\n- Utilisez les numéros du menu pour accéder aux outils." if langue_actuelle == "FR"
-            else "\n📘 User documentation:\n- Use the menu numbers to access tools."
-        ))
+        url = "https://ecorp-site.vercel.app/#documentation"
+        webbrowser.open(url)
+        print(Fore.GREEN + ("Ouverture de la documentation utilisateur..." if langue_actuelle == "FR" else "Opening user documentation..."))
         input(Fore.GREEN + "\nRetour... / Back...")
 
     elif choix == 72:
         clear()
-        print(Fore.YELLOW + (
-            "\n❓ FAQ :\nQ : Est-ce légal ?\nR : Oui, pour l’apprentissage uniquement." if langue_actuelle == "FR"
-            else "\n❓ FAQ:\nQ: Is it legal?\nA: Yes, for learning only."
-        ))
+        url = "https://ecorp-site.vercel.app/#faq"
+        webbrowser.open(url)
+        print(Fore.GREEN + ("Ouverture de la FAQ..." if langue_actuelle == "FR" else "Opening FAQ..."))
         input(Fore.GREEN + "\nRetour... / Back...")
 
     elif choix == 73:
         clear()
-        print(Fore.YELLOW + (
-            "\n⚠️ Mentions légales :\nCe programme est fourni à titre éducatif." if langue_actuelle == "FR"
-            else "\n⚠️ Legal Notice:\nThis program is for educational purposes only."
-        ))
+        url = "https://ecorp-site.vercel.app/#mentions-legales"
+        webbrowser.open(url)
+        print(Fore.GREEN + ("Ouverture des mentions légales..." if langue_actuelle == "FR" else "Opening legal notice..."))
         input(Fore.GREEN + "\nRetour... / Back...")
 
     elif choix == 74:
         clear()
-        print(Fore.YELLOW + (
-            "\n🔒 Données personnelles :\nCe programme ne collecte aucune information." if langue_actuelle == "FR"
-            else "\n🔒 Personal data:\nThis program does not collect any information."
-        ))
+        url = "https://ecorp-site.vercel.app/#rgpd"
+        webbrowser.open(url)
+        print(Fore.GREEN + ("Ouverture des informations RGPD..." if langue_actuelle == "FR" else "Opening GDPR information..."))
         input(Fore.GREEN + "\nRetour... / Back...")
 
     else:
