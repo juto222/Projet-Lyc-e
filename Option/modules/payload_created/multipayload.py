@@ -1920,7 +1920,9 @@ def multipayload_module():
         time.sleep(2)
         WEBHOOK = None
 
-    DEMARRAGE = input("\n\nExécuter au démarrage ? (y/n) : ").lower() == "y"
+    DEMARRAGE = input("\n\nExécuter au démarrage ? (y/n) : ").lower()
+    if DEMARRAGE == "y":
+        DEMARRAGE = "y"
     if not DEMARRAGE:
         print("Aucune donnée fourni")
         DEMARRAGE = None    
@@ -2017,5 +2019,3 @@ add_startup()"""
 
             print(Fore.GREEN + "Payload généré dans payload/payload_created/final_payload.py" + Style.RESET_ALL)
             break
-
-multipayload_module()
