@@ -115,5 +115,3 @@ def phishing_main():
             f"------------------------------------\n"
             f"\n"
         )
-
-phishing_main()
