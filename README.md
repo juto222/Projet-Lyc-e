@@ -10,7 +10,7 @@
     ╚══════╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚═╝     
 ```
 
-# ECORP — Elite Cyber Operations & Research Platform
+# ECORP 
 
 **Outil de cybersécurité éducatif tout-en-un · Python 3.11 · Windows**
 
