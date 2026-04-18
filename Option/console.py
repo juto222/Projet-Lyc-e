@@ -126,9 +126,9 @@ Appuyez sur Entrée pour continuer...
                     else:
                         print(Fore.RED + "Module non encore implémenté." + Style. RESET_ALL)
                 else:
-                    print(Fore.RED + "Numéro de payload invalide." + Style.RESET_ALL)
+                    print(Fore.RED + "[!] Numéro de payload invalide." + Style.RESET_ALL)
             except ValueError: 
-                print(Fore.RED + "Veuillez entrer un numéro valide." + Style.RESET_ALL)
+                print(Fore.RED + "[!] Veuillez entrer un numéro valide." + Style.RESET_ALL)
 
         elif cmd.lower() == "network":
             clear()
@@ -151,15 +151,12 @@ Appuyez sur Entrée pour continuer...
                 if 0 <= capture_index < len(captures):
                     print(Fore.YELLOW + f"Configuration de la capture : {captures[capture_index]}" + Style.RESET_ALL)
                 else:
-                    print(Fore.RED + "Numéro de capture invalide." + Style.RESET_ALL)
+                    print(Fore.RED + "[!] Numéro de capture invalide." + Style.RESET_ALL)
             except ValueError:
-                print(Fore.RED + "Veuillez entrer un numéro valide." + Style.RESET_ALL)
-        
-        elif cmd.lower() == "scan":
-            clear()
-            print(Fore.CYAN + "=== Modules Scan ===" + Style.RESET_ALL)
-            print(Fore.YELLOW + "Liste des scanners disponibles :" + Style.RESET_ALL)
-            print("""
+                print(Fore.RED + "[!] Veuillez entrer un numéro valide." + Style.RESET_ALL)
+                print(Fore.CYAN + "=== Modules Scan ===" + Style.RESET_ALL)
+                print(Fore.YELLOW + "Liste des scanners disponibles :" + Style.RESET_ALL)
+                print("""
     1. Vulnerability Scanner (en développement)
                   """)
             scan_choix = input(Fore.GREEN + ">> " + Style.RESET_ALL)
@@ -172,13 +169,9 @@ Appuyez sur Entrée pour continuer...
                 if 0 <= scan_index < len(scanners):
                     print(Fore.YELLOW + f"Configuration du scanner : {scanners[scan_index]}" + Style.RESET_ALL)
                 else:
-                    print(Fore.RED + "Numéro de scanner invalide." + Style.RESET_ALL)
+                    print(Fore.RED + "[!] Numéro de scanner invalide." + Style.RESET_ALL)
             except ValueError:
-                print(Fore.RED + "Veuillez entrer un numéro valide." + Style.RESET_ALL)
-
-        elif cmd.lower() in ["exit", "quit"]:
-            print(Fore.CYAN + "Fermeture de la console interactive." + Style.RESET_ALL)
-            break
+                print(Fore.RED + "[!] Veuillez entrer un numéro valide." + Style.RESET_ALL)
+                break
         else:
-            print(Fore.RED + "Commande inconnue. Veuillez entrer 'payload', 'capture', 'scan' ou 'exit'." + Style.RESET_ALL)
-
+            print(Fore.RED + "[!] Commande inconnue. Veuillez entrer 'payload', 'capture', 'scan' ou 'exit'." + Style.RESET_ALL)

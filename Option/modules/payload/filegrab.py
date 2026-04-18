@@ -9,7 +9,7 @@ def clear():
 
 def affichage():
     clear()
-    print(Fore.CYAN + "=== Configuration File Grab ===\n\n" + Style.RESET_ALL)
+    print(Fore.CYAN + "[*] === Configuration File Grab ===\n\n" + Style.RESET_ALL)
     print(f"""
           
           {Fore.YELLOW}Options : 
@@ -34,7 +34,7 @@ Tapez : exit pour quitter
 
 def filegrab():
     clear()
-    print("=== File Grab Configuration ===\n\n")
+    print("[*] === File Grab Configuration ===\n\n")
 
     choix = {
         "Chemin du fichier": None,

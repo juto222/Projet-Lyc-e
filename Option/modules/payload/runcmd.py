@@ -9,7 +9,7 @@ def clear():
 
 def affichage():
     clear()
-    print(Fore.CYAN + "=== Configuration Run Command ===\n" + Style.RESET_ALL)
+    print(Fore.CYAN + "[*] === Configuration Run Command ===\n" + Style.RESET_ALL)
     print(f"""
           {Fore.YELLOW}Options :
 {Fore.WHITE}
@@ -28,6 +28,7 @@ Tapez : exit pour quitter
 
 def runcmd_module():
     clear()
+    print("[*] === Run Command Configuration ===\n")
 
     choix = {
         "Commande à exécuter": None,

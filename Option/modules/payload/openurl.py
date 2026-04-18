@@ -7,7 +7,7 @@ def clear():
 
 def affichage():
     clear()
-    print("=== Configuration Open URL ===\n\n")
+    print("[*] === Configuration Open URL ===\n\n")
     print(f"""
           
           {Fore.YELLOW}Options : 

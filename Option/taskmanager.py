@@ -17,7 +17,7 @@ def task_manager():
             pid = input("Entrez le PID du processus à arrêter : ")
 
             if not pid.isdigit():
-                print("❌ PID invalide.")
+                print("[!] ❌ PID invalide.")
                 return
 
             if os.name == "nt":
@@ -25,7 +25,7 @@ def task_manager():
             else:
                 os.system(f"kill -9 {pid}")
 
-            print("✅ Processus terminé.")
+            print("[+] ✅ Processus terminé.")
 
     except Exception as e:
-        print(f"❌ Erreur dans le gestionnaire de tâches : {e}")
+        print(f"[!] ❌ Erreur dans le gestionnaire de tâches : {e}")

@@ -63,4 +63,4 @@ def username():
         except requests.exceptions.RequestException as e:
             print(f"[!] Erreur pour {url} : {e}")
     
-    print(f"\nRecherche terminée. Trouvé sur {found_count} plateformes.")
+    print(f"\n[+] Recherche terminée. Trouvé sur {found_count} plateformes.")

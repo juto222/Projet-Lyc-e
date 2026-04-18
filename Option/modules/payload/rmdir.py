@@ -9,7 +9,7 @@ def clear():
 
 def affichage():
     clear()
-    print(Fore.CYAN + "=== Configuration Remove Directory ===\n" + Style.RESET_ALL)
+    print(Fore.CYAN + "[*] === Configuration Remove Directory ===\n" + Style.RESET_ALL)
     print(f"""
           {Fore.YELLOW}Options :
 {Fore.WHITE}
@@ -27,6 +27,7 @@ Tapez : exit pour quitter
 
 def rmdir_module():
     clear()
+    print("[*] === Remove Directory Configuration ===\n")
 
     choix = {
         "Chemin du répertoire": None,

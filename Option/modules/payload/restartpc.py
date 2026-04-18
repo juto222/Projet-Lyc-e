@@ -10,7 +10,7 @@ def clear():
 
 def affichage():
     clear()
-    print(Fore.CYAN + "=== Configuration Restart de PC ===\n\n" + Style.RESET_ALL)
+    print(Fore.CYAN + "[*] === Configuration Restart de PC ===\n\n" + Style.RESET_ALL)
     print(f"""
           
           {Fore.YELLOW}Options : 
@@ -40,7 +40,7 @@ Tapez : exit pour quitter
 
 def restart_module():
     clear()
-    print("=== Restart de PC Configuration ===\n\n")
+    print("[*] === Restart de PC Configuration ===\n\n")
 
     choix = {
         "Délai avant redémarrage": None,
@@ -76,7 +76,7 @@ def restart_module():
             print(f"Délai défini sur {delai} secondes.")
             time.sleep(1)
         except ValueError:
-            print(Fore.RED + "Veuillez entrer un nombre valide ou 'random'." + Style.RESET_ALL)
+            print(Fore.RED + "[!] Veuillez entrer un nombre valide ou 'random'." + Style.RESET_ALL)
             time.sleep(1)
         affichage()
 

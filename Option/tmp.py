@@ -4,7 +4,7 @@ import tempfile
 
 def clean_temp():
     try:
-        print("🧹 Nettoyage des fichiers temporaires...\n")
+        print("[*] 🧹 Nettoyage des fichiers temporaires...\n")
 
         temp_dirs = []
 
@@ -21,7 +21,7 @@ def clean_temp():
             if not os.path.exists(folder):
                 continue
 
-            print(f"📂 Nettoyage : {folder}")
+            print(f"[*] 📂 Nettoyage : {folder}")
 
             for filename in os.listdir(folder):
                 file_path = os.path.join(folder, filename)
@@ -37,7 +37,7 @@ def clean_temp():
                     # Ignore les fichiers utilisés
                     continue
 
-        print(f"\n✅ Nettoyage terminé : {total_deleted} éléments supprimés.")
+        print(f"\n[+] ✅ Nettoyage terminé : {total_deleted} éléments supprimés.")
 
     except Exception as e:
-        print(f"❌ Erreur nettoyage : {e}")
+        print(f"[!] ❌ Erreur nettoyage : {e}")

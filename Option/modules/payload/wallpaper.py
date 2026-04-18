@@ -7,7 +7,7 @@ def clear():
 
 def affichage():
     clear()
-    print("=== Configuration Wallpaper Payload ===\n\n")
+    print("[*] === Configuration Wallpaper Payload ===\n\n")
     print(f"""
           
           {Fore.YELLOW}Options : 
@@ -23,7 +23,7 @@ Tapez : exit pour quitter{Style.RESET_ALL}
 
 def wallpaper():
     clear()
-    
+    print("[*] === Wallpaper Configuration ===\n")
 
     choix = {
         "Mettre un Wallpaper": None,
@@ -45,7 +45,7 @@ def wallpaper():
 
     def create_payload():
         clear()
-        print("=== Payload Wallpaper Généré ===\n")
+        print("[+] === Payload Wallpaper Généré ===\n")
         if choix["Mettre un Wallpaper"]:
             wallpaper_path = choix["Mettre un Wallpaper"]
             payload = f"""

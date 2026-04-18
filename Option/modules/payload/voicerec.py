@@ -5,7 +5,7 @@ def clear():
 
 def affichage():
     clear()
-    print("=== Configuration Voice Recorder Payload ===\n\n")
+    print("[*] === Configuration Voice Recorder Payload ===\n\n")
     print(f"""
           
           {Fore.YELLOW}Options : 
@@ -28,6 +28,7 @@ Tapez : exit pour quitter
     
 def voicerec():
     clear()
+    print("[*] === Voice Recorder Configuration ===\n\n")
     affichage()
     choix = {
         "Durée de l'enregistrement": 10,

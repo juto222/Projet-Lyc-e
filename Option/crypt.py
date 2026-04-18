@@ -22,7 +22,7 @@ def crypt():
     try:
         option = int(input("Choisissez un obfuscateur (1 ou 2 ) : "))
     except ValueError:
-        print("Option invalide. Veuillez entrer un nombre (1 ou 2).")
+        print("[!] Option invalide. Veuillez entrer un nombre (1 ou 2).")
         return
     
     path = input("Entrez le chemin du fichier python à chiffrer : ")
@@ -32,7 +32,7 @@ def crypt():
     if option == 1:
         os.system(f"pyarmor gen --output {output_dir} {path}")
     elif option == 2:
-        print("""- Avoir un compilateur C installé : https://visualstudio.microsoft.com/fr/visual-cpp-build-tools/ (Visual Studio pour Windows)
+        print("""[*] - Avoir un compilateur C installé : https://visualstudio.microsoft.com/fr/visual-cpp-build-tools/ (Visual Studio pour Windows)
     - A l'installation, cochez : 
         - "Desktop development with C++"
         - "MSVC v142 - VS 2019 C++ x64/x86 build tools" (après avoir coché "Desktop development with C++")
@@ -45,7 +45,7 @@ def crypt():
         input("Lisez les pré-requis et appuyez sur Entrée pour continuer...")
         os.system(f"nuitka --output-dir={output_dir} --onefile {path}")
     else:
-        print("Option invalide. Veuillez choisir 1 ou 2.")
+        print("[!] Option invalide. Veuillez choisir 1 ou 2.")
         return
 
     with open("logs.txt", "a") as fichier:

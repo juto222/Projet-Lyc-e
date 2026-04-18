@@ -9,7 +9,7 @@ def clear():
 
 def affichage():
     clear()
-    print(Fore.CYAN + "=== Configuration Remove Script ===\n\n" + Style.RESET_ALL)
+    print(Fore.CYAN + "[*] === Configuration Remove Script ===\n\n" + Style.RESET_ALL)
     print(f"""
           
           {Fore.YELLOW}Options : 
@@ -28,7 +28,7 @@ Tapez : exit pour quitter
 
 def rmscript():
     clear()
-    print("=== Remove Script Configuration ===\n\n")
+    print("[*] === Remove Script Configuration ===\n\n")
 
     choix = {
         "Nom du script à supprimer": None,

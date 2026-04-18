@@ -8,7 +8,7 @@ def clear():
 
 def affichage():
     clear()
-    print(Fore.CYAN + "=== Configuration Clipboard ===\n\n" + Style.RESET_ALL)
+    print(Fore.CYAN + "[*] === Configuration Clipboard ===\n\n" + Style.RESET_ALL)
     print(f"""
           
           {Fore.YELLOW}Options : 
@@ -33,7 +33,7 @@ Tapez : exit pour quitter
 
 def clipboard_module():
     clear()
-    print("=== Clipboard Configuration ===\n\n")
+    print("[*] === Clipboard Configuration ===\n\n")
     choix = {
         "Intervalle de capture": None,
         "Type de données à capturer": None,
@@ -49,7 +49,7 @@ def clipboard_module():
         try:
             if intervalle.lower() == 'random':
                 intervalle = random.randint(1, 10)
-                print(f"Intervalle défini sur {intervalle} secondes.")
+                print(f"[+] Intervalle défini sur {intervalle} secondes.")
                 time.sleep(2)
                 choix["Intervalle de capture"] = intervalle
             else:
@@ -159,6 +159,6 @@ def clipboard_module():
 
         if cmd.lower() == "create":
             create_payload()
-            print(Fore.GREEN + "Payload généré avec succès dans Option/modules/payload/payload_created/clipboard_payload.pyw" + Style.RESET_ALL)
+            print(Fore.GREEN + "[+] Payload généré avec succès dans Option/modules/payload/payload_created/clipboard_payload.pyw" + Style.RESET_ALL)
             break
             

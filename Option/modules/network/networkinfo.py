@@ -9,7 +9,7 @@ def clear():
 
 def affichage():
     clear()
-    print(Fore.CYAN + "=== Configuration Network Info ===\n\n" + Style.RESET_ALL)
+    print(Fore.CYAN + "[*] === Configuration Network Info ===\n\n" + Style.RESET_ALL)
     print(f"""
           
           {Fore.YELLOW}Options : 

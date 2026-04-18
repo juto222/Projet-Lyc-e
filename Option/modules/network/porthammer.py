@@ -10,7 +10,7 @@ def clear():
 
 def affichage():
     clear()
-    print(Fore.CYAN + "=== Configuration Scan de Ports ===\n\n" + Style.RESET_ALL)
+    print(Fore.CYAN + "[*] === Configuration Scan de Ports ===\n\n" + Style.RESET_ALL)
     print(f"""
           
           {Fore.YELLOW}Options : 
@@ -63,9 +63,9 @@ def scan_module():
             port = int(port)
             if 1 <= port <= 65535:
                 choix["Port de début"] = port
-                print(f"Port de début défini sur {port}.")
+                print(f"[+] Port de début défini sur {port}.")
             else:
-                print(Fore.RED + "Le port doit être entre 1 et 65535." + Style.RESET_ALL)
+                print(Fore.RED + "[!] Le port doit être entre 1 et 65535." + Style.RESET_ALL)
             time.sleep(1)
         except ValueError:
             print(Fore.RED + "Veuillez entrer un nombre valide." + Style.RESET_ALL)
@@ -79,7 +79,7 @@ def scan_module():
             port = int(port)
             if 1 <= port <= 65535:
                 choix["Port de fin"] = port
-                print(f"Port de fin défini sur {port}.")
+                print(f"[+] Port de fin défini sur {port}.")
             else:
                 print(Fore.RED + "Le port doit être entre 1 et 65535." + Style.RESET_ALL)
             time.sleep(1)
@@ -94,7 +94,7 @@ def scan_module():
         try:
             nb = int(nb)
             choix["Nombre de tentatives"] = nb
-            print(f"Nombre de tentatives défini sur {nb}.")
+            print(f"[+] Nombre de tentatives défini sur {nb}.")
             time.sleep(1)
         except ValueError:
             print(Fore.RED + "Veuillez entrer un nombre valide." + Style.RESET_ALL)
@@ -110,7 +110,7 @@ def scan_module():
             else:
                 delay = float(delay)
             choix["Délai entre tentatives"] = delay
-            print(f"Délai défini sur {delay} secondes.")
+            print(f"[+] Délai défini sur {delay} secondes.")
             time.sleep(1)
         except ValueError:
             print(Fore.RED + "Veuillez entrer un nombre valide ou 'random'." + Style.RESET_ALL)
@@ -123,7 +123,7 @@ def scan_module():
         try:
             timeout = float(timeout)
             choix["Timeout de connexion"] = timeout
-            print(f"Timeout défini sur {timeout} secondes.")
+            print(f"[+] Timeout défini sur {timeout} secondes.")
             time.sleep(1)
         except ValueError:
             print(Fore.RED + "Veuillez entrer un nombre valide." + Style.RESET_ALL)

@@ -33,9 +33,9 @@ def obtenir_infos_ip():
             print(f"Localisation: {data.get('loc')}")
             print(f"Fuseau horaire: {data.get('timezone')}")
         else:
-            print(f"Erreur : Impossible de récupérer les informations de l'IP {ip_address}")
+            print(f"[!] Erreur : Impossible de récupérer les informations de l'IP {ip_address}")
     except Exception as e:
-        print(f"Une erreur est survenue : {e}")
+        print(f"[!] Une erreur est survenue : {e}")
 
     with open("logs.txt", "a") as fichier:
         fichier.write(

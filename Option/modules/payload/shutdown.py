@@ -9,7 +9,7 @@ def clear():
 
 def affichage():
     clear()
-    print(Fore.CYAN + "=== Configuration Shutdown Payload ===\n\n" + Style.RESET_ALL)
+    print(Fore.CYAN + "[*] === Configuration Shutdown Payload ===\n\n" + Style.RESET_ALL)
     print(f"""
           
           {Fore.YELLOW}Options : 
@@ -29,7 +29,7 @@ Tapez : exit pour quitter
 
 def shutdown_module():
     clear()
-    print("=== Shutdown Configuration ===\n\n")
+    print("[*] === Shutdown Configuration ===\n\n")
 
     choix = {
         "Délai avant extinction": None,

@@ -1,8 +1,10 @@
 import string
 import time
 
+from colorama import Fore, Style
+
 def verifier():
-    print(r"""
+    print(f"""{Fore.GREEN}
 
               __                        __        __
              / /                        \ \      / /
@@ -15,7 +17,7 @@ __        /_/         ___  ____            \_\/_/
    \_\/_/            \___/|_| \_\      /_/       \_\
 
 
-
+{Style.RESET_ALL}
     """)
 
     mdp = input("Entrez le mot de passe à vérifier :")
@@ -25,7 +27,7 @@ __        /_/         ___  ____            \_\/_/
     if len(mdp) >= 8:
         score += 1
     else:
-        print("Le mot de passe doit contenir plus de 8 caractères.")
+        print("[!] Le mot de passe doit contenir plus de 8 caractères.")
 
     if any(c in string.digits for c in mdp):
         score += 1
@@ -37,11 +39,11 @@ __        /_/         ___  ____            \_\/_/
         score += 1 
 
     if score == 4:
-        print(f"Mot de passe très fort. Score :{score}/4")
+        print(f"[+] Mot de passe très fort. Score :{score}/4")
     elif 2 <= score < 4:
-        print(f"Mot de passe moyen. Score :{score}/4")
+        print(f"[*] Mot de passe moyen. Score :{score}/4")
     else:
-        print(f"Mot de passe faible. Score :{score}/4")
+        print(f"[!] Mot de passe faible. Score :{score}/4")
     with open("logs.txt", "a") as fichier:
         fichier.write(
             f"------------------------------------\n"

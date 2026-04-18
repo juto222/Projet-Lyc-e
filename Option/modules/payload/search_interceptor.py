@@ -166,8 +166,7 @@ def scan_firefox_fast(browser_name, db_path):
 def scan_all_browsers_fast():
     """🚀 Scan parallèle tous navigateurs (x10 vitesse)"""
     with scan_lock:
-        print(f"⚡ RAPID-SCAN [{datetime.now().strftime('%H:%M:%S')}]")
-        
+        print(f"[*] ⚡ RAPID-SCAN [{datetime.now().strftime('%H:%M:%S')}]")
         # Chromium en parallèle
         browsers = get_all_browser_paths()
         threads = []

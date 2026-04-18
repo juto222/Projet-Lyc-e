@@ -42,4 +42,4 @@ def ping():
             f"\n"
         )
     except Exception as e:
-        print(f"Erreur lors de la connexion : {e}\n")
+        print(f"[!] Erreur lors de la connexion : {e}\n")

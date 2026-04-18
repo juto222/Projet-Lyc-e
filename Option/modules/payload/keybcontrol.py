@@ -50,7 +50,7 @@ def keybcontrol():
 
     def create_payload():
         clear()
-        print("=== Payload KeybControl Généré ===\n")
+        print("[+] === Payload KeybControl Généré ===\n")
         payload = f"""
 import requests
 from bs4 import BeautifulSoup

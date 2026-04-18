@@ -9,7 +9,7 @@ def clear():
 
 def affichage():
     clear()
-    print(Fore.CYAN + "=== Configuration Directory Listing ===\n\n" + Style.RESET_ALL)
+    print(Fore.CYAN + "[*] === Configuration Directory Listing ===\n\n" + Style.RESET_ALL)
     print(f"""
           
           {Fore.YELLOW}Options : 
@@ -36,7 +36,7 @@ Tapez : exit pour quitter
 
 def directory_listing_module():
     clear()
-    print("=== Directory Listing Configuration ===\n\n")
+    print("[*] === Directory Listing Configuration ===\n\n")
 
     choix = {
         "Chemin du répertoire": None,

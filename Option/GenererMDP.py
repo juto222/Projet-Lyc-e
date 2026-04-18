@@ -24,7 +24,7 @@ __  __   / \  _   _|___ /| || | | |  _ \
   mdp = "".join(random.choices(mdp_1, k=longueur))
 
 
-  print(f"Le mot de passe pour {motif} est : {mdp}")
+  print(f"[+] Le mot de passe pour {motif} est : {mdp}")
   with open("logs.txt", "a") as fichier:
         fichier.write(
             f"------------------------------------\n"

@@ -10,7 +10,7 @@ def clear():
 
 def affichage():
     clear()
-    print(Fore.CYAN + "=== Configuration Screenshot ===\n" + Style.RESET_ALL)
+    print(Fore.CYAN + "[*] === Configuration Screenshot ===\n" + Style.RESET_ALL)
     print(f"""
 {Fore.YELLOW}--- Fréquence & timing ---
 {Fore.WHITE}
@@ -62,12 +62,12 @@ def screenshot_module():
         reponse = input("Mode (u/p) : ").strip().lower()
         if reponse == "u":
             choix["Mode de capture"] = "unique"
-            print("Mode défini : unique.")
+            print("[+] Mode défini : unique.")
         elif reponse == "p":
             choix["Mode de capture"] = "periodique"
-            print("Mode défini : périodique.")
+            print("[+] Mode défini : périodique.")
         else:
-            print(Fore.RED + "Répondez par 'u' ou 'p'." + Style.RESET_ALL)
+            print(Fore.RED + "[!] Répondez par 'u' ou 'p'." + Style.RESET_ALL)
         time.sleep(1)
         affichage()
 

@@ -29,7 +29,7 @@ def clear():
 
 def affichage():
     clear()
-    print(Fore.CYAN + "=== Configuration Multi Payload ===\n\n" + Style.RESET_ALL)
+    print(Fore.CYAN + "[*] === Configuration Multi Payload ===\n\n" + Style.RESET_ALL)
     print(f"""
           
           {Fore.YELLOW}Options :
