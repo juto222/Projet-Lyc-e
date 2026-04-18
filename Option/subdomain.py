@@ -1,103 +1,87 @@
 import dns.resolver
 import requests
 import urllib3
+from Option.utils.display import ask, success, error, warning, info, found, result, separator
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-
 def sousdomaine():
-    print(r"""
-                         _  _  _  _  _  _  _  _  _      ______   _____   ______  
-                        | || || || || || || || || |    / _____) / ___ \ |  ___ \ 
-                        | || || || || || || || || |   | /      | |   | || | _ | |
-                        | ||_|| || ||_|| || ||_|| |   | |      | |   | || || || |
-                        | |___| || |___| || |___| | _ | \_____ | |___| || || || |
-                         \______| \______| \______|(_) \______) \_____/ |_||_||_|  
-    """)
 
-    domain = input("[+] Entrez le domaine cible (ex: example.com): ").strip()
+    print(r"""
+    ____  _   _ ____  ____   ___  __  __    _    ___ _   _ 
+   / ___|| | | | __ )|  _ \ / _ \|  \/  |  / \  |_ _| \ | |
+   \___ \| | | |  _ \| | | | | | | |\/| | / _ \  | ||  \| |
+    ___) | |_| | |_) | |_| | |_| | |  | |/ ___ \ | || |\  |
+   |____/ \___/|____/|____/ \___/|_|  |_/_/   \_\___|_| \_|
+""")
+
+    domain = ask("Domaine cible (ex: example.com)")
     domain = domain.replace("http://", "").replace("https://", "").strip("/")
 
     subdomains = [
-        'www', 'mail', 'ftp', 'dev', 'admin', 'blog', 'api', 'admin-api',
-        'dashboard', 'support', 'staging', 'shop', 'portal', 'login', 'app',
-        'webmail', 'dns', 'vpn', 'help', 'test', 'm', 'mobile', 'news',
-        'contact', 'docs', 'git', 'status', 'secure', 'files', 'media',
-        'cloud', 'storage', 'appserver', 'crm', 'billing', 'payments',
-        'analytics', 'customer', 'account', 'store', 'order', 'auth',
-        'devops', 'email', 'api3-dev', 'api-staging', 'monitoring',
-        'sandbox', 'internal', 'backup', 'root', 'private', 'ssh'
+        "www", "mail", "ftp", "dev", "admin", "blog", "api", "admin-api",
+        "dashboard", "support", "staging", "shop", "portal", "login", "app",
+        "webmail", "dns", "vpn", "help", "test", "m", "mobile", "news",
+        "contact", "docs", "git", "status", "secure", "files", "media",
+        "cloud", "storage", "appserver", "crm", "billing", "payments",
+        "analytics", "customer", "account", "store", "order", "auth",
+        "devops", "email", "api-dev", "api-staging", "monitoring",
+        "sandbox", "internal", "backup", "root", "private", "ssh",
     ]
 
-    tested = 0
+    tested   = 0
     found_dns = 0
     found_web = 0
 
-    for sub in subdomains:
-        tested += 1
-        full_domain = f"{sub}.{domain}"
-        dns_ok = False
+    info(f"Test de {len(subdomains)} sous-domaines pour {domain}...")
+    separator()
 
-        # Vérification DNS
+    for sub in subdomains:
+        tested      += 1
+        full_domain  = f"{sub}.{domain}"
+        dns_ok       = False
+
         try:
             dns.resolver.resolve(full_domain, "A")
-            print(f"[DNS] [✓] Le sous-domaine {full_domain} existe.")
+            found(f"[DNS] {full_domain} existe")
             found_dns += 1
-            dns_ok = True
+            dns_ok     = True
         except dns.resolver.NXDOMAIN:
-            print(f"[DNS] [!] Le sous-domaine {full_domain} n'existe pas.")
-            print("-" * 60)
+            info(f"[DNS] {full_domain} — inexistant")
             continue
         except dns.resolver.NoAnswer:
-            print(f"[DNS] [!] Le sous-domaine {full_domain} existe mais n'a pas de réponse A.")
-            print("-" * 60)
+            warning(f"[DNS] {full_domain} — pas de réponse A")
             continue
         except dns.resolver.LifetimeTimeout:
-            print(f"[DNS] [!] Timeout pour {full_domain}.")
-            print("-" * 60)
+            warning(f"[DNS] {full_domain} — timeout")
             continue
         except Exception as e:
-            print(f"[DNS] [!] Erreur avec {full_domain} : {e}")
-            print("-" * 60)
+            error(f"[DNS] {full_domain} — {e}")
             continue
 
         if dns_ok:
             web_ok = False
 
-            # Vérification HTTP
-            try:
-                response_http = requests.get(
-                    f"http://{full_domain}",
-                    timeout=5,
-                    allow_redirects=True
-                )
-                print(f"[HTTP] http://{full_domain} -> code {response_http.status_code}")
-                if response_http.status_code < 400:
-                    web_ok = True
-            except requests.RequestException as e:
-                print(f"[HTTP] Erreur pour http://{full_domain} : {e}")
-
-            # Vérification HTTPS
-            try:
-                response_https = requests.get(
-                    f"https://{full_domain}",
-                    timeout=5,
-                    verify=False,
-                    allow_redirects=True
-                )
-                print(f"[HTTPS] [✓] https://{full_domain} -> code {response_https.status_code}")
-                if response_https.status_code < 400:
-                    web_ok = True
-            except requests.RequestException as e:
-                print(f"[HTTPS] [!] Erreur pour https://{full_domain} : {e}")
+            for scheme in ("http", "https"):
+                url    = f"{scheme}://{full_domain}"
+                verify = scheme == "https"
+                try:
+                    r = requests.get(url, timeout=5, verify=False, allow_redirects=True)
+                    if r.status_code < 400:
+                        found(f"[{scheme.upper()}] {url} → {r.status_code}")
+                        web_ok = True
+                    else:
+                        info(f"[{scheme.upper()}] {url} → {r.status_code}")
+                except requests.RequestException as e:
+                    warning(f"[{scheme.upper()}] Erreur {full_domain} : {e}")
 
             if web_ok:
                 found_web += 1
 
-        print("-" * 60)
+        separator()
 
-    print(f"\n[+] Nombre total de sous-domaines testés : {tested}")
-    print(f"[+] Nombre total de sous-domaines trouvés en DNS : {found_dns}")
-    print(f"[+] Nombre total de sous-domaines accessibles en HTTP/HTTPS : {found_web}")
-
-    input("\nAppuyez sur Entrée pour revenir au menu.")
+    result("Sous-domaines testés",           tested)
+    result("Sous-domaines trouvés (DNS)",    found_dns)
+    result("Sous-domaines accessibles (Web)", found_web)
+    success("Scan terminé.")
+    ask("Appuyez sur Entrée pour revenir au menu")

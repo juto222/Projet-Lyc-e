@@ -1,59 +1,54 @@
-from colorama import Fore, Style
-import time
 import os
+from Option.utils.display import ask, success, error, info, warning, separator
 
 def crypt():
 
-    print(f"""{Fore.MAGENTA}
-          
+    print(r"""
+     _____ ______   ____  ____  ____
+    / ____|  ____| |  _ \|  _ \|  _ \
+   | |    | |_     | |_) | |_) | |_) |
+   | |    |  _|    |  __/|  __/|  _ <
+   | |____| |      | |   | |   | |_) |
+    \_____|_|      |_|   |_|   |____/
+""")
 
-                 .---.
-                /    |\________________
-                |  ()| ________   _   _)
-                \    |/        | | | |
-                 `---'         "-" |_|
-
-
-    Choisissez un obfuscateur pour chiffrer votre fichier python :
-     {Fore.YELLOW}1.{Fore.CYAN} PyArmor (Recommandé)
-     {Fore.YELLOW}2.{Fore.CYAN} Nuitka
-    {Style.RESET_ALL}""")
+    info("Obfuscateurs disponibles :")
+    separator()
+    info("1. PyArmor  — Protège le code avec du bytecode chiffré")
+    info("2. Nuitka   — Compile Python → C (protection maximale)")
+    separator()
 
     try:
-        option = int(input("Choisissez un obfuscateur (1 ou 2 ) : "))
+        option = int(ask("Choisissez un obfuscateur (1 ou 2)"))
     except ValueError:
-        print("[!] Option invalide. Veuillez entrer un nombre (1 ou 2).")
+        error("Veuillez entrer 1 ou 2.")
         return
-    
-    path = input("Entrez le chemin du fichier python à chiffrer : ")
-    output_dir = input("Entrez le répertoire de sortie pour le fichier chiffré : ")
 
+    if option not in (1, 2):
+        error("Option invalide. Choisissez 1 ou 2.")
+        return
+
+    path       = ask("Chemin du fichier Python à chiffrer")
+    output_dir = ask("Répertoire de sortie")
+
+    if not os.path.isfile(path):
+        error(f"Fichier introuvable : {path}")
+        return
 
     if option == 1:
+        info("Lancement de PyArmor...")
         os.system(f"pyarmor gen --output {output_dir} {path}")
+        success(f"Fichier chiffré généré dans : {output_dir}")
+
     elif option == 2:
-        print("""[*] - Avoir un compilateur C installé : https://visualstudio.microsoft.com/fr/visual-cpp-build-tools/ (Visual Studio pour Windows)
-    - A l'installation, cochez : 
-        - "Desktop development with C++"
-        - "MSVC v142 - VS 2019 C++ x64/x86 build tools" (après avoir coché "Desktop development with C++")
-        - "Windows 10/11 SDK" (après avoir coché "Desktop development with C++")
-        Ca devrait faire environ 9Go d'installation.
-
-    - Redémarrez votre ordinateur après l'installation des outils de build.
-
-    et vous pouvez lancer !""")
-        input("Lisez les pré-requis et appuyez sur Entrée pour continuer...")
+        warning("Pré-requis Nuitka :")
+        info("  • Compilateur C installé (Visual Studio Build Tools)")
+        info("    https://visualstudio.microsoft.com/fr/visual-cpp-build-tools/")
+        info("  • Cochez : Desktop development with C++")
+        info("  • Cochez : Windows 10/11 SDK")
+        info("  • Environ 9 Go — redémarrez après installation")
+        separator()
+        ask("Lisez les pré-requis, puis appuyez sur Entrée pour continuer")
+        info("Lancement de Nuitka...")
         os.system(f"nuitka --output-dir={output_dir} --onefile {path}")
-    else:
-        print("[!] Option invalide. Veuillez choisir 1 ou 2.")
-        return
-
-    with open("logs.txt", "a") as fichier:
-        fichier.write(
-            f"------------------------------------\n"
-            f"\n"
-            f" [{time.strftime('%d-%m-%Y %H:%M:%S')}]     Encryption de {path} \n"
-            f"\n"
-            f"------------------------------------\n"
-            f"\n"
-        )
+        success(f"Exécutable généré dans : {output_dir}")

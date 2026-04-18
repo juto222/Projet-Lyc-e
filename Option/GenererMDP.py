@@ -1,36 +1,34 @@
 import random
 import string
 import time
+from Option.utils.display import ask, success, error, log
 
 def generer():
-  
-  print(r""" 
 
+    print(r"""
           _         _____ _  _   _ ____  
 __  __   / \  _   _|___ /| || | | |  _ \ 
 \ \/ /  / _ \| | | | |_ \| || |_| | |_) |
  >  <  / ___ \ |_| |___) |__   _|_|  _ < 
 /_/\_\/_/   \_\__, |____/   |_| (_)_| \_\
               |___/                      
+""")
 
-  """)
+    motif = ask("Pour quel usage")
 
-  motif = input("Pour quoi vous voulez un mot de passe ? : ")
+    try:
+        longueur = int(ask("Nombre de caractères (12 minimum recommandé)"))
+    except ValueError:
+        error("Veuillez entrer un nombre valide.")
+        return
 
-  longueur = int(input("Combien de caractères vous voulez (12 minimum recommandé) ?:"))
+    if longueur < 1:
+        error("La longueur doit être supérieure à 0.")
+        return
 
-  mdp_1 = string.ascii_letters + string.punctuation + string.digits
+    mdp_1 = string.ascii_letters + string.punctuation + string.digits
+    mdp   = "".join(random.choices(mdp_1, k=longueur))
 
-  mdp = "".join(random.choices(mdp_1, k=longueur))
+    success(f"Mot de passe pour '{motif}' : {mdp}")
 
-
-  print(f"[+] Le mot de passe pour {motif} est : {mdp}")
-  with open("logs.txt", "a") as fichier:
-        fichier.write(
-            f"------------------------------------\n"
-            f"\n"
-            f" [{time.strftime('%d-%m-%Y %H:%M:%S')}]     Création d'un mot de passe pour {motif} ({mdp}) \n"
-            f"\n"
-            f"------------------------------------\n"
-            f"\n"
-        )
+    log(f"Création d'un mot de passe pour {motif} ({mdp})")

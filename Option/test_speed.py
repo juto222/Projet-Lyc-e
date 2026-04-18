@@ -1,43 +1,38 @@
 import time
-from colorama import Fore, init
 import speedtest
+from Option.utils.display import success, error, info, result, separator
 
-init(autoreset=True)
+def test_speed():
 
-def test_speed(langue_actuelle="FR"):
     try:
-        if langue_actuelle == "FR":
-            print(Fore.CYAN + "[*] Lancement du test de vitesse...")
-            time.sleep(1)
-            print(Fore.YELLOW + "[*] Recherche du meilleur serveur...")
-        else:
-            print(Fore.CYAN + "[*] Starting speed test...")
-            time.sleep(1)
-            print(Fore.YELLOW + "[*] Searching for the best server...")
-
+        info("Initialisation du test...")
         st = speedtest.Speedtest()
+
+        info("Recherche du meilleur serveur...")
         st.get_best_server()
 
+        info("Test du ping...")
         ping = st.results.ping
-        download_speed = st.download() / 1_000_000  # bits/s -> Mbps
-        upload_speed = st.upload() / 1_000_000      # bits/s -> Mbps
+
+        info("Test de la vitesse de téléchargement...")
+        download_speed = st.download() / 1_000_000
+
+        info("Test de la vitesse d'envoi...")
+        upload_speed = st.upload() / 1_000_000
 
         server_name = st.results.server.get("name", "Inconnu")
-        sponsor = st.results.server.get("sponsor", "Inconnu")
+        sponsor     = st.results.server.get("sponsor", "Inconnu")
 
-        print(Fore.GREEN + "[+] === SPEEDTEST ===")
-        print(Fore.WHITE + f"[*] Ping      : {ping:.2f} ms")
-        print(Fore.WHITE + f"[*] Download  : {download_speed:.2f} Mbps")
-        print(Fore.WHITE + f"[*] Upload    : {upload_speed:.2f} Mbps")
-        print(Fore.WHITE + f"[*] Serveur   : {server_name} ({sponsor})")
+        separator()
+        result("Ping",      f"{ping:.2f} ms")
+        result("Download",  f"{download_speed:.2f} Mbps")
+        result("Upload",    f"{upload_speed:.2f} Mbps")
+        result("Serveur",   f"{server_name} ({sponsor})")
+        separator()
+
+        success("Test terminé.")
 
     except Exception as e:
-        if langue_actuelle == "FR":
-            print(Fore.RED + f"[!] ❌ Erreur pendant le speed test : {e}")
-        else:
-            print(Fore.RED + f"[!] ❌ Error during speed test: {e}")
+        error(f"Erreur pendant le speedtest : {e}")
 
-    time.sleep(2)
-
-if __name__ == "__main__":
-    test_speed()
+    time.sleep(1)

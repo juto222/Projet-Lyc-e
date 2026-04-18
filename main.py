@@ -1,8 +1,11 @@
 import sys
 import os
 import webbrowser
-import flet as ft
 import time
+import getpass
+import socket
+import ctypes
+import flet as ft
 
 # Vérification de la version Python requise (3.11)
 required_version = (3, 11)
@@ -18,28 +21,14 @@ if sys.version_info[:2] != required_version:
         print("[*] Continuer sans cx_Freeze. Certaines fonctionnalités liées à la création d'exécutables seront désactivées.")
 
 from colorama import init, Fore, Style
-from Option import PingIP
-from Option import CheckMDP
-from Option import GenererMDP
-from Option import phishing
-from Option import crypt
-from Option import Scan
-from Option import quizznetwork
-from Option import keylog
-from Option import console
-from Option import tmp
-from Option import taskmanager
-from Option import pswd
-from Option import keylog
-from Option import quizzmdp
-from Option import quizzsecurity
-from Option import username
-from Option import si
-from Option import test_speed
-from Option import script
-from Option import subdomain
-from Option import iplookup
-from Option import dirbuster
+init(autoreset=True)
+
+from Option.utils.display import ask, success, error, info, warning, result, separator, log
+
+from Option import PingIP, CheckMDP, GenererMDP, phishing, crypt
+from Option import Scan, quizznetwork, keylog, console, pswd
+from Option import quizzmdp, quizzsecurity, username, si
+from Option import test_speed, script, subdomain, iplookup, dirbuster, tmp, taskmanager
 
 # Initialisation de Colorama
 init(autoreset=True)
@@ -247,7 +236,7 @@ while True:
 
     elif choix == 22:
         clear()
-        lancer(phishing.phishing_main, "Générateur de page HTML")
+        lancer(phishing.phishing, "Générateur de page HTML")
         
     elif choix == 23:
         clear()

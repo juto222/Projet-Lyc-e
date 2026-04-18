@@ -1,42 +1,51 @@
-from colorama import Fore, Style
-import time
 import os
+import time
+from Option.utils.display import ask, success, error, info, result, log
 
 def fichier():
-    print(f"""
 
-          ___  _  ___  _ _  ___   ___   ___   ___  _ 
-         / _ \/ |/ _ \/ / |/ _ \ / _ \ / _ \ / _ \/ |
-        | | | | | | | | | | | | | | | | | | | | | | |
-        | |_| | | |_| | | | |_| | |_| | |_| | |_| | |
-         \___/|_|\___/|_|_|\___/ \___/ \___/ \___/|_|
 
-    {Fore.MAGENTA} Création d'un vrai fichier binaire (octets aléatoires)
-    {Style.RESET_ALL}
+    print(r"""
+     _____ ___ _     _____
+    |  ___|_ _| |   | ____|
+    | |_   | || |   |  _|
+    |  _|  | || |___| |___
+    |_|   |___|_____|_____|
+""")
 
-    """)
+    try:
+        size_mb = int(ask("Taille du fichier à créer (en Mo)"))
+    except ValueError:
+        error("Entrez un nombre valide.")
+        return
 
-    size_mb = int(input("[+] Taille du fichier que vous voulez créer (en Mo) : "))
-    path = input("[+] Chemin du fichier (ex: C:/mon/chemin/test.bin) : ")
+    if size_mb <= 0:
+        error("La taille doit être supérieure à 0.")
+        return
 
-    if os.makedirs(os.path.dirname(path), exist_ok=True):
-        pass
+    path = ask("Chemin de destination (ex: C:/test.bin)")
+
+    dossier = os.path.dirname(path)
+    if dossier:
+        os.makedirs(dossier, exist_ok=True)
 
     size_bytes = size_mb * 1024 * 1024
-    chunk_size = 1024 * 1024  # 1 Mo à la fois (évite de tuer la RAM)
+    chunk_size = 1024 * 1024  # 1 Mo par chunk
 
-    print(f"\n{Fore.YELLOW}[*] Création du fichier... Ça peut prendre du temps pour les gros fichiers.{Style.RESET_ALL}\n")
+    info(f"Création d'un fichier de {size_mb} Mo en cours...")
 
-    with open(path, "wb") as f:
-        for _ in range(size_mb):
-            f.write(os.urandom(chunk_size))  # Octets totalement aléatoires
+    try:
+        with open(path, "wb") as f:
+            for i in range(size_mb):
+                f.write(os.urandom(chunk_size))
+                print(f"\r  Progression : {i + 1}/{size_mb} Mo", end="", flush=True)
 
-    print(f"{Fore.GREEN}[✓] Fichier binaire de {size_mb} Mo créé : {path}{Style.RESET_ALL}\n")
+        print()
+        success(f"Fichier de {size_mb} Mo créé : {path}")
+        result("Taille réelle", f"{os.path.getsize(path) / (1024**2):.2f} Mo")
+        log(f"Fichier binaire aléatoire de {size_mb} Mo créé → {path}")
 
-    # Logs
-    with open("logs.txt", "a", encoding="utf-8") as fichier:
-        fichier.write(
-            f"------------------------------------\n"
-            f"[{time.strftime('%d-%m-%Y %H:%M:%S')}] Fichier binaire aléatoire de {size_mb} Mo → {path}\n"
-            f"------------------------------------\n\n"
-        )
+    except PermissionError:
+        error(f"Permission refusée pour écrire dans : {path}")
+    except Exception as e:
+        error(f"Erreur lors de la création : {e}")

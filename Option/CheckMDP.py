@@ -1,56 +1,47 @@
 import string
 import time
-
-from colorama import Fore, Style
+from Option.utils.display import ask, success, warning, error, result, log
 
 def verifier():
-    print(f"""{Fore.GREEN}
 
-              __                        __        __
-             / /                        \ \      / /
-            / /                          \ \    / / 
-           / /                            \ \  / /  
-__        /_/         ___  ____            \_\/_/   
-\ \      / /         / _ \|  _ \          / / \ \   
- \ \    / /         | | | | |_) |        / /   \ \  
-  \ \  / /          | |_| |  _ <        / /     \ \ 
-   \_\/_/            \___/|_| \_\      /_/       \_\
+    print(r"""
+  __     __   ___  ____  
+  \ \   / /  / _ \|  _ \    
+   \ \ / /  | | | | |_) |
+    \ V /   | |_| |  _ < 
+     \_/     \___/|_| \_\
+""")
 
-
-{Style.RESET_ALL}
-    """)
-
-    mdp = input("Entrez le mot de passe à vérifier :")
-
+    mdp   = ask("Mot de passe à vérifier")
     score = 0
 
     if len(mdp) >= 8:
         score += 1
     else:
-        print("[!] Le mot de passe doit contenir plus de 8 caractères.")
+        warning("Le mot de passe doit contenir au moins 8 caractères.")
 
     if any(c in string.digits for c in mdp):
         score += 1
+    else:
+        warning("Aucun chiffre détecté.")
 
     if any(c in string.punctuation for c in mdp):
         score += 1
+    else:
+        warning("Aucun symbole détecté (!@#$...).")
 
     if any(c in string.ascii_uppercase for c in mdp):
-        score += 1 
+        score += 1
+    else:
+        warning("Aucune majuscule détectée.")
+
+    result("Score", f"{score}/4")
 
     if score == 4:
-        print(f"[+] Mot de passe très fort. Score :{score}/4")
+        success("Mot de passe très fort !")
     elif 2 <= score < 4:
-        print(f"[*] Mot de passe moyen. Score :{score}/4")
+        warning("Mot de passe moyen — peut être amélioré.")
     else:
-        print(f"[!] Mot de passe faible. Score :{score}/4")
-    with open("logs.txt", "a") as fichier:
-        fichier.write(
-            f"------------------------------------\n"
-            f"\n"
-            f" [{time.strftime('%d-%m-%Y %H:%M:%S')}]     Vérification d'un mot de passe {mdp}    \n"
-            f"\n"
-            f"------------------------------------\n"
-            f"\n"
-        )
+        error("Mot de passe faible — à changer absolument.")
 
+    log(f"Vérification d'un mot de passe — score {score}/4")
