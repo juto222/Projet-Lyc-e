@@ -20,15 +20,22 @@ if sys.version_info[:2] != required_version:
         os.environ['SKIP_CX_FREEZE'] = '1'
         print("[*] Continuer sans cx_Freeze. Certaines fonctionnalités liées à la création d'exécutables seront désactivées.")
 
+nmap = ask("Avez-vous NMAP ? (y/N) : ")
+if nmap.lower() == "y":
+    from Option import Scan
+else:
+    input("Vous n'avez pas NMAP. Certaines fonctionnalités seront désactivées. Appuyez sur Entrée pour continuer...")
+
+
 from colorama import init, Fore, Style
 init(autoreset=True)
 
 from Option.utils.display import ask, success, error, info, warning, result, separator, log
 
 from Option import PingIP, CheckMDP, GenererMDP, phishing, crypt
-from Option import Scan, quizznetwork, keylog, console, pswd
+from Option import quizznetwork, keylog, console, pswd
 from Option import quizzmdp, quizzsecurity, username, si
-from Option import test_speed, script, subdomain, iplookup, dirbuster, tmp, taskmanager
+from Option import script, subdomain, iplookup, dirbuster, tmp, taskmanager
 
 # Initialisation de Colorama
 init(autoreset=True)
@@ -77,7 +84,7 @@ def afficher_menuFR():
 
 {Fore.MAGENTA}[3] 📊 Réseau                                                           {Fore.MAGENTA}[7] ⚖️ Aide & Légalité
  {Fore.YELLOW}├── [31] Ping IP                                                        ├── [71] Documentation utilisateur
- ├── [32] Scan Réseau                                                    ├── [72] FAQ
+ ├── [32] Scan Réseau (Bug)                                              ├── [72] FAQ
  ├── [33] Journal / Logs                                                 ├── [73] Mentions légales
  ├── [34] Quizz réseau                                                   └── [74] Informations RGPD
  ├── [35] Info sur l'IP
@@ -280,10 +287,11 @@ while True:
     elif choix == 35:
         clear()
         lancer(iplookup.obtenir_infos_ip, "Info sur l'IP" if langue_actuelle == "FR" else "IP Lookup")
+        """
 
     elif choix == 36:
         clear()
-        lancer(test_speed.test_speed, "Speedtest Internet" if langue_actuelle == "FR" else "Internet Speedtest")
+        lancer(test_speed.test_speed, "Speedtest Internet" if langue_actuelle == "FR" else "Internet Speedtest")"""
 
     # PARTIE PC
 
