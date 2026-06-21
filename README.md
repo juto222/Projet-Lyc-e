@@ -63,7 +63,6 @@ L'interface s'exécute en terminal avec une navigation par numéros, disponible 
 | `33` | Journal / Logs | Affichage du fichier `logs.txt` |
 | `34` | Quiz réseau | Quiz interactif sur les réseaux (Flet) |
 | `35` | IP Lookup | Géolocalisation et infos sur une adresse IP |
-| `36` | Speedtest | Test de débit Internet (montant/descendant) |
 
 ### 💻 [4x] PC & Système
 | Code | Outil | Description |
