@@ -164,7 +164,6 @@ Projet-Lyc-e/
     ├── console.py           # Console interactive
     ├── taskmanager.py       # Gestionnaire de tâches
     ├── si.py                # Informations système
-    ├── test_speed.py        # Speedtest
     ├── tmp.py               # Nettoyeur temp
     ├── script.py            # Création faux fichier
     ├── pswd.py              # Mots de passe compromis (HIBP)
@@ -196,7 +195,6 @@ ECORP s'exécute **entièrement en local**. Aucune donnée personnelle n'est col
 |--------|--------------|--------------|
 | MDP Compromis | ✅ Hash SHA-1 partiel (5 chars) | Have I Been Pwned |
 | IP Lookup | ✅ IP interrogée | API géolocalisation publique |
-| Speedtest | ✅ IP publique | Speedtest.net |
 | OSINT Utilisateur | ✅ Pseudonyme | Plateformes web publiques |
 | Tous les autres | ❌ Aucun | — |
 
